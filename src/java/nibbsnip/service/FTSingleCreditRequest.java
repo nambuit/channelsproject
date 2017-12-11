@@ -5,10 +5,14 @@
  */
 package nibbsnip.service;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @author wumoru
  */
+@Getter @Setter
 public class FTSingleCreditRequest {
     private int SessionID;
     private int NameEnquiryRef;
