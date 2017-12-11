@@ -123,16 +123,16 @@ public class NIBBSOFISInterfaceResource {
    @Produces(javax.ws.rs.core.MediaType.TEXT_XML)
     public String billpaymentnotification(String input) {
         //TODO return proper representation object
-       AirTimeTopupNotificationResponse response = new AirTimeTopupNotificationResponse();  
+       BillPaymentNotificationResponse response = new BillPaymentNotificationResponse();  
         Gson gson = new Gson();
         try{  
     JSONObject object = XML.toJSONObject(input);       
    
 //    
-        object = (JSONObject)object.get("AirTimeTopupNotificationRequest");
+        object = (JSONObject)object.get("BillPaymentNotificationRequest");
 //    
    String json = object.toString();
-     AirTimeTopupNotificationRequest request = (AirTimeTopupNotificationRequest) gson.fromJson(json, AirTimeTopupNotificationRequest.class);
+     BillPaymentNotificationRequest request = (BillPaymentNotificationRequest) gson.fromJson(json, BillPaymentNotificationRequest.class);
   
         response.setOFICode(request.getOFICode());
         response.setResponseCode("00");
