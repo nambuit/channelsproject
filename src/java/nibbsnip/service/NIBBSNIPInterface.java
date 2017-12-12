@@ -124,6 +124,7 @@ public class NIBBSNIPInterface {
             amountunblockresponse.setResponseCode("12");
         }
         return amountunblockresponse;
+    }
     
     @WebMethod(operationName = "accountblock")
     public AccountBlockResponse accountblock(@WebParam(name = "AccountBlockIn") AccountBlockRequest AccountBlockIn) {

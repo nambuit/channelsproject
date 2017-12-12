@@ -15,7 +15,7 @@ import lombok.Setter;
 public class AccountBlockRequest {
     private String SessionID;
     private String DestinationInstitutionCode;
-    private Integer ChannelCode;
+    private String ChannelCode;
     private String ReferenceCode;
     private String TargetAccountName;
     private String TargetBankVerificationNumber;

@@ -5,6 +5,7 @@
  */
 package nibbsnip.service;
 
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,22 +15,22 @@ import lombok.Setter;
  */
 @Getter @Setter
 public class FTSingleCreditRequest {
-    private int SessionID;
-    private int NameEnquiryRef;
-    private int DestinationInstitutionCode;
-    private int ChannelCode;
+    private String SessionID;
+    private String NameEnquiryRef;
+    private String DestinationInstitutionCode;
+    private String ChannelCode;
     private String BeneficiaryAccountName;
-    private int BeneficiaryAccountNumber;
-    private int BeneficiaryBankVerificationNumber;
-    private int BeneficiaryKYCLevel;
-    private int OriginatorAccountName;
-    private int OriginatorAccountNumber;
-    private int OriginatorBankVerificationNumber;
-    private int OriginatorKYCLevel;
-    private double TransactionLocation;
-    private int Narration;
+    private String BeneficiaryAccountNumber;
+    private String BeneficiaryBankVerificationNumber;
+    private String BeneficiaryKYCLevel;
+    private String OriginatorAccountName;
+    private String OriginatorAccountNumber;
+    private String OriginatorBankVerificationNumber;
+    private String OriginatorKYCLevel;
+    private String TransactionLocation;
+    private String Narration;
     private String PaymentReference;
-    private double Amount;
+    private BigDecimal Amount;
     
     
     

@@ -13,8 +13,8 @@ import lombok.Setter;
 @Getter @Setter 
 public class FinancialInstitutionListRequest {
     private String BatchNumber;
-    private Integer NumberOfRecords;
-    private Integer ChannelCode;
+    private int NumberOfRecords;
+    private String ChannelCode;
     private String TransactionLocation;
     private String InstitutionCode;
     private String InstitutionName;

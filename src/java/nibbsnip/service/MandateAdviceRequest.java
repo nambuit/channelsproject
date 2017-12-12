@@ -15,7 +15,7 @@ import lombok.Setter;
 public class MandateAdviceRequest {
     private String SessionID;
     private String DestinationInstitutionCode;
-    private Integer ChannelCode;
+    private String ChannelCode;
     private String MandateReferenceNumber;
     private BigDecimal Amount;
     private String DebitAccountName;

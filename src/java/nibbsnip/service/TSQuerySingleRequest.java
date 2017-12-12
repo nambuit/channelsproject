@@ -15,8 +15,8 @@ import lombok.Setter;
 @Getter @Setter
 public class TSQuerySingleRequest {
     
-    private int SourceInstitutionCode;
-    private int ChannelCode;
-    private int SessionID;
+    private String SourceInstitutionCode;
+    private String ChannelCode;
+    private String SessionID;
     
 }

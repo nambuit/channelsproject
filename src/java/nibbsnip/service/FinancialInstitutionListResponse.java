@@ -14,7 +14,7 @@ import lombok.Setter;
 public class FinancialInstitutionListResponse {
     private String BatchNumber;
     private String DestinationInstitutionCode;
-    private Integer ChannelCode;
-    private Integer NumberOfRecords;
+    private String ChannelCode;
+    private int NumberOfRecords;
     private String ResponseCode; 
 }

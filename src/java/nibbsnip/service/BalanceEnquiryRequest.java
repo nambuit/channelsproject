@@ -15,12 +15,12 @@ import lombok.Setter;
 @Getter @Setter
 public class BalanceEnquiryRequest {
     
-    private int SessionID;
-    private int DestinationInstitutionCode;
-    private int ChannelCode;
-    private int AuthorizationCode;
+    private String SessionID;
+    private String DestinationInstitutionCode;
+    private String ChannelCode;
+    private String AuthorizationCode;
     private String TargetAccountName;
-    private int TargetBankVerificationNumber;
-    private int TargetAccountNumber;
+    private String TargetBankVerificationNumber;
+    private String TargetAccountNumber;
     
 }

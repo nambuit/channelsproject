@@ -5,6 +5,7 @@
  */
 package nibbsnip.service;
 
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,24 +16,24 @@ import lombok.Setter;
 @Getter @Setter
 public class FTSingleDebitResponse {
     
-     private int SessionID;
-    private int NameEnquiryRef;
-    private int DestinationInstitutionCode;
-    private int ChannelCode;
+    private String SessionID;
+    private String NameEnquiryRef;
+    private String DestinationInstitutionCode;
+    private String ChannelCode;
     private String DebitAccountName;
-    private int DebitAccountNumber;
-    private int DebitBankVerificationNumber;
-    private int DebitKYCLevel;
+    private String DebitAccountNumber;
+    private String DebitBankVerificationNumber;
+    private String DebitKYCLevel;
     private String BeneficiaryAccountName;
-    private int BeneficiaryAccountNumber;
-    private int BeneficiaryBankVerificationNumber;
-    private int BeneficiaryKYCLevel;
-    private double TransactionLocation;
+    private String BeneficiaryAccountNumber;
+    private String BeneficiaryBankVerificationNumber;
+    private String BeneficiaryKYCLevel;
+    private String TransactionLocation;
     private String Narration;
-    private int PaymentReference;
-    private int MandateReferenceNumber;
-    private double TransactionFee;
-    private double Amount;
-    private int ResponseCode;
+    private String PaymentReference;
+    private String MandateReferenceNumber;
+    private BigDecimal TransactionFee;
+    private BigDecimal Amount;
+    private String ResponseCode;
     
 }

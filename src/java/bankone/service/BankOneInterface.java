@@ -223,7 +223,7 @@ List<String> dataheaders = data.get(0);
         }
         catch(Exception d){
            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
-           details.setIsSuccessful(false);
+          details.setIsSuccessful(false);
           details.setMessage(d.getMessage());
         }
          return details;
