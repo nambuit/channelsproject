@@ -16,11 +16,63 @@ import javax.jws.WebParam;
 @WebService(serviceName = "NIBBSNIPInterface")
 public class NIBBSNIPInterface {
 
-    /**
-     * This is a sample web service operation
-     */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
+    @WebMethod(operationName = "balanceenquiry")
+    public BalanceEnquiryResponse balanceenquiry(@WebParam(name = "balancerequest") BalanceEnquiryRequest balancerequest) {
+        BalanceEnquiryResponse accountbalance = new BalanceEnquiryResponse();
+
+        try {
+
+        } catch (Exception d) {
+            accountbalance.setResponseCode("12");
+        }
+        return accountbalance;
+    }
+
+    @WebMethod(operationName = "fundtransferAdvice_dc")
+    public FTAdviceCreditResponse fundtransferAdvice_dc(@WebParam(name = "creditrequest") FTAdviceCreditRequest creditrequest) {
+        FTAdviceCreditResponse creditresponse = new FTAdviceCreditResponse();
+
+        try {
+
+        } catch (Exception d) {
+            creditresponse.setResponseCode("12");
+        }
+        return creditresponse;
+    }
+
+    @WebMethod(operationName = "fundtransferAdvice_dd")
+    public FTAdviceDebitResponse fundtransferAdvice_dd(@WebParam(name = "debitrequest") FTAdviceDebitRequest debitrequest) {
+        FTAdviceDebitResponse debitresponse = new FTAdviceDebitResponse();
+
+        try {
+
+        } catch (Exception d) {
+            debitresponse.setResponseCode("12");
+        }
+        return debitresponse;
+    }
+
+    @WebMethod(operationName = "amountblock")
+    public AmountBlockResponse amountblock(@WebParam(name = "amountblockrequest") AmountBlockRequest amountblockrequest) {
+        AmountBlockResponse amountblockresponse = new AmountBlockResponse();
+
+        try {
+
+        } catch (Exception d) {
+            amountblockresponse.setResponseCode("12");
+        }
+        return amountblockresponse;
+    }
+
+    @WebMethod(operationName = "amountUnblock")
+    public AmountUnblockResponse amountUnblock(@WebParam(name = "amountunblockrequest") AmountUnblockRequest amountunblockrequest) {
+        AmountUnblockResponse amountunblockresponse = new AmountUnblockResponse();
+
+        try {
+
+        } catch (Exception d) {
+            amountunblockresponse.setResponseCode("12");
+        }
+        return amountunblockresponse;
     }
 }
