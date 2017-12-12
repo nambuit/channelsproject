@@ -64,8 +64,8 @@ public class NIBBSNIPInterface {
         return amountblockresponse;
     }
 
-    @WebMethod(operationName = "amountUnblock")
-    public AmountUnblockResponse amountUnblock(@WebParam(name = "amountunblockrequest") AmountUnblockRequest amountunblockrequest) {
+    @WebMethod(operationName = "amountunblock")
+    public AmountUnblockResponse amountunblock(@WebParam(name = "amountunblockrequest") AmountUnblockRequest amountunblockrequest) {
         AmountUnblockResponse amountunblockresponse = new AmountUnblockResponse();
 
         try {
