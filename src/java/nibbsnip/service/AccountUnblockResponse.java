@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package nibbsnip.service;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
  * @author chijiokennamani
  */
 @Getter @Setter 
+@XmlRootElement
 public class AccountUnblockResponse {
     private String SessionID;
     private String DestinationInstitutionCode;

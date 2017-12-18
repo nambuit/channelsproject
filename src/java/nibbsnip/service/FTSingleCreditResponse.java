@@ -6,6 +6,7 @@
 package nibbsnip.service;
 
 import java.math.BigDecimal;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import lombok.Setter;
  * @author wumoru
  */
 @Getter @Setter
+@XmlRootElement
 public class FTSingleCreditResponse {
     
     private String SessionID;
