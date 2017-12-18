@@ -196,6 +196,7 @@ public class NIBBSNIPInterface {
     @WebMethod(operationName = "mandateadvice")
     public String mandateadvice(@WebParam(name = "MandateAdviceIn") String MandateAdviceIn) {
         MandateAdviceResponse MandateAdviceOut = new MandateAdviceResponse();
+        Gson gson = new Gson();
         try{
            JSONObject object = XML.toJSONObject(MandateAdviceIn);       
            object = (JSONObject)object.get("MandateAdviceRequest");
