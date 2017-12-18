@@ -34,8 +34,7 @@ public class NIBBSNIPInterface {
         try{
           
              JSONObject object = XML.toJSONObject(input);       
-   
-//    
+
         object = (JSONObject)object.get("NESingleRequest");
 //    
    String json = object.toString();
@@ -47,9 +46,6 @@ public class NIBBSNIPInterface {
     }
         return ObjectToXML(nameEnquiry);
 }
-    
-    
-    
     
       @WebMethod(operationName = "fundtransfersingleitem_dc")
     public FTSingleCreditResponse fundtransfersingleitem_dc(@WebParam(name = "ftsinglecreditrequest") FTSingleCreditRequest ftsinglecreditrequest) {
@@ -148,47 +144,67 @@ public class NIBBSNIPInterface {
     }
     
     @WebMethod(operationName = "accountblock")
-    public AccountBlockResponse accountblock(@WebParam(name = "AccountBlockIn") AccountBlockRequest AccountBlockIn) {
-        AccountBlockResponse AccountBlockOut = new AccountBlockResponse();
+    public String accountblock(@WebParam(name = "AccountBlockIn") String input) {
+        AccountBlockResponse AccBlockReq = new AccountBlockResponse();
+       Gson gson = new Gson();
         try{
-            
+          
+             JSONObject object = XML.toJSONObject(input);       
+
+        object = (JSONObject)object.get("AccountBlockRequest");
+//    
+   String json = object.toString();
+     AccountBlockRequest request = (AccountBlockRequest) gson.fromJson(json, AccountBlockRequest.class);  
         }catch(Exception d){
-            
+            AccBlockReq.setResponseCode("32");
         }
-        return AccountBlockOut;
+        return ObjectToXML(AccBlockReq);
     }
     
     @WebMethod(operationName = "accountunblock")
-    public AccountUnblockResponse accountunblock(@WebParam(name = "AccountUnblockIn") AccountUnblockRequest AccountUnblockIn) {
+    public String accountunblock(@WebParam(name = "AccountUnblockIn") String AccountUnblockIn) {
         AccountUnblockResponse AccountUnblockOut = new AccountUnblockResponse();
+        Gson gson = new Gson();
         try{
             
-        }catch(Exception d){
+            JSONObject object = XML.toJSONObject(AccountUnblockIn);       
+            object = (JSONObject)object.get("AmountUnblockRequest");
+            String json = object.toString();
+            AmountUnblockRequest request = (AmountUnblockRequest)gson.fromJson(json, AmountUnblockRequest.class);
             
+        }catch(Exception d){
+            AccountUnblockOut.setResponseCode("32");
         }
-        return AccountUnblockOut;
+        return ObjectToXML(AccountUnblockOut);
     }
     
     @WebMethod(operationName = "financialinstitutionlist")
-    public List<FinancialInstitutionListResponse> financialinstitutionlist(@WebParam(name = "FinancialInstitutionListIn") FinancialInstitutionListRequest FinancialInstitutionListIn) {
-        List<FinancialInstitutionListResponse> FinancialInstitutionListOut = new ArrayList<>();
+    public String financialinstitutionlist(@WebParam(name = "FinancialInstitutionListIn") String FinancialInstitutionListIn) {
+        FinancialInstitutionListResponse FinancialInstitutionListOut = new FinancialInstitutionListResponse();
+        Gson gson = new Gson();
         try{
-            
+            JSONObject object = XML.toJSONObject(FinancialInstitutionListIn);       
+            object = (JSONObject)object.get("FinancialInstitutionListRequest");
+            String json = object.toString();
+            FinancialInstitutionListRequest request = (FinancialInstitutionListRequest)gson.fromJson(json, FinancialInstitutionListRequest.class);
         }catch(Exception d){
-            
+            FinancialInstitutionListOut.setResponseCode("32");
         }
-        return FinancialInstitutionListOut;
+        return ObjectToXML(FinancialInstitutionListOut);
     }
     
     @WebMethod(operationName = "mandateadvice")
-    public MandateAdviceResponse mandateadvice(@WebParam(name = "MandateAdviceIn") MandateAdviceRequest MandateAdviceIn) {
+    public String mandateadvice(@WebParam(name = "MandateAdviceIn") String MandateAdviceIn) {
         MandateAdviceResponse MandateAdviceOut = new MandateAdviceResponse();
         try{
-            
+           JSONObject object = XML.toJSONObject(MandateAdviceIn);       
+           object = (JSONObject)object.get("MandateAdviceRequest");
+           String json = object.toString();
+           MandateAdviceRequest request = (MandateAdviceRequest)gson.fromJson(json, MandateAdviceRequest.class); 
         }catch(Exception d){
-            
+            MandateAdviceOut.setResponseCode("32");
         }
-        return MandateAdviceOut;
+        return ObjectToXML(MandateAdviceOut);
 
     }
     
