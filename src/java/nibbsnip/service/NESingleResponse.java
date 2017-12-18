@@ -5,6 +5,7 @@
  */
 package nibbsnip.service;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import lombok.Setter;
  * @author wumoru
  */
 @Getter @Setter
+@XmlRootElement
 public class NESingleResponse {
     
     private String SessionID;

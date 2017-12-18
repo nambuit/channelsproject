@@ -6,6 +6,7 @@
 package nibbsnip.service;
 
 import java.math.BigDecimal;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import lombok.Setter;
  * @author OLAMIDE
  */
 @Getter @Setter
-
+@XmlRootElement
 public class BalanceEnquiryResponse {
    private String SessionID;
    private String DestinationInstitutionCode;
