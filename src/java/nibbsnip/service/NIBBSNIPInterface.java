@@ -5,11 +5,19 @@
  */
 package nibbsnip.service;
 
+import com.google.gson.Gson;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import static jdk.nashorn.tools.ShellFunctions.input;
+import nibbsofis.service.AirTimeTopupNotificationRequest;
+import org.json.JSONObject;
+import org.json.XML;
 
 /**
  *
@@ -19,16 +27,29 @@ import javax.jws.WebParam;
 public class NIBBSNIPInterface {
 
      @WebMethod(operationName = "nameenquirysingleitem")
-    public NESingleResponse nameenquirysingleitem(@WebParam(name = "nesinglerequest") NESingleRequest nesinglerequest) {
+    public String nameenquirysingleitem(@WebParam(name = "nesinglerequest") String input) {
+        
         NESingleResponse nameEnquiry = new NESingleResponse();
+         Gson gson = new Gson();
         try{
+          
+             JSONObject object = XML.toJSONObject(input);       
+   
+//    
+        object = (JSONObject)object.get("NESingleRequest");
+//    
+   String json = object.toString();
+     NESingleRequest request = (NESingleRequest) gson.fromJson(json, NESingleRequest.class);
             
     }
         catch(Exception e){
         nameEnquiry.setResponseCode("32");
     }
-        return nameEnquiry;
+        return ObjectToXML(nameEnquiry);
 }
+    
+    
+    
     
       @WebMethod(operationName = "fundtransfersingleitem_dc")
     public FTSingleCreditResponse fundtransfersingleitem_dc(@WebParam(name = "ftsinglecreditrequest") FTSingleCreditRequest ftsinglecreditrequest) {
@@ -171,7 +192,23 @@ public class NIBBSNIPInterface {
 
     }
     
+    
+       private String ObjectToXML(Object object){
+       try{
+    JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
+    Marshaller m = jcontext.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    StringWriter sw = new StringWriter();
+    m.marshal(object, sw);
+    return sw.toString();
+       }
+       catch(Exception y){
+           return(y.getMessage());
+       }
 
+
+}
+       
 }
 
 
