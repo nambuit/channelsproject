@@ -52,39 +52,71 @@ public class NIBBSNIPInterface {
     
     
       @WebMethod(operationName = "fundtransfersingleitem_dc")
-    public FTSingleCreditResponse fundtransfersingleitem_dc(@WebParam(name = "ftsinglecreditrequest") FTSingleCreditRequest ftsinglecreditrequest) {
+    public String fundtransfersingleitem_dc(@WebParam(name = "ftsinglecreditrequest") String ftsinglecreditrequest) {
         FTSingleCreditResponse creditRequest = new FTSingleCreditResponse();
+        Gson gson = new Gson();
         try{
+            
+             JSONObject object = XML.toJSONObject(ftsinglecreditrequest);       
+   
+//    
+        object = (JSONObject)object.get("FTSingleCreditRequest");
+//    
+   String json = object.toString();
+     FTSingleCreditRequest requestCredit = (FTSingleCreditRequest) gson.fromJson(json, FTSingleCreditRequest.class);
+            
             
     }
         catch(Exception e){
         creditRequest.setResponseCode("33");
     }
-        return creditRequest;
+        return ObjectToXML(creditRequest);
 }
     
       @WebMethod(operationName = "fundtransfersingleitem_dd")
-    public FTSingleDebitResponse fundtransfersingleitem_dd(@WebParam(name = "ftsingledebitrequest") FTSingleDebitRequest ftsingledebitrequest) {
+    public String fundtransfersingleitem_dd(@WebParam(name = "ftsingledebitrequest") String ftsingledebitrequest) {
         FTSingleDebitResponse debitRequest = new FTSingleDebitResponse();
+        Gson gson = new Gson();
+        
         try{
+            
+             JSONObject object = XML.toJSONObject(ftsingledebitrequest);       
+   
+//    
+        object = (JSONObject)object.get("FTSingleDebitRequest");
+//    
+   String json = object.toString();
+     FTSingleDebitRequest requestDebit = (FTSingleDebitRequest) gson.fromJson(json, FTSingleDebitRequest.class);
+            
+            
             
     }
         catch(Exception e){
         debitRequest.setResponseCode("34");
     }
-        return debitRequest;
+        return ObjectToXML(debitRequest);
 }
     
         @WebMethod(operationName = "txnstatusquerysingleitem")
-    public TSQuerySingleResponse txnstatusquerysingleitem(@WebParam(name = "tsquerysinglerequest") TSQuerySingleRequest tsquerysinglerequest) {
+    public String txnstatusquerysingleitem(@WebParam(name = "tsquerysinglerequest") String tsquerysinglerequest) {
         TSQuerySingleResponse txnRequest = new TSQuerySingleResponse();
+        Gson gson = new Gson();
         try{
+            
+            JSONObject object = XML.toJSONObject(tsquerysinglerequest);       
+   
+//    
+        object = (JSONObject)object.get("TSQuerySingleRequest");
+//    
+   String json = object.toString();
+     TSQuerySingleRequest requestQuery = (TSQuerySingleRequest) gson.fromJson(json, TSQuerySingleRequest.class);
+            
             
     }
         catch(Exception e){
         txnRequest.setResponseCode("34");
     }
-        return txnRequest;
+        return ObjectToXML(txnRequest);
     }
 
     @WebMethod(operationName = "balanceenquiry")
