@@ -30,8 +30,11 @@ public class NIBBSNIPInterface {
     public String nameenquirysingleitem(@WebParam(name = "nesinglerequest") String input) {
         
         NESingleResponse nameEnquiry = new NESingleResponse();
+        
          Gson gson = new Gson();
         try{
+            
+           
           
              JSONObject object = XML.toJSONObject(input);       
 
@@ -39,6 +42,10 @@ public class NIBBSNIPInterface {
 //    
    String json = object.toString();
      NESingleRequest request = (NESingleRequest) gson.fromJson(json, NESingleRequest.class);
+     
+    nameEnquiry.setAccountNumber(request.getAccountNumber());
+     nameEnquiry.setResponseCode("00");
+      nameEnquiry.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
             
     }
         catch(Exception e){

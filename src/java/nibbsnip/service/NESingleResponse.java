@@ -13,6 +13,7 @@ import lombok.Setter;
  *
  * @author wumoru
  */
+@XmlRootElement
 @Getter @Setter
 @XmlRootElement
 public class NESingleResponse {
