@@ -120,63 +120,95 @@ public class NIBBSNIPInterface {
     }
 
     @WebMethod(operationName = "balanceenquiry")
-    public BalanceEnquiryResponse balanceenquiry(@WebParam(name = "balancerequest") BalanceEnquiryRequest balancerequest) {
+    public String balanceenquiry(@WebParam(name = "balancerequest") String balancerequest) {
         BalanceEnquiryResponse accountbalance = new BalanceEnquiryResponse();
+        Gson gson = new Gson();
 
         try {
-
+             JSONObject object = XML.toJSONObject(balancerequest);       
+   
+//    
+        object = (JSONObject)object.get("BalanceEnquiryResponse");
+//    
+   String json = object.toString();
+     BalanceEnquiryRequest request = (BalanceEnquiryRequest) gson.fromJson(json, BalanceEnquiryRequest.class);
         } catch (Exception d) {
             accountbalance.setResponseCode("12");
         }
-        return accountbalance;
+        return ObjectToXML(accountbalance);
     }
 
     @WebMethod(operationName = "fundtransferAdvice_dc")
-    public FTAdviceCreditResponse fundtransferAdvice_dc(@WebParam(name = "creditrequest") FTAdviceCreditRequest creditrequest) {
+    public String fundtransferAdvice_dc(@WebParam(name = "creditrequest") String creditrequest) {
         FTAdviceCreditResponse creditresponse = new FTAdviceCreditResponse();
+        Gson gson = new Gson();
 
         try {
-
+             JSONObject object = XML.toJSONObject(creditrequest);       
+//    
+        object = (JSONObject)object.get("FTAdviceCreditResponse");
+//    
+   String json = object.toString();
+     FTAdviceCreditRequest request = (FTAdviceCreditRequest) gson.fromJson(json, FTAdviceCreditRequest.class);
         } catch (Exception d) {
             creditresponse.setResponseCode("12");
         }
-        return creditresponse;
+        return ObjectToXML(creditresponse);
     }
 
     @WebMethod(operationName = "fundtransferAdvice_dd")
-    public FTAdviceDebitResponse fundtransferAdvice_dd(@WebParam(name = "debitrequest") FTAdviceDebitRequest debitrequest) {
+    public String fundtransferAdvice_dd(@WebParam(name = "debitrequest") String debitrequest) {
         FTAdviceDebitResponse debitresponse = new FTAdviceDebitResponse();
+        
+        Gson gson = new Gson();
 
         try {
-
+             JSONObject object = XML.toJSONObject(debitrequest);       
+//    
+        object = (JSONObject)object.get("FTAdviceDebitResponse");
+//    
+   String json = object.toString();
+     FTAdviceDebitRequest request = (FTAdviceDebitRequest) gson.fromJson(json, FTAdviceDebitRequest.class);
         } catch (Exception d) {
             debitresponse.setResponseCode("12");
         }
-        return debitresponse;
+        return ObjectToXML(debitresponse);
     }
 
     @WebMethod(operationName = "amountblock")
-    public AmountBlockResponse amountblock(@WebParam(name = "amountblockrequest") AmountBlockRequest amountblockrequest) {
+    public String amountblock(@WebParam(name = "amountblockrequest") String amountblockrequest) {
         AmountBlockResponse amountblockresponse = new AmountBlockResponse();
+        Gson gson = new Gson();
 
         try {
-
+             JSONObject object = XML.toJSONObject(amountblockrequest);       
+//    
+        object = (JSONObject)object.get("AmountBlockResponse");
+//    
+   String json = object.toString();
+     AmountBlockRequest request = (AmountBlockRequest) gson.fromJson(json, AmountBlockRequest.class);
         } catch (Exception d) {
             amountblockresponse.setResponseCode("12");
         }
-        return amountblockresponse;
+        return ObjectToXML(amountblockresponse);
     }
 
     @WebMethod(operationName = "amountunblock")
-    public AmountUnblockResponse amountunblock(@WebParam(name = "amountunblockrequest") AmountUnblockRequest amountunblockrequest) {
+    public String amountunblock(@WebParam(name = "amountunblockrequest") String amountunblockrequest) {
         AmountUnblockResponse amountunblockresponse = new AmountUnblockResponse();
+        Gson gson = new Gson();
 
         try {
-
+             JSONObject object = XML.toJSONObject(amountunblockrequest);       
+//    
+        object = (JSONObject)object.get("AmountUnblockResponse");
+//    
+   String json = object.toString();
+     AmountUnblockRequest request = (AmountUnblockRequest) gson.fromJson(json, AmountUnblockRequest.class);
         } catch (Exception d) {
             amountunblockresponse.setResponseCode("12");
         }
-        return amountunblockresponse;
+        return ObjectToXML(amountunblockresponse);
     }
     
     @WebMethod(operationName = "accountblock")
