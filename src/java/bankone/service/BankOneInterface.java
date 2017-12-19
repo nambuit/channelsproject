@@ -27,6 +27,8 @@ import static logger.MainWatch.watchDirectoryPath;
 import logger.WebServiceLogger;
 import org.apache.log4j.Level;
 import org.t24.AppParams;
+import org.t24.T24Link;
+import org.t24.T24TAFJLink;
 
 /**
  *
@@ -35,10 +37,10 @@ import org.t24.AppParams;
 @WebService(serviceName = "BankOneInterface")
 public class BankOneInterface
 {
-     AppParams options;
-     Thread watcherthread = new Thread();
-     T24TAFCLink t24;       
-    
+    Thread watcherthread = new Thread();
+     AppParams options;  
+     T24Link t24;       
+     String logfilename = "BankOneInterface";
        
      
     
@@ -48,26 +50,18 @@ public class BankOneInterface
 {
     try
     {
-
-    //    ServletContext se = getServletContext();
-        // PropertyConfigurator.configure("PrimeraGateway.properties");
-
-        //  logger.error("Test Error");
+ 
         options = new AppParams();
-        t24 = new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource());
-
-       
-       
-
-       // servicelogger.LogInfo("Initialized Successfully",Level.INFO);
-      //  isologger = new WebServiceLogger(LogDir,"atm_monitor");
+        
+        
+        
+        t24 = "TAFJ".equals(options.getT24Framework().trim().toUpperCase())? new T24TAFJLink():
+              new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource()); 
         
     }
     catch (Exception e)
-    {
-       
-        
-        this.getServiceLogger("service_monitor").LogError(e.getMessage(), e, Level.FATAL);
+    {   
+        options.getServiceLogger(logfilename).LogError(e.getMessage(), e, Level.FATAL);
     }
 }
 
@@ -143,7 +137,7 @@ List<String> dataheaders = data.get(0);
        }
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
           AccountDetails details = new AccountDetails();
 details.setIsSuccessful(false);
           details.setMessage(d.getMessage());
@@ -210,7 +204,7 @@ List<String> dataheaders = data.get(0);
       
         }
         catch(Exception d){
-           this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+           options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
           details.setIsSuccessful(false);
           details.setMessage(d.getMessage());
         }
@@ -251,7 +245,7 @@ ledgerbalance = ledgerbalance.trim().isEmpty() ? "0.00" : ledgerbalance;
         balance.setIsSuccessful(true);
         }
         catch(Exception d){
-          this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+         options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
           balance.setIsSuccessful(false);
           balance.setMessage(d.getMessage());
         }
@@ -297,7 +291,7 @@ cust.setAddressLine1(street+" "+address);
         cust.setIsSuccessful(true);
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
            cust.setIsSuccessful(false);
           cust.setMessage(d.getMessage());
         }
@@ -336,7 +330,7 @@ passport.setPhoto(fileContent);
         passport.setIsSuccessful(true);
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
            passport.setIsSuccessful(false);
           passport.setMessage(d.getMessage());
            
@@ -378,7 +372,7 @@ signature.setSignature(fileContent);
         signature.setIsSuccessful(true);
         }
         catch(Exception d){
-           this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+           options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
           signature.setIsSuccessful(false);
           signature.setMessage(d.getMessage());
         }
@@ -453,7 +447,7 @@ List<String> dataheaders = data.get(0);
        }
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
             AccountDetails details = new AccountDetails();
 details.setIsSuccessful(false);
           details.setMessage(d.getMessage());
@@ -502,7 +496,7 @@ txn.setAmount(result.get(i).get(headers.indexOf("Amount Lccy")).replace("\"", ""
        }
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
          Transaction txn = new Transaction();
 txn.setIsSuccessful(false);
           txn.setMessage(d.getMessage());
@@ -535,8 +529,8 @@ String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() 
 param.setCredentials(credentials);
            param.setOperation("AC.LOCKED.EVENTS");
            param.setTransaction_id("");
-           String[] options = new String[] { "", "I", "PROCESS", "", "0" };
-param.setOptions(options);
+           String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+param.setOptions(ofsoptions);
            
            List<DataItem> items = new LinkedList<>();
 DataItem item = new DataItem();
@@ -591,7 +585,7 @@ String result = t24.PostMsg(ofstr);
           
         }
         catch(Exception d){
-         this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR);    
+         options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR);    
          details.setReferenceNo("");
          details.setIsSuccessful(false);
          details.setMessage(d.getMessage());
@@ -611,8 +605,8 @@ String[] credentials = new String[] { options.getOfsuser(), options.getOfspass()
 param.setCredentials(credentials);
            param.setOperation("AC.LOCKED.EVENTS");
            param.setTransaction_id(details.getReferenceNo());
-           String[] options = new String[] { "", "R", "PROCESS", "", "0" };
-param.setOptions(options);
+           String[] ofsoptions = new String[] { "", "R", "PROCESS", "", "0" };
+param.setOptions(ofsoptions);
            
            List<DataItem> items = new LinkedList<>();
 DataItem item = new DataItem();
@@ -643,7 +637,7 @@ String result = t24.PostMsg(ofstr);
          
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
                 details.setReferenceNo("");
          details.setIsSuccessful(false);
          details.setMessage(d.getMessage()); 
@@ -664,8 +658,8 @@ String[] credentials = new String[] { options.getOfsuser(), options.getOfspass()
 param.setCredentials(credentials);
            param.setOperation("CUSTOMER");
            param.setTransaction_id(CustomerID);
-           String[] options = new String[] { "", "I", "PROCESS", "", "0" };
-param.setOptions(options);
+           String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+param.setOptions(ofsoptions);
            
            List<DataItem> items = new LinkedList<>();
 DataItem item = new DataItem();
@@ -696,7 +690,7 @@ String result = t24.PostMsg(ofstr);
          
         }
         catch(Exception d){
-           this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+           options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
          details.setIsSuccessful(false);
          details.setMessage(d.getMessage()); 
         }
@@ -742,7 +736,7 @@ txn.setInstitutionCode(InstitutionCode);
        
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
         Product txn = new Product();
 txn.setIsSuccessful(false);
           txn.setMessage(d.getMessage());
@@ -753,10 +747,7 @@ txn.setIsSuccessful(false);
 
 
 
-private WebServiceLogger getServiceLogger(String filename){
-    
-    return new WebServiceLogger(options.getLogDir(),filename);
-}
+
 
 
 
@@ -795,7 +786,7 @@ private WebServiceLogger getServiceLogger(String filename){
 
         }
         catch(Exception d){
-            this.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
+            options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
            message.setIsSuccessful(false);
           message.setErrorMessgae(d.getMessage());
         }

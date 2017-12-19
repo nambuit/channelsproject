@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.t24;
 
 import com.jbase.jremote.JConnection;
@@ -28,7 +24,7 @@ import javax.imageio.ImageIO;
  *
  * @author Temitope
  */
-public class T24TAFCLink {
+public class T24TAFCLink implements T24Link {
     private String host; int port;
     private JConnection ctx;
     private T24Connection cfx;
@@ -42,6 +38,7 @@ public class T24TAFCLink {
     
     
     
+    @Override
        public String PostMsg(String sOFS) throws Exception {
 
         try {
@@ -68,29 +65,9 @@ public class T24TAFCLink {
     
        
        
-              public String PostMsg(String sOFS, String OfsSource) throws Exception {
-        String resp = null;
-        Properties props;
-       T24DefaultConnectionFactory connectionFactory = new T24DefaultConnectionFactory();
-        connectionFactory.setPort(port);
-        connectionFactory.setHost(host);
-        props = new Properties();
-        props.setProperty("env.OFS_SOURCE", OfsSource);//"GCS");//
-        connectionFactory.setConnectionProperties(props);
-        try {
-            T24Connection t24Connection = connectionFactory.getConnection();
-            //String req = "OFS";
-			//main line for ofs 
-            resp = t24Connection.processOfsRequest(sOFS);
-            t24Connection.close();
-        } catch (T24Exception ex) {
-              throw (ex);
-        }
-        return resp;
-    }
+ 
        
-       
-       
+       @Override
        public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters) throws Exception{
           ArrayList<List<String>> records  = new ArrayList<>();
            
@@ -187,6 +164,7 @@ public class T24TAFCLink {
            
     }
      
+    @Override
   public String generateOFSTransactString(ofsParam param)
         {
             StringBuilder output = new StringBuilder();
@@ -225,6 +203,7 @@ public class T24TAFCLink {
         }
    
   
+    @Override
   public Boolean IsSuccessful(String ofsresposne){
       
       try{

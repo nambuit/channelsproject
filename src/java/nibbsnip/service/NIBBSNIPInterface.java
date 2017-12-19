@@ -12,10 +12,13 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import org.apache.log4j.Level;
 import org.json.JSONObject;
 import org.json.XML;
 import org.t24.AppParams;
+import org.t24.T24Link;
 import org.t24.T24TAFCLink;
+import org.t24.T24TAFJLink;
 
 /**
  *
@@ -23,12 +26,30 @@ import org.t24.T24TAFCLink;
  */
 @WebService(serviceName = "NIBBSNIPInterface")
 public class NIBBSNIPInterface {
-    AppParams options;
-    T24TAFCLink t24;
+    AppParams options;  
+     T24Link t24;       
+     String logfilename = "NIBBSNIPInterface";
+       
     
     
     public NIBBSNIPInterface(){
+   try
+    {
+ 
+        options = new AppParams();
         
+        
+        
+        t24 = "TAFJ".equals(options.getT24Framework().trim().toUpperCase())? new T24TAFJLink():
+              new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource()); 
+        
+    }
+    catch (Exception e)
+    {   
+        options.getServiceLogger(logfilename).LogError(e.getMessage(), e, Level.FATAL);
+    }
+            
+            
     }
 
      @WebMethod(operationName = "nameenquirysingleitem")

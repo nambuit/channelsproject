@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.t24;
 
 import com.temenos.tafj.services.OFSService;
@@ -16,10 +12,11 @@ import java.util.List;
  *
  * @author Temitope
  */
-public class T24TAFJLink {
+public class T24TAFJLink implements T24Link {
  
     
     
+          @Override
           public String PostMsg(String sOFS) throws Exception {
 
         try {
@@ -36,6 +33,7 @@ public class T24TAFJLink {
     }
     
           
+          @Override
     public Boolean IsSuccessful(String ofsresposne){
       
       try{
