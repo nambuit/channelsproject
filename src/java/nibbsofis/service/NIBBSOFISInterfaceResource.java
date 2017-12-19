@@ -20,8 +20,13 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.apache.log4j.Level;
 import org.json.JSONObject;
 import org.json.XML;
+import org.t24.AppParams;
+import org.t24.T24Link;
+import org.t24.T24TAFCLink;
+import org.t24.T24TAFJLink;
 import org.xml.sax.InputSource;
 
 /**
@@ -31,14 +36,34 @@ import org.xml.sax.InputSource;
  */
 @Path("NIBBSOFISInterface")
 public class NIBBSOFISInterfaceResource {
-
-    @Context
+    AppParams options;  
+     T24Link t24;       
+     String logfilename = "NIBBSOFISInterfaceResource";
+   
+     @Context
     private UriInfo context;
 
     /**
      * Creates a new instance of NIBBSOFISInterfaceResource
      */
     public NIBBSOFISInterfaceResource() {
+        
+            try
+    {
+ 
+        options = new AppParams();
+        
+        
+        
+        t24 = "TAFJ".equals(options.getT24Framework().trim().toUpperCase())? new T24TAFJLink():
+              new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource()); 
+        
+    }
+    catch (Exception e)
+    {   
+        options.getServiceLogger(logfilename).LogError(e.getMessage(), e, Level.FATAL);
+    }
+        
     }
 
     /**

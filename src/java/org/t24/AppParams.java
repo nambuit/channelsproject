@@ -6,6 +6,7 @@
 package org.t24;
 
 import javax.naming.InitialContext;
+import logger.WebServiceLogger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,7 @@ public class AppParams {
     private String Host;
     private int port;
     private String OFSsource;
+    private String T24Framework;
     
     
     
@@ -45,6 +47,7 @@ public class AppParams {
         ISOofsSource = (String)ctx.lookup("ISO_OFSsource");
         LogDir = (String)ctx.lookup("LogDir");
          listeningDir = (String)ctx.lookup("ISOLogListenerDir");
+          T24Framework = (String)ctx.lookup("T24Framework");
         
     }
     catch (Exception e)
@@ -55,7 +58,10 @@ public class AppParams {
     
 }
  
-
+public WebServiceLogger getServiceLogger(String filename){
+    
+    return new WebServiceLogger(LogDir,filename);
+}
     
       
 }
