@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package bankone.service;
+package org.t24;
 
 import com.jbase.jremote.JConnection;
 import com.jbase.jremote.JDynArray;
@@ -28,13 +28,13 @@ import javax.imageio.ImageIO;
  *
  * @author Temitope
  */
-public class T24Link {
+public class T24TAFCLink {
     private String host; int port;
     private JConnection ctx;
     private T24Connection cfx;
     private String OFSsource;
     
-    public T24Link(String Host, int Port,String ofSsouurce){
+    public T24TAFCLink(String Host, int Port,String ofSsouurce){
        this.host = Host;
        this.port = Port;
        this.OFSsource = ofSsouurce;

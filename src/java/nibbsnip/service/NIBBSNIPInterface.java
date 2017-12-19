@@ -7,17 +7,15 @@ package nibbsnip.service;
 
 import com.google.gson.Gson;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import static jdk.nashorn.tools.ShellFunctions.input;
-import nibbsofis.service.AirTimeTopupNotificationRequest;
 import org.json.JSONObject;
 import org.json.XML;
+import org.t24.AppParams;
+import org.t24.T24TAFCLink;
 
 /**
  *
@@ -25,6 +23,13 @@ import org.json.XML;
  */
 @WebService(serviceName = "NIBBSNIPInterface")
 public class NIBBSNIPInterface {
+    AppParams options;
+    T24TAFCLink t24;
+    
+    
+    public NIBBSNIPInterface(){
+        
+    }
 
      @WebMethod(operationName = "nameenquirysingleitem")
     public String nameenquirysingleitem(@WebParam(name = "nesinglerequest") String input) {
@@ -36,7 +41,7 @@ public class NIBBSNIPInterface {
             
            
           
-             JSONObject object = XML.toJSONObject(input);       
+        JSONObject object = XML.toJSONObject(input);       
 
         object = (JSONObject)object.get("NESingleRequest");
 //    

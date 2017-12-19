@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package bankone.service;
+package org.t24;
 
+import bankone.service.DataItem;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

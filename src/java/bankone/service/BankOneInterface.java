@@ -6,6 +6,8 @@
  */
 package bankone.service;
 
+import org.t24.ofsParam;
+import org.t24.T24TAFCLink;
 import java.io.File;
 import java.lang.Thread.State;
 import java.math.BigDecimal;
@@ -18,13 +20,13 @@ import java.util.List;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import javax.naming.InitialContext;
 import logger.FileLoggerHandler;
 
 
 import static logger.MainWatch.watchDirectoryPath;
 import logger.WebServiceLogger;
 import org.apache.log4j.Level;
+import org.t24.AppParams;
 
 /**
  *
@@ -33,15 +35,9 @@ import org.apache.log4j.Level;
 @WebService(serviceName = "BankOneInterface")
 public class BankOneInterface
 {
-    private T24Link t24;
-    private String Ofsuser;
-    private String Ofspass;
-    private String ImageBase;
-    private String ISOofsSource;
-    private String LogDir;
-    private String listeningDir;
+     AppParams options;
      Thread watcherthread = new Thread();
-            
+     T24TAFCLink t24;       
     
        
      
@@ -57,17 +53,9 @@ public class BankOneInterface
         // PropertyConfigurator.configure("PrimeraGateway.properties");
 
         //  logger.error("Test Error");
-        javax.naming.Context ctx = (javax.naming.Context)new InitialContext().lookup("java:comp/env");
-        String Host = (String)ctx.lookup("HOST");
-        int port = Integer.parseInt((String)ctx.lookup("PORT"));
-        String OFSsource = (String)ctx.lookup("OFSsource");
-        Ofsuser = (String)ctx.lookup("OFSuser");
-        Ofspass = (String)ctx.lookup("OFSpass");
-        ImageBase = (String)ctx.lookup("ImageBase");
-        t24 = new T24Link(Host, port, OFSsource);
-        ISOofsSource = (String)ctx.lookup("ISO_OFSsource");
-        LogDir = (String)ctx.lookup("LogDir");
-         listeningDir = (String)ctx.lookup("ISOLogListenerDir");
+        options = new AppParams();
+        t24 = new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource());
+
        
        
 
@@ -93,7 +81,7 @@ public class BankOneInterface
            
         //   Gson gson = new Gson(); 
 
-         ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA", Ofsuser, Ofspass, "CUSTOMER:EQ=" + CustID);
+         ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA", options.getOfsuser(), options.getOfspass(), "CUSTOMER:EQ=" + CustID);
 
 List<String> headers = result.get(0);
            
@@ -127,7 +115,7 @@ status = status.trim().isEmpty()?"ACTIVE":"CLOSED";
             
            String officer = result.get(i).get(headers.indexOf("Account Officer")).replace("\"", "").trim();
 
-ArrayList<List<String>> data = t24.getOfsData("%USER", Ofsuser, Ofspass, "DEPARTMENT.CODE:EQ=" + officer.trim());
+ArrayList<List<String>> data = t24.getOfsData("%USER", options.getOfsuser(), options.getOfspass(), "DEPARTMENT.CODE:EQ=" + officer.trim());
 
 List<String> dataheaders = data.get(0);
            
@@ -174,7 +162,7 @@ details.setIsSuccessful(false);
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
            
         //   Gson gson = new Gson(); 
-           ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA", Ofsuser, Ofspass, "@ID:EQ=" + acctNo.trim());
+           ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + acctNo.trim());
 List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -203,7 +191,7 @@ status = status.trim().isEmpty()?"ACTIVE":"CLOSED";
               
                 String officer = result.get(1).get(headers.indexOf("Account Officer")).replace("\"", "").trim();
 
-ArrayList<List<String>> data = t24.getOfsData("%USER", Ofsuser, Ofspass, "DEPARTMENT.CODE:EQ=" + officer.trim());
+ArrayList<List<String>> data = t24.getOfsData("%USER",options.getOfsuser(), options.getOfspass(), "DEPARTMENT.CODE:EQ=" + officer.trim());
 
 List<String> dataheaders = data.get(0);
            
@@ -238,7 +226,7 @@ List<String> dataheaders = data.get(0);
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
            
          //  Gson gson = new Gson(); 
-           ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA", Ofsuser, Ofspass, "@ID:EQ=" + acctNo.trim());
+           ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + acctNo.trim());
 List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -279,7 +267,7 @@ ledgerbalance = ledgerbalance.trim().isEmpty() ? "0.00" : ledgerbalance;
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
            
           // Gson gson = new Gson(); 
-           ArrayList<List<String>> result = t24.getOfsData("%CUSTOMER$PRIMERA", Ofsuser, Ofspass, "@ID:EQ=" + CustomerID.trim());
+           ArrayList<List<String>> result = t24.getOfsData("%CUSTOMER$PRIMERA",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + CustomerID.trim());
 List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -339,7 +327,7 @@ cust.setAddressLine1(street+" "+address);
 //     }
 //     path = path.replace("/", "\\");
 //     String filepath = ImageBase+path+file;
-    String filepath = ImageBase + "\\Photo\\" + CustomerID.trim() + ".png";
+    String filepath = options.getImageBase() + "\\Photo\\" + CustomerID.trim() + ".png";
 File fi = new File(filepath);
 byte[] fileContent = Files.readAllBytes(fi.toPath());
 passport.setPhoto(fileContent);
@@ -379,7 +367,7 @@ passport.setPhoto(fileContent);
 //     }
 //     path = path.replace("/", "\\");
 
-     String filepath = ImageBase + "\\Signature\\" + CustomerID.trim() + ".png";
+     String filepath = options.getImageBase() + "\\Signature\\" + CustomerID.trim() + ".png";
 
 File fi = new File(filepath);
 byte[] fileContent = Files.readAllBytes(fi.toPath());
@@ -408,10 +396,10 @@ signature.setSignature(fileContent);
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
            
          //  Gson gson = new Gson(); 
-           ArrayList<List<String>> result = t24.getOfsData("%CUSTOMER$PRIMERA", Ofsuser, Ofspass, "TEL.MOBILE:EQ=" + PhoneNo.trim());
+           ArrayList<List<String>> result = t24.getOfsData("%CUSTOMER$PRIMERA",options.getOfsuser(), options.getOfspass(), "TEL.MOBILE:EQ=" + PhoneNo.trim());
 List<String> headers = result.get(0);
 String Customer = result.get(1).get(headers.indexOf("Customer No")).replace("\"", "").trim().trim();
-result = t24.getOfsData("ACCOUNTS$PRIMERA",Ofsuser, Ofspass,"CUSTOMER:EQ="+Customer.trim());
+result = t24.getOfsData("ACCOUNTS$PRIMERA",options.getOfsuser(), options.getOfspass(),"CUSTOMER:EQ="+Customer.trim());
            headers = result.get(0);  
            
               if(headers.size()!=result.get(1).size()){
@@ -442,7 +430,7 @@ status = status.trim().isEmpty()?"ACTIVE":"CLOSED";
               
 String officer = result.get(i).get(headers.indexOf("Account Officer")).replace("\"", "").trim();
 
-ArrayList<List<String>> data = t24.getOfsData("%USER", Ofsuser, Ofspass, "DEPARTMENT.CODE:EQ=" + officer.trim());
+ArrayList<List<String>> data = t24.getOfsData("%USER",options.getOfsuser(), options.getOfspass(), "DEPARTMENT.CODE:EQ=" + officer.trim());
 
 List<String> dataheaders = data.get(0);
            
@@ -493,7 +481,7 @@ Startdate = ndf.format(Start);
             
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Office         
            //Gson gson = new Gson(); 
-           ArrayList<List<String>> result = t24.getOfsData("%STMT.ENTRY.PRIMERA", Ofsuser, Ofspass, "ACCOUNT.NUMBER:EQ=" + AccountNo.trim() + ",VALUE.DATE:RG=" + Startdate + " " + Enddate);
+           ArrayList<List<String>> result = t24.getOfsData("%STMT.ENTRY.PRIMERA",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + AccountNo.trim() + ",VALUE.DATE:RG=" + Startdate + " " + Enddate);
 List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -543,7 +531,7 @@ details.setFromDate(ndf.format(Start));
            
            
            ofsParam param = new ofsParam();
-String[] credentials = new String[] { Ofsuser, Ofspass };
+String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
 param.setCredentials(credentials);
            param.setOperation("AC.LOCKED.EVENTS");
            param.setTransaction_id("");
@@ -619,7 +607,7 @@ String result = t24.PostMsg(ofstr);
        try{  
            
            ofsParam param = new ofsParam();
-String[] credentials = new String[] { Ofsuser, Ofspass };
+String[] credentials = new String[] { options.getOfsuser(), options.getOfspass() };
 param.setCredentials(credentials);
            param.setOperation("AC.LOCKED.EVENTS");
            param.setTransaction_id(details.getReferenceNo());
@@ -672,7 +660,7 @@ String result = t24.PostMsg(ofstr);
            
            details.setInstitutionCode(InstitutionCode);
            ofsParam param = new ofsParam();
-String[] credentials = new String[] { Ofsuser, Ofspass };
+String[] credentials = new String[] { options.getOfsuser(), options.getOfspass() };
 param.setCredentials(credentials);
            param.setOperation("CUSTOMER");
            param.setTransaction_id(CustomerID);
@@ -724,7 +712,7 @@ String result = t24.PostMsg(ofstr);
          List<Product> products = new ArrayList<>();
         try{  
 
-           ArrayList<List<String>> result = t24.getOfsData("%CATEGORY", Ofsuser, Ofspass, "@ID:RG=6000 6999");
+           ArrayList<List<String>> result = t24.getOfsData("%CATEGORY",options.getOfsuser(), options.getOfspass(), "@ID:RG=6000 6999");
 List<String> headers = result.get(0);
                       
        for(int i = 1; i<result.size();i++){
@@ -738,7 +726,7 @@ txn.setInstitutionCode(InstitutionCode);
        }
        
        
-       result = t24.getOfsData("%CATEGORY",Ofsuser,Ofspass,"@ID:RG=1001 1999");
+       result = t24.getOfsData("%CATEGORY",options.getOfsuser(), options.getOfspass(),"@ID:RG=1001 1999");
        headers = result.get(0);
                       
        for(int i = 1; i<result.size();i++){
@@ -767,7 +755,7 @@ txn.setIsSuccessful(false);
 
 private WebServiceLogger getServiceLogger(String filename){
     
-    return new WebServiceLogger(LogDir,filename);
+    return new WebServiceLogger(options.getLogDir(),filename);
 }
 
 
@@ -785,7 +773,7 @@ private WebServiceLogger getServiceLogger(String filename){
           public void watchlogdir() {
             
               try{
-                       watchDirectoryPath(new File(listeningDir).toPath(),new FileLoggerHandler(new WebServiceLogger(LogDir,"atm_monitor")));
+                       watchDirectoryPath(new File(options.getListeningDir()).toPath(),new FileLoggerHandler(new WebServiceLogger(options.getLogDir(),"atm_monitor")));
               } catch(Exception v)
               {
                getServiceLogger("service_monitor").LogError(v.getMessage(), v, Level.ERROR); 
@@ -800,7 +788,7 @@ private WebServiceLogger getServiceLogger(String filename){
         
         ISOMessage = ISOMessage.substring(4);
           // Gson gson = new Gson(); 
-           String result = t24.PostMsg(ISOMessage, ISOofsSource);
+           String result = t24.PostMsg(ISOMessage, options.getISOofsSource());
 
         message.setISOMessage(result);
         message.setIsSuccessful(true);
