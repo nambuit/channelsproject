@@ -77,7 +77,7 @@ public class NIBBSNIPInterface {
         catch(Exception e){
         nameEnquiry.setResponseCode("32");
     }
-        return ObjectToXML(nameEnquiry);
+        return options.ObjectToXML(nameEnquiry);
 }
     
       @WebMethod(operationName = "fundtransfersingleitem_dc")
@@ -99,7 +99,7 @@ public class NIBBSNIPInterface {
         catch(Exception e){
         creditRequest.setResponseCode("33");
     }
-        return ObjectToXML(creditRequest);
+        return options.ObjectToXML(creditRequest);
 }
     
       @WebMethod(operationName = "fundtransfersingleitem_dd")
@@ -123,7 +123,7 @@ public class NIBBSNIPInterface {
         catch(Exception e){
         debitRequest.setResponseCode("34");
     }
-        return ObjectToXML(debitRequest);
+        return options.ObjectToXML(debitRequest);
 }
     
         @WebMethod(operationName = "txnstatusquerysingleitem")
@@ -145,7 +145,7 @@ public class NIBBSNIPInterface {
         catch(Exception e){
         txnRequest.setResponseCode("34");
     }
-        return ObjectToXML(txnRequest);
+        return options.ObjectToXML(txnRequest);
     }
 
     @WebMethod(operationName = "balanceenquiry")
@@ -164,7 +164,7 @@ public class NIBBSNIPInterface {
         } catch (Exception d) {
             accountbalance.setResponseCode("12");
         }
-        return ObjectToXML(accountbalance);
+        return options.ObjectToXML(accountbalance);
     }
 
     @WebMethod(operationName = "fundtransferAdvice_dc")
@@ -182,7 +182,7 @@ public class NIBBSNIPInterface {
         } catch (Exception d) {
             creditresponse.setResponseCode("12");
         }
-        return ObjectToXML(creditresponse);
+        return options.ObjectToXML(creditresponse);
     }
 
     @WebMethod(operationName = "fundtransferAdvice_dd")
@@ -201,7 +201,7 @@ public class NIBBSNIPInterface {
         } catch (Exception d) {
             debitresponse.setResponseCode("12");
         }
-        return ObjectToXML(debitresponse);
+        return options.ObjectToXML(debitresponse);
     }
 
     @WebMethod(operationName = "amountblock")
@@ -219,7 +219,7 @@ public class NIBBSNIPInterface {
         } catch (Exception d) {
             amountblockresponse.setResponseCode("12");
         }
-        return ObjectToXML(amountblockresponse);
+        return options.ObjectToXML(amountblockresponse);
     }
 
     @WebMethod(operationName = "amountunblock")
@@ -237,7 +237,7 @@ public class NIBBSNIPInterface {
         } catch (Exception d) {
             amountunblockresponse.setResponseCode("12");
         }
-        return ObjectToXML(amountunblockresponse);
+        return options.ObjectToXML(amountunblockresponse);
     }
     
     @WebMethod(operationName = "accountblock")
@@ -255,7 +255,7 @@ public class NIBBSNIPInterface {
         }catch(Exception d){
             AccBlockReq.setResponseCode("32");
         }
-        return ObjectToXML(AccBlockReq);
+        return options.ObjectToXML(AccBlockReq);
     }
     
     @WebMethod(operationName = "accountunblock")
@@ -272,7 +272,7 @@ public class NIBBSNIPInterface {
         }catch(Exception d){
             AccountUnblockOut.setResponseCode("32");
         }
-        return ObjectToXML(AccountUnblockOut);
+        return options.ObjectToXML(AccountUnblockOut);
     }
     
     @WebMethod(operationName = "financialinstitutionlist")
@@ -287,7 +287,7 @@ public class NIBBSNIPInterface {
         }catch(Exception d){
             FinancialInstitutionListOut.setResponseCode("32");
         }
-        return ObjectToXML(FinancialInstitutionListOut);
+        return options.ObjectToXML(FinancialInstitutionListOut);
     }
     
     @WebMethod(operationName = "mandateadvice")
@@ -302,26 +302,11 @@ public class NIBBSNIPInterface {
         }catch(Exception d){
             MandateAdviceOut.setResponseCode("32");
         }
-        return ObjectToXML(MandateAdviceOut);
+        return options.ObjectToXML(MandateAdviceOut);
 
     }
     
-    
-       private String ObjectToXML(Object object){
-       try{
-    JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
-    Marshaller m = jcontext.createMarshaller();
-    m.setProperty(Marshaller.JAXB_ENCODING, Boolean.TRUE);
-    StringWriter sw = new StringWriter();
-    m.marshal(object, sw);
-    return sw.toString();
-       }
-       catch(Exception y){
-           return(y.getMessage());
-       }
 
-
-}
        
 }
 

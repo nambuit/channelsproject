@@ -5,7 +5,6 @@
  */
 package org.t24;
 
-import bankone.service.DataItem;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

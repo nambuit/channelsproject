@@ -86,14 +86,14 @@ public class NIBBSOFISInterfaceResource {
 //        object = (JSONObject)object.get("FundTransferNotificationRequest");
 ////    
 //   String json = object.toString();
-     FundTransferNotificationRequest request = (FundTransferNotificationRequest)XMLToObject(input,new FundTransferNotificationRequest()); 
+     FundTransferNotificationRequest request = (FundTransferNotificationRequest)options.XMLToObject(input,new FundTransferNotificationRequest()); 
 ///gson.fromJson(json, FundTransferNotificationRequest.class);
   
         response.setOFICode(request.getOFICode());
         response.setResponseCode("00");
         response.setResponseDescription("dffdd");
         response.setSessionID(request.getSessionID());
-         return ObjectToXML(response);
+         return options.ObjectToXML(response);
 }
   
         catch(Exception d){
@@ -128,7 +128,7 @@ public class NIBBSOFISInterfaceResource {
         response.setResponseCode("00");
         response.setResponseDescription("dffdd");
         response.setSessionID(request.getSessionID());
-         return ObjectToXML(response);
+         return options.ObjectToXML(response);
 }
   
         catch(Exception d){
@@ -163,7 +163,7 @@ public class NIBBSOFISInterfaceResource {
         response.setResponseCode("00");
         response.setResponseDescription("dffdd");
         response.setSessionID(request.getSessionID());
-         return ObjectToXML(response);
+         return options.ObjectToXML(response);
 }
   
         catch(Exception d){
@@ -177,36 +177,5 @@ public class NIBBSOFISInterfaceResource {
     
 
     
-    private String ObjectToXML(Object object) throws Exception{
-       try{
-    JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
-    Marshaller m = jcontext.createMarshaller();
-    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-    StringWriter sw = new StringWriter();
-    m.marshal(object, sw);
-    return sw.toString();
-       }
-       catch(Exception y){
-           throw (y);
-       }
-}
-    
- 
-    
-       private Object XMLToObject (String xml, Object object) throws Exception{
-       try{
-    JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
-    Unmarshaller um = jcontext.createUnmarshaller();
-   // um.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-    InputSource source = new InputSource(new StringReader(xml));
-  
-      return um.unmarshal(source);
    
-       }
-       catch(Exception y){
-           throw (y);
-       }
-}
-    
-      
 }

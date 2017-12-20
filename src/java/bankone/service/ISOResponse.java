@@ -6,6 +6,7 @@
 
 package bankone.service;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import lombok.Setter;
  * @author Temitope
  */
 @Getter @Setter 
+@XmlRootElement
 public class ISOResponse {
     
     private Boolean  IsSuccessful;
