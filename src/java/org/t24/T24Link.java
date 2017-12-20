@@ -22,4 +22,6 @@ public interface T24Link  {
     
     public String PostMsg(String sOFS)throws Exception;
     
+   public String PostMsg(String sOFS, String ofssource) throws Exception;
+    
 }

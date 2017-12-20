@@ -1,12 +1,12 @@
 
 package org.t24;
 
-import com.temenos.tafj.services.OFSService;
-import com.temenos.tafj.services.OFSServicePortType;
-import com.temenos.tafj.services.xsd.ServiceResponse;
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 /**
  *
@@ -33,6 +33,20 @@ public class T24TAFJLink implements T24Link {
     }
     
           
+           @Override
+           public String PostMsg(String sOFS, String ofssource) throws Exception {
+
+        try {
+         String resp = "";
+       
+            return resp;
+        } catch (Exception ex) {
+
+          throw (ex);
+        }   
+    }
+          
+          
           @Override
     public Boolean IsSuccessful(String ofsresposne){
       
@@ -45,6 +59,7 @@ public class T24TAFJLink implements T24Link {
   }
            
            
+          @Override
            public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters) throws Exception{
           ArrayList<List<String>> records  = new ArrayList<>();
            
@@ -79,7 +94,7 @@ public class T24TAFJLink implements T24Link {
      }
        }
     
-           
+           @Override
             public String generateOFSTransactString(ofsParam param)
         {
             StringBuilder output = new StringBuilder();
