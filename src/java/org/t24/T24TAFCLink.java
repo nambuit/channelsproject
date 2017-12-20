@@ -62,7 +62,29 @@ public class T24TAFCLink implements T24Link {
         }   
     }
     
-    
+           @Override
+           public String PostMsg(String sOFS, String ofssource) throws Exception {
+
+        try {
+         String resp;
+        Properties props;
+       T24DefaultConnectionFactory connectionFactory = new T24DefaultConnectionFactory();
+        connectionFactory.setPort(port);
+        connectionFactory.setHost(host);
+        props = new Properties();
+        props.setProperty("env.OFS_SOURCE", ofssource);//"GCS");//
+        connectionFactory.setConnectionProperties(props);
+            T24Connection t24Connection = connectionFactory.getConnection();
+            //String req = "OFS";
+			//main line for ofs 
+            resp = t24Connection.processOfsRequest(sOFS);
+            t24Connection.close();
+            return resp;
+        } catch (T24Exception ex) {
+
+          throw (ex);
+        }   
+    }
        
        
  

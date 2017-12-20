@@ -311,7 +311,7 @@ public class NIBBSNIPInterface {
        try{
     JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
     Marshaller m = jcontext.createMarshaller();
-    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    m.setProperty(Marshaller.JAXB_ENCODING, Boolean.TRUE);
     StringWriter sw = new StringWriter();
     m.marshal(object, sw);
     return sw.toString();
