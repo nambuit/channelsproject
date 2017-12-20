@@ -4,22 +4,44 @@
  * and open the template in the editor.
  */
 package nibbsnip.service;
-import java.math.BigDecimal;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 /**
  *
  * @author chijiokennamani
  */
+
+
 @Getter @Setter 
+@XmlRootElement(name = "AccountUnblockRequest")
 public class AccountUnblockRequest {
-    private String SessionID;
-    private String DestinationInstitutionCode;
-    private Integer ChannelCode;
-    private String ReferenceCode;
-    private String TargetAccountName;
-    private String TargetBankVerificationNumber;
-    private String TargetAccountNumber;
-    private String ReasonCode;
-    private String Narration;
+    
+  @XmlElement(name = "SessionID")
+  private String SessionID;
+  
+  @XmlElement(name = "DestinationInstitutionCode") 
+  private String DestinationInstitutionCode;
+  
+  @XmlElement(name = "ChannelCode") 
+  private Integer ChannelCode;
+  
+   @XmlElement(name = "ReferenceCode")  
+   private String ReferenceCode;
+   
+   @XmlElement(name = "TargetAccountName") 
+   private String TargetAccountName;
+   
+   @XmlElement(name = "TargetBankVerificationNumber") 
+   private String TargetBankVerificationNumber;
+     
+   @XmlElement(name = "TargetAccountNumber") 
+   private String TargetAccountNumber;
+  
+   @XmlElement(name = "ReasonCode")  
+   private String ReasonCode;
+ 
+   @XmlElement(name = "Narration")  
+   private String Narration;
 }

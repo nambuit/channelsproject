@@ -6,6 +6,7 @@
  */
 package bankone.service;
 
+import org.t24.DataItem;
 import org.t24.ofsParam;
 import org.t24.T24TAFCLink;
 import java.io.File;

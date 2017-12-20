@@ -5,10 +5,22 @@
  */
 package org.t24;
 
+import bankone.service.ISOResponse;
+import com.sun.xml.bind.StringInputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import javax.naming.InitialContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 import logger.WebServiceLogger;
 import lombok.Getter;
 import lombok.Setter;
+import nibbsnip.service.AccountUnblockRequest;
+import org.apache.log4j.Level;
+
 
 
 /**
@@ -63,5 +75,77 @@ public WebServiceLogger getServiceLogger(String filename){
     return new WebServiceLogger(LogDir,filename);
 }
     
+       public Object XMLToObject (String xml, Object object) throws Exception{
+       try{
+    JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
+    Unmarshaller um = jcontext.createUnmarshaller();
+
+      return um.unmarshal(new StringInputStream(xml));
+   
+       }
+       catch(Exception y){
+           throw (y);
+       }
+}
+       
+    public String ObjectToXML(Object object){
+       try{
+    JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
+    Marshaller m = jcontext.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+    StringWriter sw = new StringWriter();
+    
+    m.marshal(object, sw);
+    
+    return sw.toString();
+       }
+       catch(Exception y){
+          getServiceLogger("XMLConversion").LogError(y.getMessage(), y, Level.FATAL);
+          return "";
+       }
       
+}
+    
+    
+
+
+    
+//    public static void main(String [] args){
+//        
+//   //   ISOResponse sd = new ISOResponse();
+//     AppParams param = new AppParams();
+////        sd.setErrorMessgae("");
+////        sd.setISOMessage("xfsss");
+////        sd.setIsSuccessful(Boolean.TRUE);
+////        
+////        String xml = param.ObjectToXML(sd);
+//        
+//        try{
+//            
+//            String sed = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+//"<AccountUnblockRequest>\n" +
+//"<SessionID>000001100913103301000000000001</SessionID>\n" +
+//"<DestinationInstitutionCode>000002</DestinationInstitutionCode>\n" +
+//"<ChannelCode>7</ChannelCode>\n" +
+//"<ReferenceCode>xxxxxxxxxxxxxxx</ReferenceCode>\n" +
+//"<TargetAccountName>Ajibade Oluwasegun</TargetAccountName>\n" +
+//"<TargetBankVerificationNumber>1033000442</TargetBankVerificationNumber>\n" +
+//"<TargetAccountNumber>2222002345</TargetAccountNumber>\n" +
+//"<ReasonCode>0001</ReasonCode>\n" +
+//"<Narration>Transfer from 000002 to 0YY</Narration>\n" +
+//"</AccountUnblockRequest>";
+//            
+//        AccountUnblockRequest ds = (AccountUnblockRequest) param.XMLToObject(sed, new AccountUnblockRequest());
+//        String sss = param.ObjectToXML(ds);
+//       ds =  (AccountUnblockRequest) param.XMLToObject(sss, new AccountUnblockRequest());
+//        ds.getChannelCode();
+//        }
+//        catch(Exception d){
+//           System.out.println(d.getMessage());
+//        }
+//        
+//    }
+//    
+    
+    
 }
