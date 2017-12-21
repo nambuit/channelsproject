@@ -6,6 +6,7 @@
 package nibbsnip.service;
 
 import java.math.BigDecimal;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,25 +16,60 @@ import lombok.Setter;
  * @author wumoru
  */
 @Getter @Setter
-@XmlRootElement
+@XmlRootElement(name = "FTSingleCreditResponse")
 public class FTSingleCreditResponse {
     
-    private String SessionID;
-    private String NameEnquiryRef;
-    private String DestinationInstitutionCode;
-    private String ChannelCode;
-    private String BeneficiaryAccountName;
-    private String BeneficiaryAccountNumber;
-    private String BeneficiaryBankVerificationNumber;
-    private String BeneficiaryKYCLevel;
-    private String OriginatorAccountName;
-    private String OriginatorAccountNumber;
-    private String OriginatorBankVerificationNumber;
-    private String OriginatorKYCLevel;
-    private String TransactionLocation;
-    private String Narration;
-    private String PaymentReference;
-    private BigDecimal Amount;
-    private String ResponseCode;
-    
+    @XmlElement(name = "SessionID")
+   private String SessionID;
+   
+   @XmlElement(name = "NameEnquiryRef")
+   private String NameEnquiryRef;
+   
+   @XmlElement(name = "DestinationInstitutionCode") 
+   private String DestinationInstitutionCode;
+   
+   @XmlElement(name = "ChannelCode")
+   private String ChannelCode;
+   
+   @XmlElement(name = "BeneficiaryAccountName")
+   private String BeneficiaryAccountName;
+   
+   @XmlElement(name = "BeneficiaryAccountNumber")
+   private String BeneficiaryAccountNumber;
+   
+   @XmlElement(name = "BeneficiaryVerificationNumber")
+   private String BeneficiaryVerificationNumber;
+   
+   @XmlElement(name = "BeneficiaryBankVerificationNumber")
+   private String BeneficiaryBankVerificationNumber;
+   
+   @XmlElement(name = "BeneficiaryKYCLevel")
+   private String BeneficiaryKYCLevel;
+   
+   @XmlElement(name = "OriginatorAccountName")
+   private String OriginatorAccountName;
+   
+   @XmlElement(name = "OriginatorAccountNumber")
+   private String OriginatorAccountNumber;
+   
+   @XmlElement(name = "OriginatorBankVerificationNumber")
+   private String OriginatorBankVerificationNumber;
+   
+   @XmlElement(name = "OriginatorKYCLevel")
+   private String OriginatorKYCLevel;
+   
+   @XmlElement(name = "TransactionLocation")
+   private String TransactionLocation;
+   
+   @XmlElement(name = "Narration") 
+   private String Narration;
+   
+   @XmlElement(name = "PaymentReference") 
+   private String PaymentReference;
+   
+   @XmlElement(name = "Amount") 
+   private BigDecimal Amount;
+   
+   @XmlElement(name = "ResponseCode") 
+   private String ResponseCode;
 }

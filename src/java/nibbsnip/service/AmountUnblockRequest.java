@@ -6,6 +6,8 @@
 package nibbsnip.service;
 
 import java.math.BigDecimal;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,15 +16,36 @@ import lombok.Setter;
  * @author OLAMIDE
  */
 @Getter @Setter
+@XmlRootElement(name = "AmountUnblockRequest")
 public class AmountUnblockRequest {
+    
+   @XmlElement(name = "SessionID")
    private String SessionID;
+   
+   @XmlElement(name = "DestinationInstitutionCode")
    private String DestinationInstitutionCode;
+   
+   @XmlElement(name = "ChannelCode")
    private String ChannelCode;
+   
+   @XmlElement(name = "ReferenceCode") 
    private String ReferenceCode;
+   
+   @XmlElement(name = "TargetAccountName")
    private String TargetAccountName;
+   
+   @XmlElement(name = "TargetBankVerificationNumber") 
    private String TargetBankVerificationNumber;
+   
+   @XmlElement(name = "TargetAccountNumber") 
    private String TargetAccountNumber;
+   
+   @XmlElement(name = "ReasonCode") 
    private String ReasonCode;
+   
+   @XmlElement(name = "Narration") 
    private String Narration;
+   
+   @XmlElement(name = "Amount") 
    private BigDecimal Amount;
 }
