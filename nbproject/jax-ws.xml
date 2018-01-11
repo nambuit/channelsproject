@@ -4,9 +4,6 @@
     <service name="BankOneInterface">
       <implementation-class>bankone.service.BankOneInterface</implementation-class>
     </service>
-    <service name="RemittaInterface">
-      <implementation-class>remitta.service.RemittaInterface</implementation-class>
-    </service>
     <service name="NIBBSNIPInterface">
       <implementation-class>nibbsnip.service.NIBBSNIPInterface</implementation-class>
     </service>
