@@ -5,33 +5,15 @@
  */
 package remitta.service;
 
-import java.math.BigDecimal;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
- * @author wumoru
+ * @author Temitope
  */
 @Getter @Setter
-@XmlRootElement(name = "StatementLine")
 public class StatementLine {
     
-    @XmlElement(name = "TransactionDate")
-     private String TransactionDate;
-    
-    @XmlElement(name = "Narration")
-     private String Narration;
-    
-    @XmlElement(name = "Amount")
-     private BigDecimal Amount;
-    
-    @XmlElement(name = "Currency")
-     private String Currency;
-    
-    @XmlElement(name = "CRDR")
-     private String CRDR;
-    
+   
 }

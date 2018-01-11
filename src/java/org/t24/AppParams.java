@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nibbsnip.service.AccountUnblockRequest;
 import org.apache.log4j.Level;
+import org.xml.sax.InputSource;
 
 
 
@@ -80,6 +81,8 @@ public WebServiceLogger getServiceLogger(String filename){
     JAXBContext jcontext = JAXBContext.newInstance(object.getClass());
     Unmarshaller um = jcontext.createUnmarshaller();
 
+    //InputSource source = new InputSource(new StringReader(xml));
+    
       return um.unmarshal(new StringInputStream(xml));
    
        }

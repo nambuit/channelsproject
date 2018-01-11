@@ -30,5 +30,5 @@ public class NameEnquiryResponse {
     private String AccountNumber;
     
     @XmlElement(name = "Signatories")
-    private Signatory[] Signatories;
+     private Signatories Signatories;
 }
