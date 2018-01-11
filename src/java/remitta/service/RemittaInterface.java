@@ -8,6 +8,7 @@ package remitta.service;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import org.t24.AppParams;
 
 /**
  *
@@ -21,6 +22,11 @@ public class RemittaInterface {
      */
     @WebMethod(operationName = "hello")
     public String hello(@WebParam(name = "name") String txt) {
+        
+  
+        
         return "Hello " + txt + " !";
+        
     }
-}
+    
+    

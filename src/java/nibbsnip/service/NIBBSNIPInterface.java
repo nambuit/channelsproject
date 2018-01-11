@@ -6,12 +6,10 @@
 package nibbsnip.service;
 
 import com.google.gson.Gson;
-import java.io.StringWriter;
+import java.math.BigDecimal;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import org.apache.log4j.Level;
 import org.json.JSONObject;
 import org.json.XML;
@@ -151,16 +149,24 @@ public class NIBBSNIPInterface {
     @WebMethod(operationName = "balanceenquiry")
     public String balanceenquiry(@WebParam(name = "balancerequest") String balancerequest) {
         BalanceEnquiryResponse accountbalance = new BalanceEnquiryResponse();
-        Gson gson = new Gson();
+        
 
         try {
-             JSONObject object = XML.toJSONObject(balancerequest);       
-   
-//    
-        object = (JSONObject)object.get("BalanceEnquiryResponse");
-//    
-   String json = object.toString();
-     BalanceEnquiryRequest request = (BalanceEnquiryRequest) gson.fromJson(json, BalanceEnquiryRequest.class);
+       
+     BalanceEnquiryRequest request = (BalanceEnquiryRequest) options.XMLToObject(balancerequest,new BalanceEnquiryRequest());
+     
+    accountbalance.setAuthorizationCode(request.getAuthorizationCode());
+     accountbalance.setAvailableBalance(BigDecimal.valueOf(23345.34));
+      accountbalance.setChannelCode(request.getChannelCode());
+       accountbalance.setAuthorizationCode(request.getAuthorizationCode());
+        accountbalance.setTargetAccountName("Olamide and Co Investment Limited");
+         accountbalance.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+          accountbalance.setSessionID(request.getSessionID());
+           accountbalance.setTargetBankVerificationNumber(request.getTargetBankVerificationNumber());
+            accountbalance.setResponseCode("00");
+             accountbalance.setTargetAccountNumber(request.getTargetAccountNumber());
+            
+     
         } catch (Exception d) {
             accountbalance.setResponseCode("12");
         }
