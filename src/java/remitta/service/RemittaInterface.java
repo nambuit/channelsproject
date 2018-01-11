@@ -9,30 +9,18 @@ import com.google.gson.Gson;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+
 import org.json.JSONObject;
 import org.json.XML;
 import org.t24.AppParams;
 import org.t24.T24Link;
 
+
 /**
  *
  * @author Temitope
  */
-@WebService(serviceName = "RemittaInterface")
-public class RemittaInterface {
-     AppParams options;  
-     T24Link t24;       
-     String logfilename = "NIBBSNIPInterface";
-    /**
-     * This is a sample web service operation
-     */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
-    }
-    
-
-    
+   
         @WebMethod(operationName = "FT01")
     public String FT01(@WebParam(name = "fundstransfer") String fundstransfer) {
         SingleTransferResponse fundstransferresponse = new SingleTransferResponse();
@@ -155,3 +143,4 @@ public class RemittaInterface {
         return options.ObjectToXML(authenticateresponse);
     }
 }
+
