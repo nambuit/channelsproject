@@ -6,12 +6,12 @@
     package remitta.service;
 
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
     import javax.jws.WebMethod;
     import javax.jws.WebParam;
     import org.apache.log4j.Level;
-
-    import org.json.JSONObject;
-    import org.json.XML;
     import org.t24.AppParams;
     import org.t24.T24Link;
     import org.t24.T24TAFCLink;
@@ -84,10 +84,43 @@
         @WebMethod(operationName = "AS01")
         public String AS01(@WebParam(name = "accountstatement") String accountstatement) {
             AccountStatementResponse accountstatementresponse = new AccountStatementResponse();
+       
+            try{       
+        //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
+             AccountStatementRequest request = (AccountStatementRequest) options.XMLToObject(accountstatement,new AccountStatementRequest());
+        //   Gson gson = new Gson(); 
+           ArrayList<List<String>> result = t24.getOfsData("ENQUIRYNAME",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber().trim());
+           List<String> headers = result.get(0);
+           
+              if(headers.size()!=result.get(1).size()){
+               
+               throw new Exception(result.get(1).get(0));
+           }
+          
+              Statement [] a = new Statement[result.size()-1];
+              
+         List<Statement> stmts = new ArrayList<>();
 
-            try {
-
-         AccountStatementRequest request = (AccountStatementRequest) options.XMLToObject(accountstatement,new AccountStatementRequest());
+         
+         
+          for(int i = 1; i<result.size();i++){
+         
+        accountstatementresponse.setResponseCode("00");
+        accountstatementresponse.setResponseText("Transaction Completed");
+        Statement stmt =  new Statement();
+        String Amount = result.get(i).get(headers.indexOf("Amount")).replace("\"", "").trim();
+        stmt.setAmount(BigDecimal.valueOf(Double.parseDouble(Amount))); 
+        stmt.setCRDR(result.get(i).get(headers.indexOf("CrDr")).replace("\"", "").trim());
+        stmt.setNarration(result.get(i).get(headers.indexOf("Narration")).replace("\"", "").trim());
+       stmt.setTransactionDate(result.get(i).get(headers.indexOf("Date")).replace("\"", "").trim());
+        stmt.setCurrency(result.get(i).get(headers.indexOf("Currency")).replace("\"", "").trim());
+        stmts.add(stmt);
+        
+          }
+        
+        accountstatementresponse.setStatementLine(stmts.toArray(a));
+                
+               
             } catch (Exception d) {
                 accountstatementresponse.setResponseCode("12");
             }
