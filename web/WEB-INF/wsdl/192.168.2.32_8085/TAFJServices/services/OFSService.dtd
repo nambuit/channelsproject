@@ -1,0 +1,205 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/OFSService.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE wsdl:definitions SYSTEM "OFSService.dtd">
+
+    <wsdl:definitions>
+    ...
+    </wsdl:definitions>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:definitions (wsdl:types|wsdl:service|wsdl:documentation|wsdl:binding|wsdl:message|wsdl:portType)*>
+<!ATTLIST wsdl:definitions
+    targetNamespace CDATA #IMPLIED
+    xmlns:wsdl CDATA #IMPLIED
+    xmlns:ns CDATA #IMPLIED
+    xmlns:tns CDATA #IMPLIED
+    xmlns:wsaw CDATA #IMPLIED
+    xmlns:ns1 CDATA #IMPLIED
+    xmlns:soap CDATA #IMPLIED
+    xmlns:http CDATA #IMPLIED
+    xmlns:soap12 CDATA #IMPLIED
+    xmlns:xs CDATA #IMPLIED
+    xmlns:mime CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:documentation (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:types (xs:schema)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT xs:schema (xs:element|xs:complexType)*>
+<!ATTLIST xs:schema
+    attributeFormDefault CDATA #IMPLIED
+    elementFormDefault CDATA #IMPLIED
+    targetNamespace CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT xs:element (xs:complexType)*>
+<!ATTLIST xs:element
+    name CDATA #IMPLIED
+    minOccurs CDATA #IMPLIED
+    nillable CDATA #IMPLIED
+    type CDATA #IMPLIED
+    maxOccurs CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT xs:complexType (xs:sequence)*>
+<!ATTLIST xs:complexType
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT xs:sequence (xs:element)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:message (wsdl:part)*>
+<!ATTLIST wsdl:message
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:part EMPTY>
+<!ATTLIST wsdl:part
+    name CDATA #IMPLIED
+    element CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:portType (wsdl:operation)*>
+<!ATTLIST wsdl:portType
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:operation (soap12:operation|wsdl:input|soap:operation|http:operation|wsdl:output)*>
+<!ATTLIST wsdl:operation
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:input (soap12:body|mime:content|soap:body)*>
+<!ATTLIST wsdl:input
+    message CDATA #IMPLIED
+    wsaw:Action CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:output (soap12:body|mime:content|soap:body)*>
+<!ATTLIST wsdl:output
+    message CDATA #IMPLIED
+    wsaw:Action CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:binding (wsdl:operation|soap12:binding|http:binding|soap:binding)*>
+<!ATTLIST wsdl:binding
+    name CDATA #IMPLIED
+    type CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap:binding EMPTY>
+<!ATTLIST soap:binding
+    transport CDATA #IMPLIED
+    style CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap:operation EMPTY>
+<!ATTLIST soap:operation
+    soapAction CDATA #IMPLIED
+    style CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap:body EMPTY>
+<!ATTLIST soap:body
+    use CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap12:binding EMPTY>
+<!ATTLIST soap12:binding
+    transport CDATA #IMPLIED
+    style CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap12:operation EMPTY>
+<!ATTLIST soap12:operation
+    soapAction CDATA #IMPLIED
+    style CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap12:body EMPTY>
+<!ATTLIST soap12:body
+    use CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT http:binding EMPTY>
+<!ATTLIST http:binding
+    verb CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT http:operation EMPTY>
+<!ATTLIST http:operation
+    location CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT mime:content EMPTY>
+<!ATTLIST mime:content
+    type CDATA #IMPLIED
+    part CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:service (wsdl:port)*>
+<!ATTLIST wsdl:service
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT wsdl:port (soap12:address|http:address|soap:address)*>
+<!ATTLIST wsdl:port
+    name CDATA #IMPLIED
+    binding CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap:address EMPTY>
+<!ATTLIST soap:address
+    location CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT soap12:address EMPTY>
+<!ATTLIST soap12:address
+    location CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT http:address EMPTY>
+<!ATTLIST http:address
+    location CDATA #IMPLIED
+  >

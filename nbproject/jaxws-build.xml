@@ -53,8 +53,8 @@
     </target>
     <target name="wsimport-client-OFSService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/OFSService"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService" destdir="${build.generated.dir}/jax-wsCache/OFSService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://192.168.2.32:8085/TAFJServices/services/OFSService?wsdl" xnocompile="true" xendorsed="true" package="org.t24">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService" destdir="${build.generated.dir}/jax-wsCache/OFSService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="file:/C:/Users/wumoru/Documents/NetBeansProjects/channelsproject/web/WEB-INF/wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl" xnocompile="true" xendorsed="true" package="org.t24">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/OFSService.wsdl"/>
             <produces dir="${build.generated.dir}/jax-wsCache/OFSService"/>
         </wsimport>
         <copy todir="${build.generated.sources.dir}/jax-ws">
