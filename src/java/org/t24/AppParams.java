@@ -5,22 +5,19 @@
  */
 package org.t24;
 
-import bankone.service.ISOResponse;
+
 import com.sun.xml.bind.StringInputStream;
-import java.io.StringReader;
+import java.io.InputStream;
 import java.io.StringWriter;
 import javax.naming.InitialContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 import logger.WebServiceLogger;
 import lombok.Getter;
 import lombok.Setter;
-import nibbsnip.service.AccountUnblockRequest;
 import org.apache.log4j.Level;
-import org.xml.sax.InputSource;
+
 
 
 
@@ -41,7 +38,7 @@ public class AppParams {
     private int port;
     private String OFSsource;
     private String T24Framework;
-    
+     InputStream propertiesfile; 
     
     
     
@@ -61,6 +58,8 @@ public class AppParams {
         LogDir = (String)ctx.lookup("LogDir");
          listeningDir = (String)ctx.lookup("ISOLogListenerDir");
           T24Framework = (String)ctx.lookup("T24Framework");
+           ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        propertiesfile = classLoader.getResourceAsStream("org/t24/interfacelogger.properties");
         
     }
     catch (Exception e)
@@ -73,7 +72,7 @@ public class AppParams {
  
 public WebServiceLogger getServiceLogger(String filename){
     
-    return new WebServiceLogger(LogDir,filename);
+    return new WebServiceLogger(LogDir,filename,propertiesfile);
 }
     
        public Object XMLToObject (String xml, Object object) throws Exception{

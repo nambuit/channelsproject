@@ -765,7 +765,7 @@ txn.setIsSuccessful(false);
           public void watchlogdir() {
             
               try{
-                       watchDirectoryPath(new File(options.getListeningDir()).toPath(),new FileLoggerHandler(new WebServiceLogger(options.getLogDir(),"atm_monitor")));
+                       watchDirectoryPath(new File(options.getListeningDir()).toPath(),new FileLoggerHandler("atm_monitor",options.getLogDir(),options.getPropertiesfile()));
               } catch(Exception v)
               {
                options.getServiceLogger("service_monitor").LogError(v.getMessage(), v, Level.ERROR); 

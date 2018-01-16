@@ -7,27 +7,35 @@
 
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
     import javax.jws.WebMethod;
     import javax.jws.WebParam;
+import javax.jws.WebService;
     import org.apache.log4j.Level;
     import org.t24.AppParams;
+import org.t24.DataItem;
+import org.t24.RemittaResponseCodes;
     import org.t24.T24Link;
     import org.t24.T24TAFCLink;
     import org.t24.T24TAFJLink;
+import org.t24.ofsParam;
 
 
     /**
      *
      * @author Temitope
      */
+    @WebService(serviceName = "BankOneInterface")
        public class RemittaInterface{
 
                AppParams options;  
          T24Link t24;       
          String logfilename = "NIBBSNIPInterface";
-
+         RemittaResponseCodes respcode;
 
 
 
@@ -62,11 +70,73 @@ import java.util.List;
             try {
 
          SingleTransferRequest request = (SingleTransferRequest) options.XMLToObject(fundstransfer,new SingleTransferRequest());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
+
+      Date trandate = sdf.parse(request.getTransactionDate());
+       
+      
+      request.setTransactionDate(ndf.format(trandate));
+
+
+           
+           
+           ofsParam param = new ofsParam();
+          String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+            param.setCredentials(credentials);
+           param.setOperation("AC.LOCKED.EVENTS");
+           param.setTransaction_id("");
+           String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+          param.setOptions(ofsoptions);
+           
+           List<DataItem> items = new LinkedList<>();
+           DataItem item = new DataItem();
+           item.setItemHeader("DATE");
+           item.setItemValues(new String[] {request.getTransactionDate()});
+           items.add(item);
+           
+           item = new DataItem();
+           item.setItemHeader("DEBIT.AMOUNT");
+           item.setItemValues(new String[] {request.getAmount().toString()});
+           items.add(item);
+           
+           item = new DataItem();
+           item.setItemHeader("REFERENCE");
+           item.setItemValues(new String[] {request.getTransRef()});
+           items.add(item);
+           
+           
+            String ofstr = t24.generateOFSTransactString(param);
+
+            String result = t24.PostMsg(ofstr);
+           
+           if(t24.IsSuccessful(result)){
+               fundstransferresponse.setTransRef(result.split("/")[0]);
+               
+               respcode = RemittaResponseCodes.SUCCESS;
+          
+               fundstransferresponse.setResponseCode(respcode.getCode());
+               fundstransferresponse.setResponseText(respcode.getMessage());
+       }
+           else{
+                respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+               
+               
+                fundstransferresponse.setResponseCode(respcode.getCode());
+               fundstransferresponse.setResponseText(respcode.getMessage());
+              
+           }
+           
+           param.setDataItems(items);
             } catch (Exception d) {
                 fundstransferresponse.setResponseCode("12");
             }
             return options.ObjectToXML(fundstransferresponse);
         }
+        
+        
+        
+        
 
                 @WebMethod(operationName = "ST01")
         public String ST01(@WebParam(name = "statusrequest") String statusrequest) {
@@ -119,10 +189,14 @@ import java.util.List;
           }
         
         accountstatementresponse.setStatementLine(stmts.toArray(a));
-                
+        respcode = RemittaResponseCodes.SUCCESS;
+        accountstatementresponse.setResponseCode(respcode.getCode());
                
             } catch (Exception d) {
-                accountstatementresponse.setResponseCode("12");
+               
+                options.getServiceLogger(logfilename).LogError(logfilename, d, Level.ERROR);
+                 respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+                 accountstatementresponse.setResponseCode(respcode.getCode());
             }
             return options.ObjectToXML(accountstatementresponse);
         }

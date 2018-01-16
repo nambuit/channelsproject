@@ -88,7 +88,7 @@ public class NIBBSOFISInterfaceResource {
 //   String json = object.toString();
      FundTransferNotificationRequest request = (FundTransferNotificationRequest)options.XMLToObject(input,new FundTransferNotificationRequest()); 
 ///gson.fromJson(json, FundTransferNotificationRequest.class);
-  
+
         response.setOFICode(request.getOFICode());
         response.setResponseCode("00");
         response.setResponseDescription("dffdd");
