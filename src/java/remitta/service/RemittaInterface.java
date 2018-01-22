@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-    import javax.jws.WebMethod;
-    import javax.jws.WebParam;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
-    import org.apache.log4j.Level;
-    import org.t24.AppParams;
+import org.apache.log4j.Level;
+import org.t24.AppParams;
 import org.t24.DataItem;
 import org.t24.RemittaResponseCodes;
-    import org.t24.T24Link;
-    import org.t24.T24TAFCLink;
-    import org.t24.T24TAFJLink;
+import org.t24.T24Link;
+import org.t24.T24TAFCLink;
+import org.t24.T24TAFJLink;
 import org.t24.ofsParam;
 
 
@@ -29,7 +29,7 @@ import org.t24.ofsParam;
      *
      * @author Temitope
      */
-    @WebService(serviceName = "BankOneInterface")
+    @WebService(serviceName = "RemittaInterface")
        public class RemittaInterface{
 
                AppParams options;  
@@ -69,7 +69,7 @@ import org.t24.ofsParam;
 
             try {
 
-         SingleTransferRequest request = (SingleTransferRequest) options.XMLToObject(fundstransfer,new SingleTransferRequest());
+        SingleTransferRequest request = (SingleTransferRequest) options.XMLToObject(fundstransfer,new SingleTransferRequest());
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
 
@@ -153,13 +153,21 @@ import org.t24.ofsParam;
 
         @WebMethod(operationName = "AS01")
         public String AS01(@WebParam(name = "accountstatement") String accountstatement) {
-            AccountStatementResponse accountstatementresponse = new AccountStatementResponse();
-       
+      
+        AccountStatementResponse accountstatementresponse = new AccountStatementResponse();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
+        
+        
             try{       
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
-             AccountStatementRequest request = (AccountStatementRequest) options.XMLToObject(accountstatement,new AccountStatementRequest());
+       
+
+        AccountStatementRequest request = (AccountStatementRequest) options.XMLToObject(accountstatement,new AccountStatementRequest());
         //   Gson gson = new Gson(); 
-           ArrayList<List<String>> result = t24.getOfsData("ENQUIRYNAME",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber().trim());
+           Date statementdate = sdf.parse(request.getStatementDate());
+           request.setStatementDate(ndf.format(statementdate));
+           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + request.getAccountNumber().trim()+",VALUE.DATE:EQ="+request.getStatementDate());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -178,11 +186,14 @@ import org.t24.ofsParam;
         accountstatementresponse.setResponseCode("00");
         accountstatementresponse.setResponseText("Transaction Completed");
         Statement stmt =  new Statement();
-        String Amount = result.get(i).get(headers.indexOf("Amount")).replace("\"", "").trim();
+        String Amount = result.get(i).get(headers.indexOf("Amount Lccy")).replace("\"", "").trim().replace(",", "");
         stmt.setAmount(BigDecimal.valueOf(Double.parseDouble(Amount))); 
-        stmt.setCRDR(result.get(i).get(headers.indexOf("CrDr")).replace("\"", "").trim());
+        String crdr = stmt.getAmount().doubleValue()<0?"DR":"CR";
+        stmt.setCRDR(crdr);
         stmt.setNarration(result.get(i).get(headers.indexOf("Narration")).replace("\"", "").trim());
-       stmt.setTransactionDate(result.get(i).get(headers.indexOf("Date")).replace("\"", "").trim());
+        
+        String datetime = result.get(i).get(headers.indexOf("DATE.TIME")).replace("\"", "").trim();
+       stmt.setTransactionDate(datetime);
         stmt.setCurrency(result.get(i).get(headers.indexOf("Currency")).replace("\"", "").trim());
         stmts.add(stmt);
         
@@ -217,12 +228,12 @@ import org.t24.ofsParam;
 
 
      @WebMethod(operationName = "NES01")
-        public String NES01(@WebParam(name = "nameenquiry") String nameenquiry) {
+     public String NES01(@WebParam(name = "nameenquiry") String nameenquiry) {
             NameEnquiryResponse nameenquiryresponse = new NameEnquiryResponse();
 
             try {
                
-         NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
+            NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
             } catch (Exception d) {
                 nameenquiryresponse.setResponseCode("12");
             }
