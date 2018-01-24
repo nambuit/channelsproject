@@ -252,6 +252,38 @@ import org.t24.ofsParam;
             try {
 
          AccountBalanceRequest request = (AccountBalanceRequest) options.XMLToObject(accountbalance,new AccountBalanceRequest());
+         
+
+     
+        //   Gson gson = new Gson(); 
+           Date today = new Date();
+           
+           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           List<String> headers = result.get(0);
+           
+              if(headers.size()!=result.get(1).size()){
+               
+               throw new Exception(result.get(1).get(0));
+           }
+          
+         
+        accountbalanceresponse.setResponseCode("00");
+        accountbalanceresponse.setResponseText("Transaction Completed");
+      
+        String Amount = result.get(1).get(headers.indexOf("Amount")).replace("\"", "").trim().replace(",", "");
+        accountbalanceresponse.setAmount(BigDecimal.valueOf(Double.parseDouble(Amount))); 
+        accountbalanceresponse.setCurrency(result.get(1).get(headers.indexOf("Currency")).replace("\"", "").trim());
+     
+        accountbalanceresponse.setAccountName(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());        
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        
+        accountbalanceresponse.setBalanceDate(sdf.format(today));
+        
+        respcode = RemittaResponseCodes.SUCCESS;
+      
+         
+         
             } catch (Exception d) {
                 accountbalanceresponse.setResponseCode("12");
             }
@@ -266,6 +298,7 @@ import org.t24.ofsParam;
             try {
                
             NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
+           
             } catch (Exception d) {
                 nameenquiryresponse.setResponseCode("12");
             }
