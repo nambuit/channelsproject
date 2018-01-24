@@ -298,7 +298,28 @@ import org.t24.ofsParam;
             try {
                
             NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
+               
+             //   Gson gson = new Gson(); 
            
+           
+           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           List<String> headers = result.get(0);
+           
+              if(headers.size()!=result.get(1).size()){
+               
+               throw new Exception(result.get(1).get(0));
+           }
+          
+         
+        nameenquiryresponse.setResponseCode("00");
+        nameenquiryresponse.setResponseText("Transaction Completed");
+      
+        String Amount = result.get(1).get(headers.indexOf("Amount")).replace("\"", "").trim().replace(",", "");
+        nameenquiryresponse.setAccountNumber(result.get(1).get(headers.indexOf("AccountNumber")).replace("\"", "").trim());
+        nameenquiryresponse.setAccountName(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());        
+                
+        respcode = RemittaResponseCodes.SUCCESS;
+ 
             } catch (Exception d) {
                 nameenquiryresponse.setResponseCode("12");
             }
@@ -313,6 +334,25 @@ import org.t24.ofsParam;
             try {
     
          GenerateOTPRequest request = (GenerateOTPRequest) options.XMLToObject(otprequest,new GenerateOTPRequest());
+        
+            //   Gson gson = new Gson(); 
+           
+           
+           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           List<String> headers = result.get(0);
+           
+              if(headers.size()!=result.get(1).size()){
+               
+               throw new Exception(result.get(1).get(0));
+           }
+          
+         
+        otpresponse.setResponseCode("00");
+        otpresponse.setResponseText("Transaction Completed"); 
+        otpresponse.setPhoneNumber(result.get(1).get(headers.indexOf("PhoneNumber")).replace("\"", "").trim());
+        otpresponse.setAccountClass(result.get(1).get(headers.indexOf("AccountClass")).replace("\"", "").trim());        
+        
+        respcode = RemittaResponseCodes.SUCCESS;
             } catch (Exception d) {
                 otpresponse.setResponseCode("12");
             }
@@ -326,6 +366,23 @@ import org.t24.ofsParam;
             try {
      
          AuthenticateOTPRequest request = (AuthenticateOTPRequest) options.XMLToObject(authenticaterequest,new AuthenticateOTPRequest());
+            //   Gson gson = new Gson(); 
+           
+           
+           ArrayList<List<String>> result = t24.getOfsData("AUTHENTICATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           List<String> headers = result.get(0);
+           
+              if(headers.size()!=result.get(1).size()){
+               
+               throw new Exception(result.get(1).get(0));
+           }
+          
+         
+        authenticateresponse.setResponseCode("00");
+        authenticateresponse.setResponseText("Transaction Completed"); 
+        
+        respcode = RemittaResponseCodes.SUCCESS;
+            
             } catch (Exception d) {
                 authenticateresponse.setResponseCode("12");
             }
