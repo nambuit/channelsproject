@@ -17,7 +17,9 @@ import lombok.Setter;
 public class ofsParam {
         private String operation;
         
-        private String version;
+
+         private String version;
+
 
         private String[] Options;
 

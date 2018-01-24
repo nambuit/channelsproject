@@ -99,7 +99,13 @@ public class T24TAFJLink implements T24Link {
         {
             StringBuilder output = new StringBuilder();
 
-            output.append(param.getOperation().toUpperCase()).append(',');
+           output.append(param.getOperation().toUpperCase()).append(',');
+            
+           if(param.getVersion()==null){
+               param.setVersion("");
+           }
+           
+            output.append(param.getVersion());
 
             output.append(param.getVersion().toUpperCase());
             
@@ -110,6 +116,10 @@ public class T24TAFJLink implements T24Link {
             String credentials = String.join("/", param.getCredentials());
             
             output.append(credentials).append(",");
+            
+                             if(param.getTransaction_id()==null){
+               param.setTransaction_id("");
+           }
 
             output.append(param.getTransaction_id()).append(",");
 
