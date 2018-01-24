@@ -98,12 +98,12 @@ import org.t24.ofsParam;
            
            item = new DataItem();
            item.setItemHeader("DEBIT.CURRENCY");
-           item.setItemValues(new String[] {request.getCurrency().toString()});
+           item.setItemValues(new String[] {request.getCurrency()});
            items.add(item);
            
            item = new DataItem();
            item.setItemHeader("CREDIT.CURRENCY");
-           item.setItemValues(new String[] {request.getCurrency().toString()});
+           item.setItemValues(new String[] {request.getCurrency()});
            items.add(item);
            
            item = new DataItem();
@@ -113,12 +113,12 @@ import org.t24.ofsParam;
            
            item = new DataItem();
            item.setItemHeader("DEBIT.ACCT.NO");
-           item.setItemValues(new String[] {request.getDebitAccount().toString()});
+           item.setItemValues(new String[] {request.getDebitAccount()});
            items.add(item);
                       
            item = new DataItem();
            item.setItemHeader("CREDIT.ACCT.NO");
-           item.setItemValues(new String[] {request.getCreditAccount().toString()});
+           item.setItemValues(new String[] {request.getCreditAccount()});
            items.add(item);
            
            item = new DataItem();
@@ -128,12 +128,12 @@ import org.t24.ofsParam;
            
            item = new DataItem();
            item.setItemHeader("DEBIT.THEIR.REF");
-           item.setItemValues(new String[] {request.getNarration().toString()});
+           item.setItemValues(new String[] {request.getNarration()});
            items.add(item);
            
            item = new DataItem();
            item.setItemHeader("CREDIT.THEIR.REF");
-           item.setItemValues(new String[] {request.getNarration().toString()});
+           item.setItemValues(new String[] {request.getNarration()});
            items.add(item);
            
            param.setDataItems(items);
