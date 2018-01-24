@@ -296,7 +296,7 @@ import org.t24.ofsParam;
             NameEnquiryResponse nameenquiryresponse = new NameEnquiryResponse();
 
             try {
-               
+          
             NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
            
             } catch (Exception d) {
