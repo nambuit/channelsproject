@@ -192,6 +192,8 @@ public class T24TAFCLink implements T24Link {
             StringBuilder output = new StringBuilder();
 
             output.append(param.getOperation().toUpperCase()).append(',');
+            
+            output.append(param.getVersion().toUpperCase());
 
             String options = String.join("/", param.getOptions());
 
