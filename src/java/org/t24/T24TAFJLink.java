@@ -107,6 +107,8 @@ public class T24TAFJLink implements T24Link {
            
             output.append(param.getVersion());
 
+            output.append(param.getVersion().toUpperCase());
+            
             String options = String.join("/", param.getOptions());
 
             output.append(options.toUpperCase()).append(",");

@@ -78,21 +78,32 @@ import org.t24.ofsParam;
       
       request.setTransactionDate(ndf.format(trandate));
 
-
-           
-           
            ofsParam param = new ofsParam();
-          String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
-            param.setCredentials(credentials);
-           param.setOperation("AC.LOCKED.EVENTS");
+           String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+           param.setCredentials(credentials);
+           param.setOperation("FUNDS.TRANSFER");
+           
+           
+           param.setVersion("AC.REMITA.FT01");
+           
            param.setTransaction_id("");
-           String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
-          param.setOptions(ofsoptions);
+           String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "1" };
+           param.setOptions(ofsoptions);
            
            List<DataItem> items = new LinkedList<>();
            DataItem item = new DataItem();
-           item.setItemHeader("DATE");
+           item.setItemHeader("DEBIT.VALUE.DATE");
            item.setItemValues(new String[] {request.getTransactionDate()});
+           items.add(item);
+           
+           item = new DataItem();
+           item.setItemHeader("DEBIT.CURRENCY");
+           item.setItemValues(new String[] {request.getCurrency().toString()});
+           items.add(item);
+           
+           item = new DataItem();
+           item.setItemHeader("CREDIT.CURRENCY");
+           item.setItemValues(new String[] {request.getCurrency().toString()});
            items.add(item);
            
            item = new DataItem();
@@ -101,14 +112,35 @@ import org.t24.ofsParam;
            items.add(item);
            
            item = new DataItem();
-           item.setItemHeader("REFERENCE");
+           item.setItemHeader("DEBIT.ACCT.NO");
+           item.setItemValues(new String[] {request.getDebitAccount().toString()});
+           items.add(item);
+                      
+           item = new DataItem();
+           item.setItemHeader("CREDIT.ACCT.NO");
+           item.setItemValues(new String[] {request.getCreditAccount().toString()});
+           items.add(item);
+           
+           item = new DataItem();
+           item.setItemHeader("DELIVERY.OUTREF");
            item.setItemValues(new String[] {request.getTransRef()});
            items.add(item);
            
+           item = new DataItem();
+           item.setItemHeader("DEBIT.THEIR.REF");
+           item.setItemValues(new String[] {request.getNarration().toString()});
+           items.add(item);
            
-            String ofstr = t24.generateOFSTransactString(param);
+           item = new DataItem();
+           item.setItemHeader("CREDIT.THEIR.REF");
+           item.setItemValues(new String[] {request.getNarration().toString()});
+           items.add(item);
+           
+           param.setDataItems(items);
+           
+           String ofstr = t24.generateOFSTransactString(param);
 
-            String result = t24.PostMsg(ofstr);
+           String result = t24.PostMsg(ofstr);
            
            if(t24.IsSuccessful(result)){
                fundstransferresponse.setTransRef(result.split("/")[0]);
