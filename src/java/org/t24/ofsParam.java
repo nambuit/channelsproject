@@ -16,6 +16,10 @@ import lombok.Setter;
 @Getter @Setter 
 public class ofsParam {
         private String operation;
+        
+
+         private String version;
+
 
         private String[] Options;
 

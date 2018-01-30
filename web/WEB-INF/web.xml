@@ -17,7 +17,9 @@
     <env-entry>
         <env-entry-name>PORT</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>20005</env-entry-value>
+
+        <env-entry-value>20002</env-entry-value>
+
     </env-entry>
       <env-entry>
         <env-entry-name>OFSsource</env-entry-name>
