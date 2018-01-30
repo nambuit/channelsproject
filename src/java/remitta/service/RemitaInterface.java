@@ -29,17 +29,17 @@ import org.t24.ofsParam;
      *
      * @author Temitope
      */
-    @WebService(serviceName = "RemittaInterface")
-       public class RemittaInterface{
+    @WebService(serviceName = "RemitaInterface")
+       public class RemitaInterface{
 
                AppParams options;  
          T24Link t24;       
-         String logfilename = "NIBBSNIPInterface";
+         String logfilename = "RemittaInterface";
          RemittaResponseCodes respcode;
 
 
 
-       public RemittaInterface(){
+       public RemitaInterface(){
        try
         {
 
@@ -59,27 +59,62 @@ import org.t24.ofsParam;
 
         }
 
-       
-       
-
-
+    /**
+     * Web service operation
+     * @param fundstransfer
+     * @return 
+     */
   @WebMethod(operationName = "FT01")
-        public String FT01(@WebParam(name = "fundstransfer") String fundstransfer) {
+        public SingleTransferResponse FT01(@WebParam(name = "fundstransfer") SingleTransferRequest fundstransfer) {
             SingleTransferResponse fundstransferresponse = new SingleTransferResponse();
 
             try {
 
-        SingleTransferRequest request = (SingleTransferRequest) options.XMLToObject(fundstransfer,new SingleTransferRequest());
+       
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
 
-      Date trandate = sdf.parse(request.getTransactionDate());
+      Date trandate = sdf.parse(fundstransfer.getTransactionDate());
        
-      
-      request.setTransactionDate(ndf.format(trandate));
+       String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+       String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+        List<DataItem> items = new LinkedList<>();
+       
+      fundstransfer.setTransactionDate(ndf.format(trandate));
+     
+    //  ArrayList<List<String>> data = t24.getOfsData("%FUNDS.TRANSFER",options.getOfsuser(), options.getOfspass(), "REM.REF:EQ=" + fundstransfer.getTransRef().trim());
+     
+      String[] vofsoptions = new String[] { "", "I", "VALIDATE", "", "0" };
 
-           ofsParam param = new ofsParam();
-           String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+               ofsParam param = new ofsParam();
+               param.setCredentials(credentials);
+               param.setOperation("REMITA.FT.REF.TABLE");
+               param.setOptions(vofsoptions);
+               
+               
+               param.setTransaction_id(fundstransfer.getTransRef());
+               
+               param.setDataItems(items);
+               
+                String ofs = t24.generateOFSTransactString(param);
+
+                String output = t24.PostMsg(ofs);
+                 
+                if(output.indexOf("T24.ID")>0){
+                    
+                    fundstransferresponse.setTransRef(fundstransfer.getTransRef());
+                    fundstransferresponse.setTransactionDate(sdf.format(trandate));
+                    respcode =  RemittaResponseCodes.DUPLICATE_TRANSACTION;
+                    fundstransferresponse.setResponseCode(respcode.getCode());
+                    fundstransferresponse.setResponseText(respcode.getMessage());
+                    return fundstransferresponse;
+                }
+                   
+                   
+                   
+                   
+           param = new ofsParam();            
+           
            param.setCredentials(credentials);
            param.setOperation("FUNDS.TRANSFER");
            
@@ -87,54 +122,65 @@ import org.t24.ofsParam;
            param.setVersion("AC.REMITA.FT01");
            
            param.setTransaction_id("");
-           String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "1" };
+          
            param.setOptions(ofsoptions);
            
-           List<DataItem> items = new LinkedList<>();
+          
            DataItem item = new DataItem();
            item.setItemHeader("DEBIT.VALUE.DATE");
-           item.setItemValues(new String[] {request.getTransactionDate()});
+           item.setItemValues(new String[] {fundstransfer.getTransactionDate()});
+           items.add(item);
+           
+      
+           item = new DataItem();
+           item.setItemHeader("CREDIT.VALUE.DATE");
+           item.setItemValues(new String[] {fundstransfer.getTransactionDate()});
            items.add(item);
            
            item = new DataItem();
            item.setItemHeader("DEBIT.CURRENCY");
-           item.setItemValues(new String[] {request.getCurrency()});
+           item.setItemValues(new String[] {fundstransfer.getCurrency()});
            items.add(item);
            
            item = new DataItem();
            item.setItemHeader("CREDIT.CURRENCY");
-           item.setItemValues(new String[] {request.getCurrency()});
+           item.setItemValues(new String[] {fundstransfer.getCurrency()});
            items.add(item);
            
            item = new DataItem();
            item.setItemHeader("DEBIT.AMOUNT");
-           item.setItemValues(new String[] {request.getAmount().toString()});
+           item.setItemValues(new String[] {fundstransfer.getAmount()});
            items.add(item);
            
            item = new DataItem();
            item.setItemHeader("DEBIT.ACCT.NO");
-           item.setItemValues(new String[] {request.getDebitAccount()});
+           item.setItemValues(new String[] {fundstransfer.getDebitAccount()});
            items.add(item);
                       
            item = new DataItem();
            item.setItemHeader("CREDIT.ACCT.NO");
-           item.setItemValues(new String[] {request.getCreditAccount()});
+           item.setItemValues(new String[] {fundstransfer.getCreditAccount()});
            items.add(item);
            
            item = new DataItem();
-           item.setItemHeader("DELIVERY.OUTREF");
-           item.setItemValues(new String[] {request.getTransRef()});
+           item.setItemHeader("REM.REF");
+           
+           if(fundstransfer.getNarration().length()>65){
+               fundstransfer.setNarration(fundstransfer.getNarration().substring(65));
+           }
+           
+           item.setItemValues(new String[] {fundstransfer.getNarration()});
            items.add(item);
            
-           item = new DataItem();
-           item.setItemHeader("DEBIT.THEIR.REF");
-           item.setItemValues(new String[] {request.getNarration()});
-           items.add(item);
-           
-           item = new DataItem();
-           item.setItemHeader("CREDIT.THEIR.REF");
-           item.setItemValues(new String[] {request.getNarration()});
-           items.add(item);
+//           item = new DataItem();
+//           item.setItemHeader("DEBIT.THEIR.REF");
+//           item.setItemValues(new String[] {fundstransfer.getNarration()});
+//           items.add(item);
+//           
+//           item = new DataItem();
+//           item.setItemHeader("CREDIT.THEIR.REF");
+//           item.setItemValues(new String[] {fundstransfer.getNarration()});
+//           items.add(item);
            
            param.setDataItems(items);
            
@@ -143,48 +189,100 @@ import org.t24.ofsParam;
            String result = t24.PostMsg(ofstr);
            
            if(t24.IsSuccessful(result)){
-               fundstransferresponse.setTransRef(result.split("/")[0]);
+              fundstransferresponse.setTransRef(fundstransfer.getTransRef());
+               
+               items.clear();
+               param = new ofsParam();
+               param.setCredentials(credentials);
+               param.setOperation("REMITA.FT.REF.TABLE");
+               param.setOptions(ofsoptions);
+               
+               
+               param.setTransaction_id(fundstransfer.getTransRef());
+               
+               item = new DataItem();
+               item.setItemHeader("T24.ID");
+               item.setItemValues(new String[] {result.split("/")[0]});
+               items.add(item);
+
+                param.setDataItems(items);
+               
+                ofstr = t24.generateOFSTransactString(param);
+
+                result = t24.PostMsg(ofstr);
+               
+                 if(t24.IsSuccessful(result)){
+                     
+                 }
+                 
                
                respcode = RemittaResponseCodes.SUCCESS;
-          
+               fundstransferresponse.setTransactionDate(sdf.format(trandate));
                fundstransferresponse.setResponseCode(respcode.getCode());
                fundstransferresponse.setResponseText(respcode.getMessage());
        }
            else{
-                respcode = RemittaResponseCodes.UNKNOWN_ERROR;
-               
-               
-                fundstransferresponse.setResponseCode(respcode.getCode());
+               if(result.contains("/")){
+                respcode = options.getRemittaCode(result.split("/")[3]);
+                
+                if(respcode==RemittaResponseCodes.UNKNOWN_ERROR){
+                    throw new Exception (result);
+                }
+                  fundstransferresponse.setResponseCode(respcode.getCode());
                fundstransferresponse.setResponseText(respcode.getMessage());
+               }
+               else{
+                   throw new Exception (result);
+               }
+               
+              
               
            }
            
            param.setDataItems(items);
             } catch (Exception d) {
-                fundstransferresponse.setResponseCode("12");
+                respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+               
+               
+                fundstransferresponse.setResponseCode(respcode.getCode());
+               fundstransferresponse.setResponseText(d.getMessage());
             }
-            return options.ObjectToXML(fundstransferresponse);
+            return fundstransferresponse;
         }
         
         
-        
-        
-
-                @WebMethod(operationName = "ST01")
-        public String ST01(@WebParam(name = "statusrequest") String statusrequest) {
+           /**
+     * Web service operation
+     * @param statusrequest
+     * @return 
+     */
+        @WebMethod(operationName = "ST01")
+        public SingleTransferResponse ST01(@WebParam(name = "statusrequest") SingleTransferStatusRequest statusrequest) {
             SingleTransferResponse fundstransferresponse = new SingleTransferResponse();
 
             try {
-
-         SingleTransferStatusRequest request = (SingleTransferStatusRequest) options.XMLToObject(statusrequest,new SingleTransferStatusRequest());
+             respcode = RemittaResponseCodes.SUCCESS;
+             
+             fundstransferresponse.setResponseCode(respcode.getCode());
+              fundstransferresponse.setResponseText("Method not yet Implemented");
+        
             } catch (Exception d) {
-                fundstransferresponse.setResponseCode("12");
+               respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+              fundstransferresponse.setResponseCode(respcode.getCode());
+               fundstransferresponse.setResponseText(d.getMessage());
             }
-            return options.ObjectToXML(fundstransferresponse);
+            return fundstransferresponse;
         }
+        
+        
+                  /**
+     * Web service operation
+     * @param accountstatement
+     * @return 
+     */
 
         @WebMethod(operationName = "AS01")
-        public String AS01(@WebParam(name = "accountstatement") String accountstatement) {
+        public AccountStatementResponse AS01(@WebParam(name = "accountstatement") AccountStatementRequest accountstatement) {
       
         AccountStatementResponse accountstatementresponse = new AccountStatementResponse();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -195,11 +293,11 @@ import org.t24.ofsParam;
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
        
 
-        AccountStatementRequest request = (AccountStatementRequest) options.XMLToObject(accountstatement,new AccountStatementRequest());
+      
         //   Gson gson = new Gson(); 
-           Date statementdate = sdf.parse(request.getStatementDate());
-           request.setStatementDate(ndf.format(statementdate));
-           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + request.getAccountNumber().trim()+",VALUE.DATE:EQ="+request.getStatementDate());
+           Date statementdate = sdf.parse(accountstatement.getStatementDate());
+           accountstatement.setStatementDate(ndf.format(statementdate));
+           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + accountstatement.getAccountNumber().trim()+",VALUE.DATE:EQ="+accountstatement.getStatementDate());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -239,26 +337,32 @@ import org.t24.ofsParam;
                
                 options.getServiceLogger(logfilename).LogError(logfilename, d, Level.ERROR);
                  respcode = RemittaResponseCodes.UNKNOWN_ERROR;
-                 accountstatementresponse.setResponseCode(respcode.getCode());
+                 accountstatementresponse.setResponseText(d.getMessage());
+                  accountstatementresponse.setResponseCode(respcode.getCode());
             }
-            return options.ObjectToXML(accountstatementresponse);
+            return accountstatementresponse;
         }
 
-
+        
+           /**
+     * Web service operation
+     * @param accountbalance
+     * @return 
+     */
           @WebMethod(operationName = "AB01")
-        public String AB01(@WebParam(name = "accountbalance") String accountbalance) {
+        public AccountBalanceResponse AB01(@WebParam(name = "accountbalance") AccountBalanceRequest accountbalance) {
             AccountBalanceResponse accountbalanceresponse = new AccountBalanceResponse();
 
             try {
 
-         AccountBalanceRequest request = (AccountBalanceRequest) options.XMLToObject(accountbalance,new AccountBalanceRequest());
+       //  AccountBalanceRequest request = (AccountBalanceRequest) options.XMLToObject(accountbalance,new AccountBalanceRequest());
          
 
      
         //   Gson gson = new Gson(); 
            Date today = new Date();
            
-           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + accountbalance.getAccountNumber());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -281,28 +385,34 @@ import org.t24.ofsParam;
         accountbalanceresponse.setBalanceDate(sdf.format(today));
         
         respcode = RemittaResponseCodes.SUCCESS;
-      
+       
          
          
             } catch (Exception d) {
-                accountbalanceresponse.setResponseCode("12");
+              respcode =  RemittaResponseCodes.UNKNOWN_ERROR;
+              accountbalanceresponse.setResponseText(d.getMessage());
+              accountbalanceresponse.setResponseCode(respcode.getCode());
             }
-            return options.ObjectToXML(accountbalanceresponse);
+            return accountbalanceresponse;
         }
 
-
+      /**
+     * Web service operation
+     * @param nameenquiry
+     * @return 
+     */
      @WebMethod(operationName = "NES01")
-     public String NES01(@WebParam(name = "nameenquiry") String nameenquiry) {
+     public NameEnquiryResponse NES01(@WebParam(name = "nameenquiry") NameEnquiryRequest nameenquiry) {
             NameEnquiryResponse nameenquiryresponse = new NameEnquiryResponse();
 
             try {
-               
-            NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
+          
+           // NameEnquiryRequest request = (NameEnquiryRequest) options.XMLToObject(nameenquiry,new NameEnquiryRequest());
                
              //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + nameenquiry.getAccountNumber());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -314,31 +424,39 @@ import org.t24.ofsParam;
         nameenquiryresponse.setResponseCode("00");
         nameenquiryresponse.setResponseText("Transaction Completed");
       
-        String Amount = result.get(1).get(headers.indexOf("Amount")).replace("\"", "").trim().replace(",", "");
         nameenquiryresponse.setAccountNumber(result.get(1).get(headers.indexOf("AccountNumber")).replace("\"", "").trim());
         nameenquiryresponse.setAccountName(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());        
                 
         respcode = RemittaResponseCodes.SUCCESS;
  
             } catch (Exception d) {
-                nameenquiryresponse.setResponseCode("12");
+                
+                 respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+                nameenquiryresponse.setResponseCode(respcode.getCode());
+                 nameenquiryresponse.setResponseText(d.getMessage());
+                 
             }
-            return options.ObjectToXML(nameenquiryresponse);
+            return nameenquiryresponse;
         }
 
-
+     
+      /**
+     * Web service operation
+     * @param otprequest
+     * @return 
+     */
        @WebMethod(operationName = "GOR01")
-        public String GOR01(@WebParam(name = "otprequest") String otprequest) {
+        public GenerateOTPResponse GOR01(@WebParam(name = "otprequest") GenerateOTPRequest otprequest) {
             GenerateOTPResponse otpresponse = new GenerateOTPResponse();
 
             try {
     
-         GenerateOTPRequest request = (GenerateOTPRequest) options.XMLToObject(otprequest,new GenerateOTPRequest());
+       //  GenerateOTPRequest request = (GenerateOTPRequest) options.XMLToObject(otprequest,new GenerateOTPRequest());
         
             //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + otprequest.getAccountNumber());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -354,18 +472,28 @@ import org.t24.ofsParam;
         
         respcode = RemittaResponseCodes.SUCCESS;
             } catch (Exception d) {
-                otpresponse.setResponseCode("12");
+              respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+                otpresponse.setResponseCode(respcode.getCode());
+                 otpresponse.setResponseText(d.getMessage());
             }
-            return options.ObjectToXML(otpresponse);
+            return otpresponse;
         }
+       
+       
 
-                                   @WebMethod(operationName = "AOR01")
-        public String AOR01(@WebParam(name = "authenticaterequest") String authenticaterequest) {
+
+      /**
+     * Web service operation
+     * @param request
+     * @return 
+     */
+        @WebMethod(operationName = "A0R01")
+        public AuthenticateOTPResponse A0R01(@WebParam(name = "authotprequest") AuthenticateOTPRequest request) {
             AuthenticateOTPResponse authenticateresponse = new AuthenticateOTPResponse();
 
             try {
      
-         AuthenticateOTPRequest request = (AuthenticateOTPRequest) options.XMLToObject(authenticaterequest,new AuthenticateOTPRequest());
+       //  AuthenticateOTPRequest request = (AuthenticateOTPRequest) options.XMLToObject(authenticaterequest,new AuthenticateOTPRequest());
             //   Gson gson = new Gson(); 
            
            
@@ -384,9 +512,14 @@ import org.t24.ofsParam;
         respcode = RemittaResponseCodes.SUCCESS;
             
             } catch (Exception d) {
-                authenticateresponse.setResponseCode("12");
+            respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+                authenticateresponse.setResponseCode(respcode.getCode());
+                 authenticateresponse.setResponseText(d.getMessage());
             }
-            return options.ObjectToXML(authenticateresponse);
+            return authenticateresponse;
         }
+       
+ 
+
     }
 

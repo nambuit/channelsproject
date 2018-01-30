@@ -214,7 +214,7 @@ public class T24TAFCLink implements T24Link {
            }
 
             output.append(param.getTransaction_id()).append(",");
-
+ 
             param.getDataItems().stream().forEach((dataitem) -> {
                 Boolean isMultivalue = dataitem.getItemValues().length > 1;
 
