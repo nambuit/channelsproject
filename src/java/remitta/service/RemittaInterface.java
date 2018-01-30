@@ -29,12 +29,12 @@ import org.t24.ofsParam;
      *
      * @author Temitope
      */
-    @WebService(serviceName = "BankOneInterface")
+    @WebService(serviceName = "RemittaInterface")
        public class RemittaInterface{
 
                AppParams options;  
          T24Link t24;       
-         String logfilename = "NIBBSNIPInterface";
+         String logfilename = "RemittaInterface";
          RemittaResponseCodes respcode;
 
 
