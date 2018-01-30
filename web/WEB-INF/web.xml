@@ -17,7 +17,9 @@
     <env-entry>
         <env-entry-name>PORT</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
+
         <env-entry-value>20002</env-entry-value>
+
     </env-entry>
       <env-entry>
         <env-entry-name>OFSsource</env-entry-name>
@@ -47,12 +49,12 @@
     <env-entry>
         <env-entry-name>LogDir</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>C:\Users\Temitope\Documents\Youcam\logs</env-entry-value>
+        <env-entry-value>C:\Users\Administrator\Documents\logs</env-entry-value>
     </env-entry>
     <env-entry>
         <env-entry-name>ISOLogListenerDir</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>C:\Users\Temitope\Documents\Youcam</env-entry-value>
+        <env-entry-value>C:\Users\Administrator\Documents\isologs</env-entry-value>
     </env-entry>
         <env-entry>
         <env-entry-name>T24Framework</env-entry-name>

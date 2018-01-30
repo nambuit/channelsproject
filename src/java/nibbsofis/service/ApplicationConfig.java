@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(nibbsofis.service.NIBBSOFISInterfaceResource.class);
+        resources.add(org.t24.OFSAPIResource.class);
     }
     
 }

@@ -34,7 +34,7 @@ import org.t24.ofsParam;
 
                AppParams options;  
          T24Link t24;       
-         String logfilename = "NIBBSNIPInterface";
+         String logfilename = "RemittaInterface";
          RemittaResponseCodes respcode;
 
 
