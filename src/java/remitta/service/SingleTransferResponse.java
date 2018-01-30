@@ -5,8 +5,6 @@
  */
 package remitta.service;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,19 +14,19 @@ import lombok.Setter;
  */
 
 @Getter @Setter
-@XmlRootElement(name = "SingleTransferResponse")
+
 public class SingleTransferResponse {
     
-     @XmlElement(name = "TransRef")
+
      private String TransRef;
      
-     @XmlElement(name = "TransactionDate")
+  
      private String TransactionDate;
      
-     @XmlElement(name = "ResponseCode")
+   
      private String ResponseCode;
      
-     @XmlElement(name = "ResponseText")
+ 
      private String ResponseText;
      
      

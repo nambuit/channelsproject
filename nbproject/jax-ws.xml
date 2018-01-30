@@ -7,14 +7,14 @@
     <service name="NIBBSNIPInterface">
       <implementation-class>nibbsnip.service.NIBBSNIPInterface</implementation-class>
     </service>
-    <service name="RemittaInterface">
-      <implementation-class>remitta.service.RemittaInterface</implementation-class>
+    <service name="RemitaInterface">
+      <implementation-class>remitta.service.RemitaInterface</implementation-class>
     </service>
   </services>
   <clients>
     <client name="OFSService">
-      <wsdl-url>file:/C:/Users/wumoru/Documents/NetBeansProjects/channelsproject/web/WEB-INF/wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl</wsdl-url>
-      <local-wsdl-file>OFSService.wsdl</local-wsdl-file>
+      <wsdl-url>http://192.168.2.32:8085/TAFJServices/services/OFSService?wsdl</wsdl-url>
+      <local-wsdl-file>192.168.2.32_8085/TAFJServices/services/OFSService.wsdl</local-wsdl-file>
       <package-name forceReplace="true">org.t24</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
@@ -32,7 +32,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>file:/C:/Users/wumoru/Documents/NetBeansProjects/channelsproject/web/WEB-INF/wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl</wsimport-option-value>
+          <wsimport-option-value>http://192.168.2.32:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>

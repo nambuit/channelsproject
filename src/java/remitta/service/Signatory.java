@@ -5,8 +5,6 @@
  */
 package remitta.service;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -14,12 +12,11 @@ import lombok.Setter;
  * @author OLAMIDE
  */
 @Getter @Setter 
-@XmlRootElement(name = "Signatory")
+
 public class Signatory {
  
-    @XmlElement(name = "Name")
+
     private String Name;
-    
-    @XmlElement(name = "PhoneNumber")
+
     private String PhoneNumber;
 }

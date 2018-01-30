@@ -6,8 +6,6 @@
 package remitta.service;
 
 import java.math.BigDecimal;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,28 +15,25 @@ import lombok.Setter;
  */
 
 @Getter @Setter
-@XmlRootElement(name = "SingleTransferRequest")
+
 public class SingleTransferRequest {
-    
-    @XmlElement(name = "TransRef")
+
     private String TransRef;
     
-    @XmlElement(name = "TransactionDate")
+
     private String TransactionDate;
     
-    @XmlElement(name = "DebitAccount")
+
     private String DebitAccount;
-    
-    @XmlElement(name = "CreditAccount")
+  
     private String CreditAccount;
     
-    @XmlElement(name = "Currency")
+  
     private String Currency;
     
-    @XmlElement(name = "Amount")
-    private BigDecimal Amount;
-    
-    @XmlElement(name = "Narration")
+ 
+    private String Amount;
+  
     private String Narration;
     
     

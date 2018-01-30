@@ -109,6 +109,32 @@ public WebServiceLogger getServiceLogger(String filename){
 }
     
     
+  public RemittaResponseCodes getRemittaCode(String message){
+   
+      RemittaResponseCodes respcode = RemittaResponseCodes.UNKNOWN_ERROR;
+      
+   message = message.toLowerCase();
+   
+   if(message.contains("ACCOUNT RECORD MISSING".toLowerCase())){
+      respcode =  RemittaResponseCodes.ACCOUNT_BLOCKED;
+   }
+   
+     if(message.contains("is inactive")){
+      respcode =  RemittaResponseCodes.DORMANT_ACCOUNT;
+   }
+   
+     
+          if(message.contains("IS FLAGGED FOR ONLINE CLOSURE".toLowerCase())){
+      respcode =  RemittaResponseCodes.CLOSED_ACCOUNT;
+   }
+          
+        if(message.contains("Insolvent".toLowerCase())){
+      respcode =  RemittaResponseCodes.ACCOUNT_BLOCKED;
+   }
+   
+       
+       return respcode;
+  }
 
 
     
