@@ -204,8 +204,15 @@ import org.t24.ofsParam;
                item.setItemHeader("T24.ID");
                item.setItemValues(new String[] {result.split("/")[0]});
                items.add(item);
+               
+               item = new DataItem();
+               item.setItemHeader("TXN.DATE");
+               item.setItemValues(new String[] {ndf.format(trandate)});
+               
+               
+               items.add(item);
 
-                param.setDataItems(items);
+               param.setDataItems(items);
                
                 ofstr = t24.generateOFSTransactString(param);
 
@@ -261,10 +268,55 @@ import org.t24.ofsParam;
             SingleTransferResponse fundstransferresponse = new SingleTransferResponse();
 
             try {
-             respcode = RemittaResponseCodes.SUCCESS;
+            
+            
              
-             fundstransferresponse.setResponseCode(respcode.getCode());
-              fundstransferresponse.setResponseText("Method not yet Implemented");
+                   String[] vofsoptions = new String[] { "", "I", "VALIDATE", "", "0" };
+                        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+                             List<DataItem> items = new LinkedList<>();
+
+               ofsParam param = new ofsParam();
+               param.setCredentials(credentials);
+               param.setOperation("REMITA.FT.REF.TABLE");
+               param.setOptions(vofsoptions);
+               
+               
+               param.setTransaction_id(statusrequest.getTransRef());
+               
+               param.setDataItems(items);
+               
+                String ofs = t24.generateOFSTransactString(param);
+
+                String output = t24.PostMsg(ofs);
+                 
+                if(output.indexOf("T24.ID")>0){
+                     respcode = RemittaResponseCodes.SUCCESS;
+                       fundstransferresponse.setResponseCode(respcode.getCode());
+                    fundstransferresponse.setResponseText(respcode.getMessage());
+                    fundstransferresponse.setTransRef(statusrequest.getTransRef());
+                    
+                    SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");    
+                    int sdd =   output.indexOf("TXN.DATE:1:1=");
+                    String datestr = output.substring(sdd,sdd+21);
+//                    
+                    datestr = datestr.substring(datestr.length()-8, datestr.length());
+//                    
+                    Date  date =   ndf.parse(datestr.trim());
+                    
+                    fundstransferresponse.setTransactionDate(sdf.format(date));
+                                       
+                }
+                else{
+                        respcode = RemittaResponseCodes.UNKNOWN_TRANSACTION;
+                        fundstransferresponse.setTransactionDate("");
+                        fundstransferresponse.setResponseCode(respcode.getCode());
+                        fundstransferresponse.setResponseText(respcode.getMessage());
+                        fundstransferresponse.setTransRef(statusrequest.getTransRef());
+                }
+                   
+             
+          
         
             } catch (Exception d) {
                respcode = RemittaResponseCodes.UNKNOWN_ERROR;
@@ -389,9 +441,17 @@ import org.t24.ofsParam;
          
          
             } catch (Exception d) {
+                
+             if(d.getMessage().contains("found that matched the selection criteria")){
+                 respcode =  RemittaResponseCodes.INVALID_ACCOUNT;
+                  accountbalanceresponse.setResponseText(respcode.getMessage());
+              accountbalanceresponse.setResponseCode(respcode.getCode());
+             }
+             else{  
               respcode =  RemittaResponseCodes.UNKNOWN_ERROR;
               accountbalanceresponse.setResponseText(d.getMessage());
               accountbalanceresponse.setResponseCode(respcode.getCode());
+             }
             }
             return accountbalanceresponse;
         }

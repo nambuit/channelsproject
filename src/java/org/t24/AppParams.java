@@ -115,8 +115,9 @@ public WebServiceLogger getServiceLogger(String filename){
       
    message = message.toLowerCase();
    
-   if(message.contains("ACCOUNT RECORD MISSING".toLowerCase())){
-      respcode =  RemittaResponseCodes.ACCOUNT_BLOCKED;
+   if(message.contains("ACCOUNT RECORD MISSING".toLowerCase())||message.contains("found that matched the selection criteria"))
+   {
+      respcode =  RemittaResponseCodes.INVALID_ACCOUNT;
    }
    
      if(message.contains("is inactive")){
