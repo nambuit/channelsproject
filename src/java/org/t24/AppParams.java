@@ -38,7 +38,10 @@ public class AppParams {
     private int port;
     private String OFSsource;
     private String T24Framework;
-     InputStream propertiesfile; 
+     InputStream propertiesfile;
+     private String encryptionserver;
+    private int encryptionport;
+    private String encryptionkey;
     
     
     
@@ -48,17 +51,20 @@ public class AppParams {
     {
 
         javax.naming.Context ctx = (javax.naming.Context)new InitialContext().lookup("java:comp/env");
-         Host = (String)ctx.lookup("HOST");
-         port = Integer.parseInt((String)ctx.lookup("PORT"));
+        Host = (String)ctx.lookup("HOST");
+        port = Integer.parseInt((String)ctx.lookup("PORT"));
+        encryptionserver = (String)ctx.lookup("encryptionHOST");
+        encryptionport = Integer.parseInt((String)ctx.lookup("encryptionPORT"));
+        encryptionkey = (String)ctx.lookup("encryptionKEY");
         OFSsource = (String)ctx.lookup("OFSsource");
         Ofsuser = (String)ctx.lookup("OFSuser");
         Ofspass = (String)ctx.lookup("OFSpass");
         ImageBase = (String)ctx.lookup("ImageBase");
         ISOofsSource = (String)ctx.lookup("ISO_OFSsource");
         LogDir = (String)ctx.lookup("LogDir");
-         listeningDir = (String)ctx.lookup("ISOLogListenerDir");
-          T24Framework = (String)ctx.lookup("T24Framework");
-           ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        listeningDir = (String)ctx.lookup("ISOLogListenerDir");
+        T24Framework = (String)ctx.lookup("T24Framework");
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         propertiesfile = classLoader.getResourceAsStream("org/t24/interfacelogger.properties");
         
     }
@@ -136,8 +142,45 @@ public WebServiceLogger getServiceLogger(String filename){
        
        return respcode;
   }
+  
+  
+  
 
 
+  
+    public NIBBsResponseCodes getNIBBsCode(String message){
+   
+      NIBBsResponseCodes respcode = NIBBsResponseCodes.System_malfunction;
+      
+    message = message.toLowerCase();
+   
+   if(message.contains("ACCOUNT RECORD MISSING".toLowerCase())||message.contains("found that matched the selection criteria"))
+   {
+      respcode =  NIBBsResponseCodes.Invalid_Account;
+   }
+   
+     if(message.contains("is inactive")){
+      respcode =  NIBBsResponseCodes.Dormant_Account;
+   }
+   
+     
+          if(message.contains("IS FLAGGED FOR ONLINE CLOSURE".toLowerCase())){
+      respcode =  NIBBsResponseCodes.Invalid_Account;
+   }
+          
+        if(message.contains("Insolvent".toLowerCase())){
+      respcode =  NIBBsResponseCodes.Do_not_honor;
+   }
+   
+        
+          if(message.contains("Unauthorised overdraft".toLowerCase())){
+      respcode =  NIBBsResponseCodes.No_sufficient_funds;
+   }
+    
+     
+       
+       return respcode;
+  }
     
 //    public static void main(String [] args){
 //        

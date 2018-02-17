@@ -37,8 +37,6 @@ public class FTAdviceCreditRequest {
    @XmlElement(name = "BeneficiaryAccountNumber")
    private String BeneficiaryAccountNumber;
    
-   @XmlElement(name = "BeneficiaryVerificationNumber")
-   private String BeneficiaryVerificationNumber;
    
    @XmlElement(name = "BeneficiaryBankVerificationNumber")
    private String BeneficiaryBankVerificationNumber;

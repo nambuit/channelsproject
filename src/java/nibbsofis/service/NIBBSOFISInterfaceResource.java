@@ -119,7 +119,7 @@ public class NIBBSOFISInterfaceResource {
     JSONObject object = XML.toJSONObject(input);       
    
 //    
-        object = (JSONObject)object.get("AirTimeTopupNotificationRequest");
+    object = (JSONObject)object.get("AirTimeTopupNotificationRequest");
 //    
    String json = object.toString();
      AirTimeTopupNotificationRequest request = (AirTimeTopupNotificationRequest) gson.fromJson(json, AirTimeTopupNotificationRequest.class);
@@ -140,6 +140,7 @@ public class NIBBSOFISInterfaceResource {
         
     }
     
+
     
     
        @POST
@@ -158,7 +159,7 @@ public class NIBBSOFISInterfaceResource {
 //    
    String json = object.toString();
      BillPaymentNotificationRequest request = (BillPaymentNotificationRequest) gson.fromJson(json, BillPaymentNotificationRequest.class);
-  
+    //    request.getTransactionParamList().getTransactionParam()[0];
         response.setOFICode(request.getOFICode());
         response.setResponseCode("00");
         response.setResponseDescription("dffdd");

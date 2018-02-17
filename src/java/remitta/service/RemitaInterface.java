@@ -71,7 +71,7 @@ import org.t24.ofsParam;
             try {
 
        
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm.ss");
         SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
 
       Date trandate = sdf.parse(fundstransfer.getTransactionDate());
@@ -296,7 +296,7 @@ import org.t24.ofsParam;
                     fundstransferresponse.setTransRef(statusrequest.getTransRef());
                     
                     SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");    
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm.ss");    
                     int sdd =   output.indexOf("TXN.DATE:1:1=");
                     String datestr = output.substring(sdd,sdd+21);
 //                    
@@ -432,7 +432,7 @@ import org.t24.ofsParam;
      
         accountbalanceresponse.setAccountName(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());        
         
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm.ss");
         
         accountbalanceresponse.setBalanceDate(sdf.format(today));
         

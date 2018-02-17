@@ -4,11 +4,11 @@
     <service name="BankOneInterface">
       <implementation-class>bankone.service.BankOneInterface</implementation-class>
     </service>
-    <service name="NIBBSNIPInterface">
-      <implementation-class>nibbsnip.service.NIBBSNIPInterface</implementation-class>
-    </service>
     <service name="RemitaInterface">
       <implementation-class>remitta.service.RemitaInterface</implementation-class>
+    </service>
+    <service name="NIBBSNIPInterface">
+      <implementation-class>nibbsnip.service.NIBBSNIPInterface</implementation-class>
     </service>
   </services>
   <clients>
