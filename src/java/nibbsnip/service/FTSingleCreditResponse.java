@@ -15,7 +15,7 @@ import lombok.Setter;
  *
  * @author wumoru
  */
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "FTSingleCreditResponse")
 public class FTSingleCreditResponse {
     

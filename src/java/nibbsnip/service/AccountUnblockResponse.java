@@ -12,7 +12,7 @@ import lombok.Setter;
  *
  * @author chijiokennamani
  */
-@Getter @Setter 
+@Setter 
 @XmlRootElement(name = "AccountUnblockResponse")
 public class AccountUnblockResponse {
     

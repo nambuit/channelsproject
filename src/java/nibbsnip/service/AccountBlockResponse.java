@@ -4,16 +4,14 @@
  * and open the template in the editor.
  */
 package nibbsnip.service;
-import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
 import lombok.Setter;
 /**
  *
  * @author chijiokennamani
  */
-@Getter @Setter 
+@Setter 
 @XmlRootElement(name = "AccountBlockResponse")
 public class AccountBlockResponse {
     

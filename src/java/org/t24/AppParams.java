@@ -144,7 +144,10 @@ public WebServiceLogger getServiceLogger(String filename){
   }
   
   
-  
+  public static String escape(String text){
+      
+      return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
+  }
 
 
   

@@ -14,7 +14,7 @@ import lombok.Setter;
  *
  * @author wumoru
  */
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "TSQuerySingleResponse")
 public class TSQuerySingleResponse {
     

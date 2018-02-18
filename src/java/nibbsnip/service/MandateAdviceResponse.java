@@ -13,7 +13,7 @@ import lombok.Setter;
  *
  * @author chijiokennamani
  */
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "MandateAdviceResponse")
 public class MandateAdviceResponse {
     

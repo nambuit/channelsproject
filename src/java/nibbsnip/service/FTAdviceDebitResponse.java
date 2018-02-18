@@ -16,11 +16,11 @@ import lombok.Setter;
  * @author OLAMIDE
  */
 
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "FTAdviceDebitResponse")
 public class FTAdviceDebitResponse {
     
-   @XmlElement(name = "SessionID")
+  @XmlElement(name = "SessionID")
    private String SessionID;
    
     

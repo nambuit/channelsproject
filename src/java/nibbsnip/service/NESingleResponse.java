@@ -15,7 +15,7 @@ import lombok.Setter;
  * @author wumoru
  */
 @XmlRootElement(name = "NESingleResponse")
-@Getter @Setter
+@Setter
 public class NESingleResponse {
     
     @XmlElement(name = "SessionID")

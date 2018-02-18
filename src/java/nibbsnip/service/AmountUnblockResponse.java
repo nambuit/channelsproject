@@ -15,7 +15,7 @@ import lombok.Setter;
  *
  * @author OLAMIDE
  */
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "AmountUnblockResponse")
 public class AmountUnblockResponse {
     

@@ -8,14 +8,13 @@ package nibbsnip.service;
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
  * @author OLAMIDE
  */
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "BalanceEnquiryResponse")
 public class BalanceEnquiryResponse {
     
