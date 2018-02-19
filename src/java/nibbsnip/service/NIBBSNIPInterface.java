@@ -843,6 +843,8 @@ public class NIBBSNIPInterface {
                //setReasonCode("1111");
                }
                return options.ObjectToXML(response);
+               
+               // return nipssm.encrypt(options.ObjectToXML(response)); 
            }
 
     
@@ -914,6 +916,8 @@ public class NIBBSNIPInterface {
                    response.setResponseCode("12");
                }
                return options.ObjectToXML(response);
+               
+                // return nipssm.encrypt(options.ObjectToXML(response));
            }
 
            
@@ -993,6 +997,8 @@ public class NIBBSNIPInterface {
                   response.setResponseCode(respcodes.getCode());
                }
                return options.ObjectToXML(response);
+               
+                // return nipssm.encrypt(options.ObjectToXML(response));
     }
     
     @WebMethod(operationName = "accountunblock")
@@ -1061,22 +1067,34 @@ public class NIBBSNIPInterface {
             response.setResponseCode(respcodes.getCode());
         }
         return options.ObjectToXML(response);
+        
+         // return nipssm.encrypt(options.ObjectToXML(response));
     }
     
     @WebMethod(operationName = "financialinstitutionlist")
     public String financialinstitutionlist(@WebParam(name = "FinancialInstitutionListIn") String FinancialInstitutionListIn) {
-        FinancialInstitutionListResponse FinancialInstitutionListOut = new FinancialInstitutionListResponse();
-        Gson gson = new Gson();
+        FinancialInstitutionListResponse response = new FinancialInstitutionListResponse();
+       
         try{
-            JSONObject object = XML.toJSONObject(FinancialInstitutionListIn);       
-            object = (JSONObject)object.get("FinancialInstitutionListRequest");
-            String json = object.toString();
-            FinancialInstitutionListRequest request = (FinancialInstitutionListRequest)gson.fromJson(json, FinancialInstitutionListRequest.class);
+            FinancialInstitutionListIn = nipssm.decrypt(FinancialInstitutionListIn);
+            
+            FinancialInstitutionListRequest request = (FinancialInstitutionListRequest)options.XMLToObject(FinancialInstitutionListIn, new FinancialInstitutionListRequest());
+            
+        }                   
+        catch(UnmarshalException r){
+                
+             respcodes = NIBBsResponseCodes.Format_error;
+            response.setResponseCode(respcodes.getCode());
+            
         }catch(Exception d){
-            FinancialInstitutionListOut.setResponseCode("32");
+            respcodes=NIBBsResponseCodes.System_malfunction;
+            response.setResponseCode(respcodes.getCode());
         }
-        return options.ObjectToXML(FinancialInstitutionListOut);
+        return options.ObjectToXML(response);
+        
+         // return nipssm.encrypt(options.ObjectToXML(response));
     }
+    
     
     @WebMethod(operationName = "mandateadvice")
     public String mandateadvice(@WebParam(name = "MandateAdviceIn") String MandateAdviceIn) {
