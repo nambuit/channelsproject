@@ -42,6 +42,9 @@ public class AppParams {
      private String encryptionserver;
     private int encryptionport;
     private String encryptionkey;
+    private String DBuser;
+    private String DBpass;
+    private String DBserver;
     
     
     
@@ -60,6 +63,9 @@ public class AppParams {
         Ofsuser = (String)ctx.lookup("OFSuser");
         Ofspass = (String)ctx.lookup("OFSpass");
         ImageBase = (String)ctx.lookup("ImageBase");
+        DBuser = (String)ctx.lookup("DBuser");
+        DBpass = (String)ctx.lookup("DBpass");
+        DBserver = (String)ctx.lookup("DBserver");
         ISOofsSource = (String)ctx.lookup("ISO_OFSsource");
         LogDir = (String)ctx.lookup("LogDir");
         listeningDir = (String)ctx.lookup("ISOLogListenerDir");
@@ -184,6 +190,58 @@ public WebServiceLogger getServiceLogger(String filename){
        
        return respcode;
   }
+    
+    
+    
+    public String getCreateNIPTableScript(String tableName){
+        
+        return "CREATE TABLE [dbo].["+tableName+"](\n" +
+"	[SessionID] [varchar](100) NULL,\n" +
+"	[DestinationInstitutionCode] [varchar](100) NULL,\n" +
+"	[SourceInstitutionCode] [varchar](100) NULL,\n" +
+"	[ChannelCode] [varchar](100) NULL,\n" +
+"	[AccountNumber] [varchar](100) NULL,\n" +
+"	[BankVerificationNumber] [varchar](100) NULL,\n" +
+"	[ResponseCode] [varchar](100) NULL,\n" +
+"	[NameEnquiryRef] [varchar](100) NULL,\n" +
+"	[BeneficiaryAccountName] [varchar](100) NULL,\n" +
+"	[BeneficiaryAccountNumber] [varchar](100) NULL,\n" +
+"	[BeneficiaryBankVerificationNumber] [varchar](100) NULL,\n" +
+"	[OriginatorAccountName] [varchar](100) NULL,\n" +
+"	[OriginatorAccountNumber] [varchar](100) NULL,\n" +
+"	[OriginatorBankVerificationNumber] [varchar](100) NULL,\n" +
+"	[OriginatorKYCLevel] [varchar](100) NULL,\n" +
+"	[TransactionLocation] [varchar](100) NULL,\n" +
+"	[Narration] [varchar](1000) NULL,\n" +
+"	[PaymentReference] [varchar](100) NULL,\n" +
+"	[Amount] [money] NULL,\n" +
+"	[DebitAccountName] [varchar](100) NULL,\n" +
+"	[DebitAccountNumber] [varchar](100) NULL,\n" +
+"	[DebitBankVerificationNumber] [varchar](100) NULL,\n" +
+"	[MandateReferenceNumber] [varchar](100) NULL,\n" +
+"	[BatchNumber] [varchar](100) NULL,\n" +
+"	[NumberOfRecords] [varchar](100) NULL,\n" +
+"	[RecID] [varchar](100) NULL,\n" +
+"	[AuthorizationCode] [varchar](100) NULL,\n" +
+"	[TargetAccountName] [varchar](100) NULL,\n" +
+"	[TargetAccountNumber] [varchar](100) NULL,\n" +
+"	[TargetBankVerificationNumber] [varchar](100) NULL,\n" +
+"	[AvailableBalance] [money] NULL,\n" +
+"	[TransactionFee] [money] NULL,\n" +
+"	[DebitKYCLevel] [varchar](100) NULL,\n" +
+"	[ReferenceCode] [varchar](100) NULL,\n" +
+"	[ReasonCode] [varchar](100) NULL,\n" +
+"	[AccountName] [varchar](100) NULL,\n" +
+"	[BeneficiaryKYCLevel] [varchar](100) NULL,\n" +
+"	[KYCLevel] [varchar](100) NULL,\n" +
+"	[InstitutionCode] [varchar](100) NULL,\n" +
+"	[InstitutionName] [varchar](100) NULL,\n" +
+"	[Category] [varchar](100) NULL,\n" +
+"	[TranDirection] [nvarchar](50) NULL,\n" +
+"	[StatusMessage] [nvarchar](500) NULL,\n" +
+"	[TransactionDate] [datetime] NULL\n" +
+") ON [PRIMARY]";
+    }
     
 //    public static void main(String [] args){
 //        

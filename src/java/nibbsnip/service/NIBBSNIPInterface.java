@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.apache.log4j.Level;
 import org.json.JSONObject;
 import org.json.XML;
 import org.t24.AppParams;
+import org.t24.DBConnector;
 import org.t24.DataItem;
 import org.t24.NIBBsResponseCodes;
 import org.t24.PGPEncrytionTool;
@@ -39,6 +41,7 @@ public class NIBBSNIPInterface {
      String logfilename = "NIBBSNIPInterface";
      NIBBsResponseCodes respcodes;  
      PGPEncrytionTool nipssm;
+     DBConnector db;
     
     
     public NIBBSNIPInterface(){
@@ -52,6 +55,8 @@ public class NIBBSNIPInterface {
         
         t24 = "TAFJ".equals(options.getT24Framework().trim().toUpperCase())? new T24TAFJLink():
               new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource()); 
+        
+        db = new DBConnector(options.getDBserver(),options.getDBuser(),options.getDBpass(),"NIPLogs");
         
     }
     catch (Exception e)
@@ -125,11 +130,25 @@ public class NIBBSNIPInterface {
             
         FTSingleCreditRequest request = (FTSingleCreditRequest) options.XMLToObject(ftsinglecreditrequest, new FTSingleCreditRequest());
         
-         //repopulating response object
+        List<Object> values = new ArrayList<>();
+        List<String> headers = new ArrayList<>();
+         //repopulating response object and logging request
         response.setAmount(request.getAmount());
+        values.add(Double.parseDouble(request.getAmount().toString()));
+        headers.add("Amount");
+        
         response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+        values.add(request.getBeneficiaryAccountName());
+        headers.add("BeneficiaryAccountName");
+        
         response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
+        values.add(request.getBeneficiaryAccountNumber());
+        headers.add("BeneficiaryAccountNumber");
+        
         response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
+        values.add(request.getBeneficiaryBankVerificationNumber());
+        headers.add("BeneficiaryBankVerificationNumber");
+        
         response.setChannelCode(request.getChannelCode());
         response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
         response.setOriginatorAccountName(request.getOriginatorAccountName());
@@ -138,15 +157,33 @@ public class NIBBSNIPInterface {
         response.setOriginatorKYCLevel(request.getOriginatorKYCLevel());
         response.setSessionID(request.getSessionID());
         response.setTransactionLocation(request.getTransactionLocation());
+        
+        Date date = new  Date();
+        values.add(date);
+        headers.add("TransactionDate");
+        
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+        String monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
      
-     
+       db.insertData(headers, values.toArray(),monthlyTable);
+        
      
      
        String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
-       Date date = new  Date();
+     
     
        String trandate = ndf.format(date);
        
