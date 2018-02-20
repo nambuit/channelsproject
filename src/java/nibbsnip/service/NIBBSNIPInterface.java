@@ -150,17 +150,47 @@ public class NIBBSNIPInterface {
         headers.add("BeneficiaryBankVerificationNumber");
         
         response.setChannelCode(request.getChannelCode());
+        values.add(request.getChannelCode());
+        headers.add("ChannelCode");
+        
         response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+        values.add(request.getDestinationInstitutionCode());
+        headers.add("DestinationInstitutionCode");
+        
         response.setOriginatorAccountName(request.getOriginatorAccountName());
+        values.add(request.getOriginatorAccountName());
+        headers.add("OriginatorAccountName");
+        
         response.setOriginatorAccountNumber(request.getOriginatorAccountNumber());
-        response.setOriginatorBankVerificationNumber(request.getOriginatorBankVerificationNumber());
-        response.setOriginatorKYCLevel(request.getOriginatorKYCLevel());
+        values.add(request.getOriginatorAccountNumber());
+        headers.add("OriginatorAccountNumber");
+        
+         response.setOriginatorBankVerificationNumber(request.getOriginatorBankVerificationNumber());
+         values.add(request.getOriginatorBankVerificationNumber());
+         headers.add("OriginatorBankVerificationNumber");
+        
+         response.setOriginatorKYCLevel(request.getOriginatorKYCLevel());
+         values.add(request.getOriginatorKYCLevel());
+         headers.add("OriginatorKYCLevel");
+       
         response.setSessionID(request.getSessionID());
+        values.add(request.getSessionID());
+        headers.add("SessionID");
+         
         response.setTransactionLocation(request.getTransactionLocation());
+        values.add(request.getTransactionLocation());
+        headers.add("TransactionLocation");
+        
         
         Date date = new  Date();
         values.add(date);
         headers.add("TransactionDate");
+        
+        values.add("INWARD");
+        headers.add("TranDirection");
+        
+        
+        
         
          SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
         
