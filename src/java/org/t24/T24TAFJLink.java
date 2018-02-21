@@ -21,11 +21,11 @@ public class T24TAFJLink implements T24Link {
 
         try {
      String resp;
-    // OFSService service = new OFSService();
-     //OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
-   // ServiceResponse response = ofs.invoke(sOFS);
-   //  resp = response.getResponses().get(0);
-           return "";
+     OFSService service = new OFSService();
+     OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
+    ServiceResponse response = ofs.invoke(sOFS);
+     resp = response.getResponses().get(0);
+           return resp;
         } catch (Exception ex) {
 
           throw (ex);

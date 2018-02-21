@@ -70,16 +70,69 @@ public class NIBBSNIPInterface {
         @WebMethod(operationName = "nameenquirysingleitem")
         public String nameenquirysingleitem(@WebParam(name = "nesinglerequest") String input) {     
         NESingleResponse nameEnquiry = new NESingleResponse();
-        
+          String monthlyTable = "";
+        String sessionID="",AcctName ="",BVN = "";
          
         try{
                    
           // input = nipssm.decrypt(input);
     
             NESingleRequest request = (NESingleRequest) options.XMLToObject(input, new NESingleRequest());
+            
+        List<Object> values = new ArrayList<>();
+        List<String> headers = new ArrayList<>();
+         //repopulating response object and logging request
+         
+             nameEnquiry.setSessionID(request.getSessionID());
+             values.add(request.getSessionID());
+             headers.add("SessionID");
+             sessionID = request.getSessionID();
+         
+            nameEnquiry.setAccountNumber(request.getAccountNumber());
+            values.add(request.getAccountNumber());
+            headers.add("AccountNumber");
+
+            nameEnquiry.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+            values.add(request.getDestinationInstitutionCode());
+            headers.add("DestinationInstitutionCode");
+
+            nameEnquiry.setChannelCode(request.getChannelCode());
+            values.add(request.getChannelCode());
+            headers.add("ChannelCode");       
+
+
+            Date date = new  Date();
+            values.add(date);
+            headers.add("TransactionDate");
+
+            values.add("INWARD");
+            headers.add("TranDirection");
+
+            values.add("nameenquirysingleitem");
+            headers.add("MethodName");
+        
+        
+
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
      
+       db.insertData(headers, values.toArray(),monthlyTable);
+        
+        
+        
+    
             ArrayList<List<String>> result = t24.getOfsData("NESingleRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
-            List<String> headers = result.get(0);
+            headers = result.get(0);
      
            if(headers.size()!=result.get(1).size()){
                String msg = result.get(1).get(0);
@@ -92,13 +145,16 @@ public class NIBBSNIPInterface {
           respcodes = NIBBsResponseCodes.SUCCESS;
          nameEnquiry.setAccountNumber(request.getAccountNumber());
          nameEnquiry.setResponseCode(respcodes.getCode());
-         nameEnquiry.setAccountName(escape(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim()));
-         nameEnquiry.setBankVerificationNumber(escape(result.get(1).get(headers.indexOf("BankVerificationNumber")).replace("\"", "").trim()));
+         AcctName = escape(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());
+         nameEnquiry.setAccountName(AcctName);
+         BVN = escape(result.get(1).get(headers.indexOf("BankVerificationNumber")).replace("\"", "").trim());
+         nameEnquiry.setBankVerificationNumber(BVN);
          nameEnquiry.setKYCLevel(escape(result.get(1).get(headers.indexOf("KYCLevel")).replace("\"", "").trim()));
          nameEnquiry.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
          nameEnquiry.setChannelCode(request.getChannelCode());
          nameEnquiry.setSessionID(request.getSessionID());
-        
+         
+         
             
     }
                 catch(UnmarshalException r){
@@ -112,6 +168,19 @@ public class NIBBSNIPInterface {
         nameEnquiry.setResponseCode(respcodes.getCode());
         
     }
+    finally{
+    try{
+        
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"', AccountName='"+AcctName+"' BankVerificationNumber='"+BVN+"'  where SessionID='"+sessionID+"' and MethodName='fundtransfersingleitem_dc'";
+        db.Execute(query);
+        
+        }
+        catch(Exception s)
+           {
+           
+            }
+
+}   
         return options.ObjectToXML(nameEnquiry);
         
         // return nipssm.encrypt(options.ObjectToXML(nameEnquiry));
@@ -122,6 +191,9 @@ public class NIBBSNIPInterface {
       @WebMethod(operationName = "fundtransfersingleitem_dc")
     public String fundtransfersingleitem_dc(@WebParam(name = "ftsinglecreditrequest") String ftsinglecreditrequest) {
         FTSingleCreditResponse response = new FTSingleCreditResponse();
+        String monthlyTable = "";
+        String sessionID = "";
+                
 
         
         try{
@@ -176,11 +248,21 @@ public class NIBBSNIPInterface {
         response.setSessionID(request.getSessionID());
         values.add(request.getSessionID());
         headers.add("SessionID");
+        sessionID = request.getSessionID();
          
         response.setTransactionLocation(request.getTransactionLocation());
         values.add(request.getTransactionLocation());
         headers.add("TransactionLocation");
         
+        response.setTransactionLocation(request.getNarration());
+        values.add(request.getNarration());
+        headers.add("Narration");
+        
+        response.setTransactionLocation(request.getPaymentReference());
+        values.add(request.getPaymentReference());
+        headers.add("PaymentReference");
+        
+       // request.
         
         Date date = new  Date();
         values.add(date);
@@ -189,12 +271,13 @@ public class NIBBSNIPInterface {
         values.add("INWARD");
         headers.add("TranDirection");
         
-        
+              values.add("fundtransfersingleitem_dc");
+            headers.add("MethodName");
         
         
          SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
         
-        String monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
         
         String createquery = options.getCreateNIPTableScript(monthlyTable);
         
@@ -209,7 +292,7 @@ public class NIBBSNIPInterface {
         
      
      
-       String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+       String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
@@ -232,17 +315,17 @@ public class NIBBSNIPInterface {
            
           
            DataItem item = new DataItem();
-           item.setItemHeader("DEBIT.VALUE.DATE");
-           item.setItemValues(new String[] {trandate});
-           items.add(item);
-           
+//           item.setItemHeader("DEBIT.VALUE.DATE");
+//           item.setItemValues(new String[] {trandate});
+//           items.add(item);
+//           
       
-           item = new DataItem();
-           item.setItemHeader("CREDIT.VALUE.DATE");
-           item.setItemValues(new String[] {trandate});
-           items.add(item);
-           
-           item = new DataItem();
+//           item = new DataItem();
+//           item.setItemHeader("CREDIT.VALUE.DATE");
+//           item.setItemValues(new String[] {trandate});
+//           items.add(item);
+//           
+       //    item = new DataItem();
            item.setItemHeader("DEBIT.CURRENCY");
            item.setItemValues(new String[] {"NGN"});
            items.add(item);
@@ -351,41 +434,106 @@ public class NIBBSNIPInterface {
         respcodes = NIBBsResponseCodes.System_malfunction;
         response.setResponseCode(respcodes.getCode());
     }
+      finally{
+    try{
+        
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"' where SessionID='"+sessionID+"' and MethodName='fundtransfersingleitem_dc'";
+        db.Execute(query);
+        
+        }
+        catch(Exception s)
+           {
+           
+            }
+
+}   
+      
         return options.ObjectToXML(response);
         
          // return nipssm.encrypt(options.ObjectToXML(response));
-}
+   
+    }
+ 
     
       @WebMethod(operationName = "fundtransfersingleitem_dd")
     public String fundtransfersingleitem_dd(@WebParam(name = "ftsingledebitrequest") String ftsingledebitrequest) {
-        FTSingleDebitResponse response = new FTSingleDebitResponse();        
+        FTSingleDebitResponse response = new FTSingleDebitResponse();     
+        
+        String monthlyTable = "";
+        String sessionID = "";
+        
         try{
             
        //ftsingledebitrequest = nipssm.decrypt(ftsingledebitrequest);     
        FTSingleDebitRequest request = (FTSingleDebitRequest) options.XMLToObject(ftsingledebitrequest, new FTSingleDebitRequest());
        
-        //repopulating response object
+            List<Object> values = new ArrayList<>();
+        List<String> headers = new ArrayList<>();
+         //repopulating response object and logging request
         response.setAmount(request.getAmount());
+        values.add(Double.parseDouble(request.getAmount().toString()));
+        headers.add("Amount");
+        
         response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+        values.add(request.getBeneficiaryAccountName());
+        headers.add("BeneficiaryAccountName");
+        
         response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
+        values.add(request.getBeneficiaryAccountNumber());
+        headers.add("BeneficiaryAccountNumber");
+        
         response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
+        values.add(request.getBeneficiaryBankVerificationNumber());
+        headers.add("BeneficiaryBankVerificationNumber");
+        
         response.setChannelCode(request.getChannelCode());
+        values.add(request.getChannelCode());
+        headers.add("ChannelCode");
+        
         response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
-        response.setMandateReferenceNumber(request.getMandateReferenceNumber());
-        response.setNameEnquiryRef(request.getNameEnquiryRef());
-        response.setDebitKYCLevel(request.getDebitKYCLevel());
-        response.setNarration(request.getNarration());
+        values.add(request.getDestinationInstitutionCode());
+        headers.add("DestinationInstitutionCode");
+        
+       
         response.setSessionID(request.getSessionID());
+        values.add(request.getSessionID());
+        headers.add("SessionID");
+        sessionID = request.getSessionID();
+         
         response.setTransactionLocation(request.getTransactionLocation());
-        response.setPaymentReference(request.getPaymentReference());
-        response.setDebitAccountNumber(request.getDebitAccountNumber());
-        response.setDebitAccountName(request.getDebitAccountName());
- 
-       String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+        values.add(request.getTransactionLocation());
+        headers.add("TransactionLocation");
+        
+        
+        Date date = new  Date();
+        values.add(date);
+        headers.add("TransactionDate");
+        
+        values.add("INWARD");
+        headers.add("TranDirection");
+        
+        
+        
+        
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
+     
+       db.insertData(headers, values.toArray(),monthlyTable);
+       String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
-       Date date = new  Date();
+   
     
        String trandate = ndf.format(date);
        
@@ -404,15 +552,15 @@ public class NIBBSNIPInterface {
            
           
            DataItem item = new DataItem();
-           item.setItemHeader("DEBIT.VALUE.DATE");
-           item.setItemValues(new String[] {trandate});
-           items.add(item);
+//           item.setItemHeader("DEBIT.VALUE.DATE");
+//           item.setItemValues(new String[] {trandate});
+//           items.add(item);
            
       
-           item = new DataItem();
-           item.setItemHeader("CREDIT.VALUE.DATE");
-           item.setItemValues(new String[] {trandate});
-           items.add(item);
+//           item = new DataItem();
+//           item.setItemHeader("CREDIT.VALUE.DATE");
+//           item.setItemValues(new String[] {trandate});
+//           items.add(item);
            
            item = new DataItem();
            item.setItemHeader("DEBIT.CURRENCY");
@@ -522,10 +670,11 @@ public class NIBBSNIPInterface {
      
         try{
             
+            
            //  tsquerysinglerequest = nipssm.decrypt(tsquerysinglerequest);
      
              TSQuerySingleRequest request = (TSQuerySingleRequest) options.XMLToObject(tsquerysinglerequest, new TSQuerySingleRequest());
-     
+             
              ArrayList<List<String>> result = t24.getOfsData("TRANS.STATUS.QUE.REQ.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getSessionID());
              
              List<String> headers = result.get(0);
@@ -669,7 +818,7 @@ public class NIBBSNIPInterface {
         response.setDebitAccountNumber(request.getDebitAccountNumber());
         response.setDebitAccountName(request.getDebitAccountName());
  
-       String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+       String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
@@ -826,7 +975,7 @@ public class NIBBSNIPInterface {
                   param.setCredentials(credentials);
                   param.setOperation("AC.LOCKED.EVENTS");
                   param.setTransaction_id("");
-                  String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+                  String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
                   param.setOptions(ofsoptions);
 
                   List<DataItem> items = new LinkedList<>();
@@ -932,7 +1081,7 @@ public class NIBBSNIPInterface {
                param.setCredentials(credentials);
                   param.setOperation("AC.LOCKED.EVENTS");
                   param.setTransaction_id(request.getReferenceCode());
-                  String[] ofsoptions = new String[] { "", "R", "PROCESS", "", "0" };
+                  String[] ofsoptions = new String[] { "", "R", "PROCESS", "2", "0" };
                 param.setOptions(ofsoptions);
 
                   List<DataItem> items = new LinkedList<>();
@@ -1002,7 +1151,7 @@ public class NIBBSNIPInterface {
              param.setCredentials(credentials);
              param.setOperation("POSTING.RESTRICT");
              param.setTransaction_id("");
-             String[] ofsoptions = new String[] { "", "I", "PROCESS", "", "0" };
+             String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
              param.setOptions(ofsoptions);
 
             List<DataItem> items = new LinkedList<>();
@@ -1083,7 +1232,7 @@ public class NIBBSNIPInterface {
              param.setCredentials(credentials);
              param.setOperation("POSTING.RESTRICT");
              param.setTransaction_id(request.getReferenceCode());
-             String[] ofsoptions = new String[] { "", "R", "PROCESS", "", "0" };
+             String[] ofsoptions = new String[] { "", "R", "PROCESS", "2", "0" };
              param.setOptions(ofsoptions);
            
            List<DataItem> items = new LinkedList<>();

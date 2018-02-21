@@ -13,8 +13,8 @@
   </services>
   <clients>
     <client name="OFSService">
-      <wsdl-url>http://192.168.2.32:8085/TAFJServices/services/OFSService?wsdl</wsdl-url>
-      <local-wsdl-file>192.168.2.32_8085/TAFJServices/services/OFSService.wsdl</local-wsdl-file>
+      <wsdl-url>http://192.168.10.45:8086/TAFJServices/services/OFSService?wsdl</wsdl-url>
+      <local-wsdl-file>192.168.10.45_8086/TAFJServices/services/OFSService.wsdl</local-wsdl-file>
       <package-name forceReplace="true">org.t24</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
@@ -32,7 +32,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>http://192.168.2.32:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
+          <wsimport-option-value>http://192.168.10.45:8086/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>
