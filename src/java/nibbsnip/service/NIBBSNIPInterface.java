@@ -410,7 +410,7 @@ public class NIBBSNIPInterface {
                
                item = new DataItem();
                item.setItemHeader("TXN.DATE");
-               item.setItemValues(new String[] {ndf.format(trandate)});
+               item.setItemValues(new String[] {trandate});
                
                
                items.add(item);
