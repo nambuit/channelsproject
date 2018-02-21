@@ -57,7 +57,7 @@ public class PGPEncrytionTool {
        
     String rawtext = executeSSMComand("DEC"+options.getEncryptionkey()+"#"+cipher, options.getEncryptionserver(), options.getEncryptionport());
        
-    return rawtext.replace("DEC<", "<"); 
+    return rawtext.replace("DEC<", "<").trim(); 
        
    }
     

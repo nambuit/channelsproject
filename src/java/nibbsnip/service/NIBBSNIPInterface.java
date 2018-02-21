@@ -75,7 +75,7 @@ public class NIBBSNIPInterface {
          
         try{
                    
-          // input = nipssm.decrypt(input);
+           input = nipssm.decrypt(input);
     
             NESingleRequest request = (NESingleRequest) options.XMLToObject(input, new NESingleRequest());
             
@@ -181,9 +181,9 @@ public class NIBBSNIPInterface {
             }
 
 }   
-        return options.ObjectToXML(nameEnquiry);
+        //return options.ObjectToXML(nameEnquiry);
         
-        // return nipssm.encrypt(options.ObjectToXML(nameEnquiry));
+        return nipssm.encrypt(options.ObjectToXML(nameEnquiry));
 }
         
       
@@ -193,12 +193,12 @@ public class NIBBSNIPInterface {
         FTSingleCreditResponse response = new FTSingleCreditResponse();
         String monthlyTable = "";
         String sessionID = "";
-                
+        String CompanyCode = "NG0010001";     
 
         
         try{
 
-        //ftsinglecreditrequest = nipssm.decrypt(ftsinglecreditrequest);
+       ftsinglecreditrequest = nipssm.decrypt(ftsinglecreditrequest);
             
         FTSingleCreditRequest request = (FTSingleCreditRequest) options.XMLToObject(ftsinglecreditrequest, new FTSingleCreditRequest());
         
@@ -307,7 +307,7 @@ public class NIBBSNIPInterface {
            param.setOperation("FUNDS.TRANSFER");
            
            
-           param.setVersion("FT.REQ.DIRECT.DEBIT.NIP");
+           param.setVersion("FT.REQ.DIRECT.DEBIT.NIP.");
            
            param.setTransaction_id("");
           
@@ -315,11 +315,28 @@ public class NIBBSNIPInterface {
            
           
            DataItem item = new DataItem();
-//           item.setItemHeader("DEBIT.VALUE.DATE");
-//           item.setItemValues(new String[] {trandate});
-//           items.add(item);
-//           
-      
+           
+           
+          ofsParam paramv = new ofsParam(); 
+           
+         paramv.setTransaction_id(CompanyCode);
+         ofsoptions[2] ="VALIDATE";     
+         
+         paramv.setOptions(ofsoptions);
+         paramv.setDataItems(items);
+         
+         paramv.setOperation("NIP.PARAM.TABLE");
+         
+         paramv.setCredentials(credentials);
+         
+         String ofstrv = t24.generateOFSTransactString(paramv);
+         String resultv =  t24.PostMsg(ofstrv);
+         
+         resultv = resultv.substring(resultv.indexOf("RECEIVABLE.ACCOUNT:1:1="));
+         
+         String recievableacct = resultv.split(",")[0].split("=")[1];
+         
+         ofsoptions[2] ="PROCESS"; 
 //           item = new DataItem();
 //           item.setItemHeader("CREDIT.VALUE.DATE");
 //           item.setItemValues(new String[] {trandate});
@@ -340,9 +357,15 @@ public class NIBBSNIPInterface {
            item.setItemValues(new String[] {request.getAmount().toString()});
            items.add(item);
            
+           
+           
+           
+           
+           
+           
            item = new DataItem();
            item.setItemHeader("DEBIT.ACCT.NO");
-           item.setItemValues(new String[] {"recievables"});
+           item.setItemValues(new String[] {recievableacct});
            items.add(item);
                       
            item = new DataItem();
@@ -448,9 +471,9 @@ public class NIBBSNIPInterface {
 
 }   
       
-        return options.ObjectToXML(response);
+      //  return options.ObjectToXML(response);
         
-         // return nipssm.encrypt(options.ObjectToXML(response));
+          return nipssm.encrypt(options.ObjectToXML(response));
    
     }
  
@@ -659,9 +682,9 @@ public class NIBBSNIPInterface {
         respcodes = NIBBsResponseCodes.System_malfunction;
         response.setResponseCode(respcodes.getCode());
     }
-        return options.ObjectToXML(response);
+      //  return options.ObjectToXML(response);
         
-        // return nipssm.encrypt(options.ObjectToXML(response));
+         return nipssm.encrypt(options.ObjectToXML(response));
 }
     
         @WebMethod(operationName = "txnstatusquerysingleitem")
@@ -671,7 +694,7 @@ public class NIBBSNIPInterface {
         try{
             
             
-           //  tsquerysinglerequest = nipssm.decrypt(tsquerysinglerequest);
+             tsquerysinglerequest = nipssm.decrypt(tsquerysinglerequest);
      
              TSQuerySingleRequest request = (TSQuerySingleRequest) options.XMLToObject(tsquerysinglerequest, new TSQuerySingleRequest());
              
@@ -700,9 +723,9 @@ public class NIBBSNIPInterface {
         respcodes = NIBBsResponseCodes.System_malfunction;
         response.setResponseCode(respcodes.getCode());
     }
-        return options.ObjectToXML(response);
+      //  return options.ObjectToXML(response);
         
-        // return nipssm.encrypt(options.ObjectToXML(response));
+         return nipssm.encrypt(options.ObjectToXML(response));
 }
     
     
@@ -717,7 +740,7 @@ public class NIBBSNIPInterface {
 
         try {
        
-           // balancerequest = nipssm.decrypt(balancerequest);
+           balancerequest = nipssm.decrypt(balancerequest);
             
             BalanceEnquiryRequest request = (BalanceEnquiryRequest) options.XMLToObject(balancerequest,new BalanceEnquiryRequest());
      
@@ -758,9 +781,9 @@ public class NIBBSNIPInterface {
            respcodes = NIBBsResponseCodes.System_malfunction;
            accountbalance.setResponseCode(respcodes.getCode());
         }
-        return options.ObjectToXML(accountbalance);
+       // return options.ObjectToXML(accountbalance);
         
-        //return nipssm.encrypt(options.ObjectToXML(accountbalance));
+        return nipssm.encrypt(options.ObjectToXML(accountbalance));
     }
 
     @WebMethod(operationName = "fundtransferAdvice_dc")
@@ -770,23 +793,16 @@ public class NIBBSNIPInterface {
      
         
         try {
-           
-     FTAdviceCreditRequest request = (FTAdviceCreditRequest) options.XMLToObject(creditrequest, new FTAdviceCreditRequest());
-     
-     
-     
-    
-       
-       
-       
-     
+       creditrequest =   nipssm.decrypt(creditrequest);
+       FTAdviceCreditRequest request = (FTAdviceCreditRequest) options.XMLToObject(creditrequest, new FTAdviceCreditRequest());
+
         } catch (Exception d) {
             
             respcodes = NIBBsResponseCodes.System_malfunction;
             response.setResponseCode(respcodes.getCode());
         }
-        return options.ObjectToXML(response);
-         // return nipssm.encrypt(options.ObjectToXML(response));
+        //return options.ObjectToXML(response);
+          return nipssm.encrypt(options.ObjectToXML(response));
         
     }
 
@@ -796,7 +812,7 @@ public class NIBBSNIPInterface {
         
         try {
                        
-            //debitrequest = nipssm.decrypt(debitrequest);
+           debitrequest = nipssm.decrypt(debitrequest);
            
      FTAdviceDebitRequest request = (FTAdviceDebitRequest) options.XMLToObject(debitrequest, new FTAdviceDebitRequest());
      
@@ -953,9 +969,9 @@ public class NIBBSNIPInterface {
         
      
         
-        return options.ObjectToXML(response);
+       // return options.ObjectToXML(response);
         
-         // return nipssm.encrypt(options.ObjectToXML(response));
+         return nipssm.encrypt(options.ObjectToXML(response));
     }
     
 
@@ -966,7 +982,7 @@ public class NIBBSNIPInterface {
 
         try {
                            
-            //  amountblockrequest = nipssm.encrypt(amountblockrequest);   
+              amountblockrequest = nipssm.encrypt(amountblockrequest);   
               
                   AmountBlockRequest request = (AmountBlockRequest)options.XMLToObject(amountblockrequest, new AmountBlockRequest());
 
@@ -1058,9 +1074,9 @@ public class NIBBSNIPInterface {
                    response.setResponseCode(respcodes.getCode());
                //setReasonCode("1111");
                }
-               return options.ObjectToXML(response);
+              // return options.ObjectToXML(response);
                
-               // return nipssm.encrypt(options.ObjectToXML(response)); 
+                return nipssm.encrypt(options.ObjectToXML(response)); 
            }
 
     
@@ -1131,9 +1147,9 @@ public class NIBBSNIPInterface {
                    options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR); 
                    response.setResponseCode("12");
                }
-               return options.ObjectToXML(response);
+              // return options.ObjectToXML(response);
                
-                // return nipssm.encrypt(options.ObjectToXML(response));
+                 return nipssm.encrypt(options.ObjectToXML(response));
            }
 
            
@@ -1144,6 +1160,8 @@ public class NIBBSNIPInterface {
               
                try{
 
+             AccountBlockIn = nipssm.decrypt(AccountBlockIn);
+                   
             AccountBlockRequest request = (AccountBlockRequest) options.XMLToObject(AccountBlockIn, new AccountBlockRequest());  
 
              ofsParam param = new ofsParam();
@@ -1212,9 +1230,9 @@ public class NIBBSNIPInterface {
                   respcodes=NIBBsResponseCodes.System_malfunction;
                   response.setResponseCode(respcodes.getCode());
                }
-               return options.ObjectToXML(response);
+              // return options.ObjectToXML(response);
                
-                // return nipssm.encrypt(options.ObjectToXML(response));
+                return nipssm.encrypt(options.ObjectToXML(response));
     }
     
     @WebMethod(operationName = "accountunblock")
@@ -1223,7 +1241,7 @@ public class NIBBSNIPInterface {
       
         try{
             
-           // AccountUnblockIn = nipssm.decrypt(AccountUnblockIn);
+           AccountUnblockIn = nipssm.decrypt(AccountUnblockIn);
 
             AccountUnblockRequest request = (AccountUnblockRequest) options.XMLToObject(AccountUnblockIn, new AccountUnblockRequest());
             
@@ -1282,9 +1300,9 @@ public class NIBBSNIPInterface {
             respcodes=NIBBsResponseCodes.System_malfunction;
             response.setResponseCode(respcodes.getCode());
         }
-        return options.ObjectToXML(response);
+        //return options.ObjectToXML(response);
         
-         // return nipssm.encrypt(options.ObjectToXML(response));
+         return nipssm.encrypt(options.ObjectToXML(response));
     }
     
     @WebMethod(operationName = "financialinstitutionlist")
@@ -1306,9 +1324,9 @@ public class NIBBSNIPInterface {
             respcodes=NIBBsResponseCodes.System_malfunction;
             response.setResponseCode(respcodes.getCode());
         }
-        return options.ObjectToXML(response);
+        //return options.ObjectToXML(response);
         
-         // return nipssm.encrypt(options.ObjectToXML(response));
+          return nipssm.encrypt(options.ObjectToXML(response));
     }
     
     
@@ -1333,6 +1351,25 @@ public class NIBBSNIPInterface {
       return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
   }
        
+   
+    @WebMethod(operationName = "PGPEncryption")
+    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
+        
+        switch(mode.toLowerCase()){
+            case"dec":
+                String resp =  nipssm.decrypt(message);
+                return resp;
+                
+            default:
+                return nipssm.encrypt(message);
+        
+    }
+    
+    
+    
+    
+    }
+   
 }
 
 
