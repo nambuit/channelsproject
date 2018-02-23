@@ -34,7 +34,7 @@ public ResultSet getData(String sql)  throws Exception{
 
          Connection conn = null;
        PreparedStatement prestmt =null;   
-       
+   
         
         try
         {

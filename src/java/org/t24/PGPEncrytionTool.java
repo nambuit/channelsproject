@@ -32,7 +32,7 @@ public class PGPEncrytionTool {
             try (Socket socket = new Socket(host, port)) {
                 out = socket.getOutputStream();
                 out.write(value.getBytes());
-                b = new byte[2048];
+                b = new byte[4096];
                 do {
                     in = socket.getInputStream();
                     in.read(b);

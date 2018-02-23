@@ -195,7 +195,7 @@ public WebServiceLogger getServiceLogger(String filename){
     
     public String getCreateNIPTableScript(String tableName){
         
-        return "CREATE TABLE [dbo].[Feb2018NIP_TRANSACTIONS](\n" +
+        return "CREATE TABLE [dbo].["+tableName+"](\n" +
 "	[SessionID] [varchar](100) NULL,\n" +
 "	[DestinationInstitutionCode] [varchar](100) NULL,\n" +
 "	[SourceInstitutionCode] [varchar](100) NULL,\n" +
