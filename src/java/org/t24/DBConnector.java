@@ -135,7 +135,7 @@ public void insertData(List<String> fieldNames, Object [] data, String tableName
            
                               if(object.getClass() == Date.class){
                        Date date = (Date) object;
-             preparedStatement.setDate(i+1, new java.sql.Date(date.getTime()));
+             preparedStatement.setTimestamp(i+1, new java.sql.Timestamp(date.getTime()));
            }
                            
            }

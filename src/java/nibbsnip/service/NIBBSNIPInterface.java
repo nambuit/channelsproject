@@ -264,10 +264,7 @@ public class NIBBSNIPInterface {
         headers.add("PaymentReference");
         
        // request.
-        
-        Date date = new  Date();
-        values.add(date);
-        headers.add("TransactionDate");
+
         
         values.add("INWARD");
         headers.add("TranDirection");
@@ -275,6 +272,16 @@ public class NIBBSNIPInterface {
               values.add("fundtransfersingleitem_dc");
             headers.add("MethodName");
         
+            
+             String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
         
          SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
         
@@ -528,10 +535,7 @@ public class NIBBSNIPInterface {
         values.add(request.getTransactionLocation());
         headers.add("TransactionLocation");
         
-        
-        Date date = new  Date();
-        values.add(date);
-        headers.add("TransactionDate");
+
         
         values.add("INWARD");
         headers.add("TranDirection");
@@ -539,6 +543,16 @@ public class NIBBSNIPInterface {
            values.add("fundtransfersingleitem_dd");
             headers.add("MethodName");
         
+        
+             String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
         
          SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
         
@@ -830,57 +844,142 @@ public class NIBBSNIPInterface {
 
     @WebMethod(operationName = "balanceenquiry")
     public String balanceenquiry(@WebParam(name = "balancerequest") String balancerequest) {
-        BalanceEnquiryResponse accountbalance = new BalanceEnquiryResponse();
+        BalanceEnquiryResponse response = new BalanceEnquiryResponse();
         
-        
-          
+        String sessionID = "",monthlyTable ="", AvailableBalance="", BVN="";         
 
         try {
        
            balancerequest = nipssm.decrypt(balancerequest);
             
             BalanceEnquiryRequest request = (BalanceEnquiryRequest) options.XMLToObject(balancerequest,new BalanceEnquiryRequest());
+       
+                          
+        List<Object> values = new ArrayList<>();
+        List<String> headers = new ArrayList<>();
+         //repopulating response object and logging request
+         
+             response.setSessionID(request.getSessionID());
+             values.add(request.getSessionID());
+             headers.add("SessionID");
+             sessionID = request.getSessionID();
+             
+             response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+               headers.add("DestinationInstitutionCode");
+             sessionID = request.getDestinationInstitutionCode();
+             
+            
+            response.setTargetAccountName(request.getTargetAccountName());
+              headers.add("TargetAccountName");
+             sessionID = request.getTargetAccountName();
+             
+              response.setTargetAccountNumber(request.getTargetAccountNumber());
+             values.add(request.getTargetAccountNumber());
+             headers.add("TargetAccountNumber");
+             
+             
+            response.setAuthorizationCode(request.getAuthorizationCode());
+            values.add(request.getAuthorizationCode());
+            headers.add("AuthorizationCode");
+
+            response.setChannelCode(request.getChannelCode());
+            values.add(request.getChannelCode());
+            headers.add("ChannelCode");       
+
+            values.add("INWARD");
+            headers.add("TranDirection");
+
+            values.add("balanceenquiry");
+            headers.add("MethodName");
+        
+        
+       
+       String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
+        
+
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
      
-            accountbalance.setChannelCode(request.getChannelCode());
-            accountbalance.setSessionID(request.getSessionID());
-            accountbalance.setAuthorizationCode(request.getAuthorizationCode());
-            accountbalance.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
-            accountbalance.setTargetAccountName(request.getTargetAccountName());
-            accountbalance.setTargetAccountNumber(request.getTargetAccountNumber());
-          
+       db.insertData(headers, values.toArray(),monthlyTable);
+            
+            
+            
         
      
      ArrayList<List<String>> result = t24.getOfsData("BalanceEnquiryRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getTargetAccountNumber());
-        List<String> headers = result.get(0);
+        headers = result.get(0);
      
            if(headers.size()!=result.get(1).size()){
                
               String msg = result.get(1).get(0);
               
               respcodes = options.getNIBBsCode(msg);
-            accountbalance.setResponseCode(respcodes.getCode());  
+            response.setResponseCode(respcodes.getCode());  
            }
            else{
                
            
-           String AvailableBalance = escape(result.get(1).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim().replace(",", ""));
-           accountbalance.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(AvailableBalance))); 
-            accountbalance.setTargetBankVerificationNumber(escape(result.get(1).get(headers.indexOf("TargetBank")).replace("\"", "").trim()));
+            AvailableBalance = escape(result.get(1).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim().replace(",", ""));
+           response.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(AvailableBalance))); 
+           BVN = escape(result.get(1).get(headers.indexOf("TargetBank")).replace("\"", "").trim());
+            response.setTargetBankVerificationNumber(BVN);
             respcodes = NIBBsResponseCodes.SUCCESS;
-           accountbalance.setResponseCode(respcodes.getCode());
+           response.setResponseCode(respcodes.getCode());
            }
          
            
     
-            
+         
      
-        } catch (Exception d) {
+        } 
+        
+             catch(UnmarshalException r){
+                
+             respcodes = NIBBsResponseCodes.Format_error;
+            response.setResponseCode(respcodes.getCode());
+        }
+        
+        
+        catch (Exception d) {
            respcodes = NIBBsResponseCodes.System_malfunction;
-           accountbalance.setResponseCode(respcodes.getCode());
+           response.setResponseCode(respcodes.getCode());
         }
        // return options.ObjectToXML(accountbalance);
         
-        return nipssm.encrypt(options.ObjectToXML(accountbalance));
+       finally{
+    try{
+        
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"', AvailableBalance='"+AvailableBalance+"', TargetBankVerificationNumber='"+BVN+"'  where SessionID='"+sessionID+"' and MethodName='balanceenquiry'";
+        db.Execute(query);
+        
+        }
+        catch(Exception s)
+           {
+           
+            }
+
+}   
+        //return op
+       
+        return nipssm.encrypt(options.ObjectToXML(response));
     }
 
     @WebMethod(operationName = "fundtransferAdvice_dc")
