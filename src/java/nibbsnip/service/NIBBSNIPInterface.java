@@ -7,6 +7,7 @@ package nibbsnip.service;
 
 import com.google.gson.Gson;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -739,6 +740,9 @@ public class NIBBSNIPInterface {
     public String txnstatusquerysingleitem(@WebParam(name = "tsquerysinglerequest") String tsquerysinglerequest) {
         TSQuerySingleResponse response = new TSQuerySingleResponse();
      String sessionID ="", monthlyTable="";
+     
+    Connection conn = null;
+     
         try{
             
             
@@ -801,13 +805,22 @@ public class NIBBSNIPInterface {
             
       
        
-     ResultSet rs = db.getData("Select * from "+monthlyTable+" where SessionID='"+request.getSessionID()+"' and MethodName  like'%fundtransfersingleitem%'");
+           
+     ResultSet rs = db.getData("Select * from "+monthlyTable+" where SessionID='"+request.getSessionID()+"' and MethodName  like'%fundtransfersingleitem%'",conn);
      
-     String respcode = rs .getString("ResponseCode");
+     if(!rs.next()){
+         respcodes = NIBBsResponseCodes.Invalid_transaction;
+         response.setResponseCode(respcodes.getCode());
+         return nipssm.encrypt(options.ObjectToXML(response));        
+     }
+     else{
+          respcodes = NIBBsResponseCodes.SUCCESS;
+          response.setResponseCode(rs.getString("ResponseCode"));
+     }
       
-      response.setResponseCode(respcode);
+      
     
-      respcodes = NIBBsResponseCodes.SUCCESS;
+     
       
     }
      catch(UnmarshalException r){
@@ -825,6 +838,7 @@ public class NIBBSNIPInterface {
         
         String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"' where SessionID='"+sessionID+"' and MethodName='txnstatusquerysingleitem'";
         db.Execute(query);
+        conn.close();
         
         }
         catch(Exception s)
@@ -846,7 +860,7 @@ public class NIBBSNIPInterface {
     public String balanceenquiry(@WebParam(name = "balancerequest") String balancerequest) {
         BalanceEnquiryResponse response = new BalanceEnquiryResponse();
         
-        String sessionID = "",monthlyTable ="", AvailableBalance="", BVN="";         
+        String sessionID = "",monthlyTable ="", AvailableBalance="";       
 
         try {
        
@@ -866,17 +880,20 @@ public class NIBBSNIPInterface {
              
              response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
                headers.add("DestinationInstitutionCode");
-             sessionID = request.getDestinationInstitutionCode();
+              values.add(request.getDestinationInstitutionCode());
              
             
             response.setTargetAccountName(request.getTargetAccountName());
               headers.add("TargetAccountName");
-             sessionID = request.getTargetAccountName();
+            values.add(request.getTargetAccountName());
              
               response.setTargetAccountNumber(request.getTargetAccountNumber());
              values.add(request.getTargetAccountNumber());
              headers.add("TargetAccountNumber");
              
+             response.setTargetBankVerificationNumber(request.getTargetBankVerificationNumber());
+             values.add(request.getTargetBankVerificationNumber());
+             headers.add("TargetBankVerificationNumber");
              
             response.setAuthorizationCode(request.getAuthorizationCode());
             values.add(request.getAuthorizationCode());
@@ -938,9 +955,7 @@ public class NIBBSNIPInterface {
                
            
             AvailableBalance = escape(result.get(1).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim().replace(",", ""));
-           response.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(AvailableBalance))); 
-           BVN = escape(result.get(1).get(headers.indexOf("TargetBank")).replace("\"", "").trim());
-            response.setTargetBankVerificationNumber(BVN);
+           response.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(AvailableBalance)));
             respcodes = NIBBsResponseCodes.SUCCESS;
            response.setResponseCode(respcodes.getCode());
            }
@@ -967,7 +982,7 @@ public class NIBBSNIPInterface {
        finally{
     try{
         
-        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"', AvailableBalance='"+AvailableBalance+"', TargetBankVerificationNumber='"+BVN+"'  where SessionID='"+sessionID+"' and MethodName='balanceenquiry'";
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"', AvailableBalance='"+AvailableBalance+"'  where SessionID='"+sessionID+"' and MethodName='balanceenquiry'";
         db.Execute(query);
         
         }
@@ -986,168 +1001,234 @@ public class NIBBSNIPInterface {
     public String fundtransferAdvice_dc(@WebParam(name = "creditrequest") String creditrequest) {
         
         FTAdviceCreditResponse response = new FTAdviceCreditResponse();
-     
+     String sessionID ="", monthlyTable = "";
         
         try {
-       creditrequest =   nipssm.decrypt(creditrequest);
+       creditrequest = nipssm.decrypt(creditrequest);
        FTAdviceCreditRequest request = (FTAdviceCreditRequest) options.XMLToObject(creditrequest, new FTAdviceCreditRequest());
+       
+             List<Object> values = new ArrayList<>();
+        List<String> headers = new ArrayList<>();
+         //repopulating response object and logging request
+         response.setAmount(request.getAmount());
+        values.add(Double.parseDouble(request.getAmount().toString()));
+        headers.add("Amount");
+        
+        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+        values.add(request.getBeneficiaryAccountName());
+        headers.add("BeneficiaryAccountName");
+        
+        response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
+        values.add(request.getBeneficiaryAccountNumber());
+        headers.add("BeneficiaryAccountNumber");
+        
+        response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
+        values.add(request.getBeneficiaryBankVerificationNumber());
+        headers.add("BeneficiaryBankVerificationNumber");
+        
+        response.setChannelCode(request.getChannelCode());
+        values.add(request.getChannelCode());
+        headers.add("ChannelCode");
+        
+        response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+        values.add(request.getDestinationInstitutionCode());
+        headers.add("DestinationInstitutionCode");
+        
+        response.setOriginatorAccountName(request.getOriginatorAccountName());
+        values.add(request.getOriginatorAccountName());
+        headers.add("OriginatorAccountName");
+        
+        response.setOriginatorAccountNumber(request.getOriginatorAccountNumber());
+        values.add(request.getOriginatorAccountNumber());
+        headers.add("OriginatorAccountNumber");
+        
+         response.setOriginatorBankVerificationNumber(request.getOriginatorBankVerificationNumber());
+         values.add(request.getOriginatorBankVerificationNumber());
+         headers.add("OriginatorBankVerificationNumber");
+        
+         response.setOriginatorKYCLevel(request.getOriginatorKYCLevel());
+         values.add(request.getOriginatorKYCLevel());
+         headers.add("OriginatorKYCLevel");
+       
+        response.setSessionID(request.getSessionID());
+        values.add(request.getSessionID());
+        headers.add("SessionID");
+        sessionID = request.getSessionID();
+         
+        response.setTransactionLocation(request.getTransactionLocation());
+        values.add(request.getTransactionLocation());
+        headers.add("TransactionLocation");
+        
+        response.setTransactionLocation(request.getNarration());
+        values.add(request.getNarration());
+        headers.add("Narration");
+        
+        response.setTransactionLocation(request.getPaymentReference());
+        values.add(request.getPaymentReference());
+        headers.add("PaymentReference");
+        
+       // request.
 
-        } catch (Exception d) {
+        
+        values.add("INWARD");
+        headers.add("TranDirection");
+        
+              values.add("fundtransferAdvice_dc");
+            headers.add("MethodName");
+        
+            
+            
+        
+        
+       String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
+        
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
+     
+       db.insertData(headers, values.toArray(),monthlyTable);
+       
+       respcodes = NIBBsResponseCodes.SUCCESS;
+            response.setResponseCode(respcodes.getCode());
+       
+
+        } 
+        
+                catch(UnmarshalException r){
+                
+             respcodes = NIBBsResponseCodes.Format_error;
+            response.setResponseCode(respcodes.getCode());
+        }
+        
+        
+        catch (Exception d) {
             
             respcodes = NIBBsResponseCodes.System_malfunction;
             response.setResponseCode(respcodes.getCode());
+        }
+        
+          finally{
+    try{
+        
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='fundtransferAdvice_dc'";
+        db.Execute(query);
+        
+        }
+        catch(Exception s)
+           {
+           
+            }
+
         }
         //return options.ObjectToXML(response);
           return nipssm.encrypt(options.ObjectToXML(response));
         
     }
+    
+    
 
     @WebMethod(operationName = "fundtransferAdvice_dd")
     public String fundtransferAdvice_dd(@WebParam(name = "debitrequest") String debitrequest) {
          FTAdviceDebitResponse response = new FTAdviceDebitResponse();
-        
+        String sessionID ="", monthlyTable ="";
         try {
                        
            debitrequest = nipssm.decrypt(debitrequest);
            
      FTAdviceDebitRequest request = (FTAdviceDebitRequest) options.XMLToObject(debitrequest, new FTAdviceDebitRequest());
      
-       //repopulating response object
-        response.setAmount(request.getAmount());
-        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
-        response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
-        response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
-        response.setChannelCode(request.getChannelCode());
-        response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
-        response.setMandateReferenceNumber(request.getMandateReferenceNumber());
-        response.setNameEnquiryRef(request.getNameEnquiryRef());
-        response.setDebitKYCLevel(request.getDebitKYCLevel());
-        response.setNarration(request.getNarration());
-        response.setSessionID(request.getSessionID());
-        response.setTransactionLocation(request.getTransactionLocation());
-        response.setPaymentReference(request.getPaymentReference());
-        response.setTransactionFee(request.getTransactionFee());
-        response.setDebitAccountNumber(request.getDebitAccountNumber());
-        response.setDebitAccountName(request.getDebitAccountName());
- 
-       String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
-       String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
-       List<DataItem> items = new LinkedList<>();
-       SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
-       Date date = new  Date();
-    
-       String trandate = ndf.format(date);
-       
-       
-       ofsParam param = new ofsParam();
+        List<Object> values = new ArrayList<>();
+        List<String> headers = new ArrayList<>();
      
-        param.setCredentials(credentials);
-           param.setOperation("FUNDS.TRANSFER");
-           
-           
-           param.setVersion("FT.REQ.DIRECT.DEBIT.NIP");
-           
-           param.setTransaction_id("");
-          
-           param.setOptions(ofsoptions);
-           
-          
-           DataItem item = new DataItem();
-           item.setItemHeader("DEBIT.VALUE.DATE");
-           item.setItemValues(new String[] {trandate});
-           items.add(item);
-           
-      
-           item = new DataItem();
-           item.setItemHeader("CREDIT.VALUE.DATE");
-           item.setItemValues(new String[] {trandate});
-           items.add(item);
-           
-           item = new DataItem();
-           item.setItemHeader("DEBIT.CURRENCY");
-           item.setItemValues(new String[] {"NGN"});
-           items.add(item);
-           
-           item = new DataItem();
-           item.setItemHeader("CREDIT.CURRENCY");
-           item.setItemValues(new String[] {"NGN"});
-           items.add(item);
-           
-           item = new DataItem();
-           item.setItemHeader("DEBIT.AMOUNT");
-           item.setItemValues(new String[] {request.getAmount().toString()});
-           items.add(item);
-           
-           item = new DataItem();
-           item.setItemHeader("CREDIT.ACCT.NO");
-           item.setItemValues(new String[] {"payables"});
-           items.add(item);
-                      
-           item = new DataItem();
-           item.setItemHeader("DEBIT.ACCT.NO");
-           item.setItemValues(new String[] {request.getBeneficiaryAccountNumber()});
-           items.add(item);
-           
-           item = new DataItem();
-           item.setItemHeader("REM.REF");
-           
-           if(request.getNarration().length()>65){
-               request.setNarration(request.getNarration().substring(65));
-           }
-           
-           item.setItemValues(new String[] {request.getNarration()});
-           items.add(item);
-           
-
-           
-           param.setDataItems(items);
-           
-           String ofstr = t24.generateOFSTransactString(param);
-
-           String result = t24.PostMsg(ofstr);
-           
-           if(t24.IsSuccessful(result)){
-              response.setPaymentReference(request.getPaymentReference());
-               
-               items.clear();
-               param = new ofsParam();
-               param.setCredentials(credentials);
-               param.setOperation("NIBBS.FT.REF.TABLE");
-               param.setOptions(ofsoptions);
-               
-               
-               param.setTransaction_id(request.getPaymentReference());
-               
-               item = new DataItem();
-               item.setItemHeader("T24.ID");
-               item.setItemValues(new String[] {result.split("/")[0]});
-               items.add(item);
-               
-               item = new DataItem();
-               item.setItemHeader("TXN.DATE");
-               item.setItemValues(new String[] {ndf.format(trandate)});
-               
-               
-               items.add(item);
-
-               param.setDataItems(items);
-               
-                ofstr = t24.generateOFSTransactString(param);
-
-                t24.PostMsg(ofstr);
-                
-                respcodes = NIBBsResponseCodes.SUCCESS;
-                response.setPaymentReference(request.getPaymentReference());
-                response.setAmount(request.getAmount());
-                response.setNarration(request.getNarration());
-                response.setResponseCode(respcodes.getCode());
-                response.setSessionID(request.getSessionID());
-                response.setChannelCode(request.getChannelCode());
-                response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
-              //  response.setOriginatorAccountName(request.());
-                response.setNameEnquiryRef(request.getNameEnquiryRef());
-               
-           }
+       //repopulating response object
+    
+        response.setAmount(request.getAmount());
+        values.add(Double.parseDouble(request.getAmount().toString()));
+        headers.add("Amount");
+        
+        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+        values.add(request.getBeneficiaryAccountName());
+        headers.add("BeneficiaryAccountName");
+        
+        response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
+        values.add(request.getBeneficiaryAccountNumber());
+        headers.add("BeneficiaryAccountNumber");
+        
+        response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
+        values.add(request.getBeneficiaryBankVerificationNumber());
+        headers.add("BeneficiaryBankVerificationNumber");
+        
+        response.setChannelCode(request.getChannelCode());
+        values.add(request.getChannelCode());
+        headers.add("ChannelCode");
+        
+        response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+        values.add(request.getDestinationInstitutionCode());
+        headers.add("DestinationInstitutionCode");
+        
+       
+        response.setSessionID(request.getSessionID());
+        values.add(request.getSessionID());
+        headers.add("SessionID");
+        sessionID = request.getSessionID();
+         
+        response.setTransactionLocation(request.getTransactionLocation());
+        values.add(request.getTransactionLocation());
+        headers.add("TransactionLocation");
+        
+  
+        
+        values.add("INWARD");
+        headers.add("TranDirection");
+        
+           values.add("fundtransfersingleitem_dd");
+            headers.add("MethodName");
+        
+        
+             String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
+        
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
+     
+       db.insertData(headers, values.toArray(),monthlyTable);
+       
+        respcodes = NIBBsResponseCodes.SUCCESS;
+            response.setResponseCode(respcodes.getCode());
        
        
         }
@@ -1162,7 +1243,20 @@ public class NIBBSNIPInterface {
             respcodes = NIBBsResponseCodes.System_malfunction;
             response.setResponseCode(respcodes.getCode());
         }
+       
+              finally{
+    try{
         
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='fundtransferAdvice_dc'";
+        db.Execute(query);
+        
+        }
+        catch(Exception s)
+           {
+           
+            }
+
+        }
      
         
        // return options.ObjectToXML(response);

@@ -30,18 +30,19 @@ public class DBConnector {
      this.USER =username;
      this.PASS =password;
     }
-public ResultSet getData(String sql)  throws Exception{
+public ResultSet getData(String sql, Connection conn)  throws Exception{
 
-         Connection conn = null;
-       PreparedStatement prestmt =null;   
+      
+         
    
         
         try
         {
+           
             Class.forName(JDBC_DRIVER);
 
            conn = DriverManager.getConnection(DB_URL,USER,PASS);
-            prestmt = conn.prepareStatement(sql);
+            PreparedStatement prestmt = conn.prepareStatement(sql);
             ResultSet ds = prestmt.executeQuery();
            
       
@@ -50,15 +51,7 @@ public ResultSet getData(String sql)  throws Exception{
      }catch (Exception e){
         throw(e);
              }
-        finally{
-            try{
-                      prestmt.close();
-                     conn.close(); 
-            }
-            catch(Exception s){
-                
-            }
-        }
+
 }
  
 
