@@ -102,7 +102,6 @@ public class NIBBSNIPInterface {
             values.add(request.getChannelCode());
             headers.add("ChannelCode");       
 
-
             Date date = new  Date();
             values.add(date);
             headers.add("TransactionDate");
@@ -255,6 +254,10 @@ public class NIBBSNIPInterface {
         response.setTransactionLocation(request.getTransactionLocation());
         values.add(request.getTransactionLocation());
         headers.add("TransactionLocation");
+        
+            response.setNameEnquiryRef(request.getNameEnquiryRef());
+        values.add(request.getNameEnquiryRef());
+        headers.add("NameEnquiryRef");
         
         response.setTransactionLocation(request.getNarration());
         values.add(request.getNarration());
@@ -531,6 +534,10 @@ public class NIBBSNIPInterface {
         values.add(request.getSessionID());
         headers.add("SessionID");
         sessionID = request.getSessionID();
+        
+        response.setNameEnquiryRef(request.getNameEnquiryRef());
+        values.add(request.getNameEnquiryRef());
+        headers.add("NameEnquiryRef");
          
         response.setTransactionLocation(request.getTransactionLocation());
         values.add(request.getTransactionLocation());
@@ -1045,6 +1052,10 @@ public class NIBBSNIPInterface {
          response.setOriginatorBankVerificationNumber(request.getOriginatorBankVerificationNumber());
          values.add(request.getOriginatorBankVerificationNumber());
          headers.add("OriginatorBankVerificationNumber");
+         
+        response.setNameEnquiryRef(request.getNameEnquiryRef());
+        values.add(request.getNameEnquiryRef());
+        headers.add("NameEnquiryRef");
         
          response.setOriginatorKYCLevel(request.getOriginatorKYCLevel());
          values.add(request.getOriginatorKYCLevel());
@@ -1178,6 +1189,10 @@ public class NIBBSNIPInterface {
         response.setChannelCode(request.getChannelCode());
         values.add(request.getChannelCode());
         headers.add("ChannelCode");
+        
+        response.setNameEnquiryRef(request.getNameEnquiryRef());
+        values.add(request.getNameEnquiryRef());
+        headers.add("NameEnquiryRef");
         
         response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
         values.add(request.getDestinationInstitutionCode());
