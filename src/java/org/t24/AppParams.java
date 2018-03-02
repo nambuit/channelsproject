@@ -193,6 +193,10 @@ public WebServiceLogger getServiceLogger(String filename){
     
     
     
+    
+    
+    
+    
     public String getCreateNIPTableScript(String tableName){
         
         return "CREATE TABLE [dbo].["+tableName+"](\n" +
@@ -281,5 +285,5 @@ public WebServiceLogger getServiceLogger(String filename){
 //    }
 //    
     
-    
+     
 }

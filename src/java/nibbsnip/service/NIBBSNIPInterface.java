@@ -1285,7 +1285,8 @@ public class NIBBSNIPInterface {
         AmountBlockResponse response = new AmountBlockResponse();
       
 
-        try {
+        try 
+        {
                            
               amountblockrequest = nipssm.encrypt(amountblockrequest);   
               
