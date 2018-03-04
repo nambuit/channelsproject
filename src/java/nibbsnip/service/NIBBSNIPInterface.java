@@ -1288,7 +1288,7 @@ public class NIBBSNIPInterface {
         try 
         {
                            
-              amountblockrequest = nipssm.encrypt(amountblockrequest);   
+              amountblockrequest = nipssm.decrypt(amountblockrequest);   
               
                   AmountBlockRequest request = (AmountBlockRequest)options.XMLToObject(amountblockrequest, new AmountBlockRequest());
 

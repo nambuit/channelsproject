@@ -4,4 +4,5 @@
     <system systemId="http://192.168.2.32:8085/TAFJServices/services/OFSService?wsdl" uri="wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl"/>
     <system systemId="file:/C:/Users/wumoru/Documents/NetBeansProjects/channelsproject/web/WEB-INF/wsdl/192.168.2.32_8085/TAFJServices/services/OFSService.wsdl" uri="wsdl/OFSService.wsdl"/>
     <system systemId="http://192.168.10.45:8086/TAFJServices/services/OFSService?wsdl" uri="wsdl/192.168.10.45_8086/TAFJServices/services/OFSService.wsdl"/>
+    <system systemId="http://192.168.10.40:8085/TAFJServices/services/OFSService?wsdl" uri="wsdl/192.168.10.40_8085/TAFJServices/services/OFSService.wsdl"/>
 </catalog>
