@@ -3,8 +3,6 @@ package org.t24;
 
 
 
-import com.temenos.tafj.jee.client.TAFJJEEClient;
-import com.temenos.tafj.jee.client.TAFJJEEClientFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,16 +22,12 @@ public class T24TAFJLink implements T24Link {
         try {
      String resp;
      
-     System.setProperty("temn.tafj.webservice.client.axis", "true");
-//Get a Webservice client from server 10.21.2.99
-    TAFJJEEClient client = TAFJJEEClientFactory.getWebServiceClient("10.21.2.99", "8080");
-
-    resp = client.processOFS(sOFS);
+     
 //     OFSService service = new OFSService();
 //     OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
 //    ServiceResponse response = ofs.invoke(sOFS);
    //  resp = response.getResponses().get(0);
-           return resp;
+           return "";
         } catch (Exception ex) {
 
           throw (ex);
