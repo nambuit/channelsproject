@@ -69,7 +69,7 @@ public class BankOneInterface
     @WebMethod(operationName = "GetAccounts")
     public List<AccountDetails> GetAccounts(@WebParam(name = "InstitutionCode") String InstitutionCode, @WebParam(name = "CustomerID") String CustID) {
         //ResponseObject response = new ResponseObject();
-         List<AccountDetails> alldetails = new ArrayList<>();
+        List<AccountDetails> alldetails = new ArrayList<>();
         try{
    
         //Mnemonic Product Account Id CLASS-POSNEG Ccy Account Officer
@@ -78,7 +78,7 @@ public class BankOneInterface
 
          ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA", options.getOfsuser(), options.getOfspass(), "CUSTOMER:EQ=" + CustID);
 
-List<String> headers = result.get(0);
+         List<String> headers = result.get(0);
            
                 if(headers.size()!=result.get(1).size()){
                
@@ -88,31 +88,31 @@ List<String> headers = result.get(0);
        for(int i = 1; i<result.size();i++){
            AccountDetails details = new AccountDetails();
 
-details.setAccountName(result.get(i).get(headers.indexOf("AccountName")).replace("\"", "").trim());
+        details.setAccountName(result.get(i).get(headers.indexOf("AccountName")).replace("\"", "").trim());
         details.setAccountNumber(result.get(i).get(headers.indexOf("Account Id")).replace("\"", "").trim());
         details.setCurrency(result.get(i).get(headers.indexOf("Ccy")).replace("\"", "").trim()); 
         details.setProductDescription(result.get(i).get(headers.indexOf("Product")).replace("\"", "").trim()); 
       //  details.setCustomerName(result.get(i).get(headers.indexOf("CustomerName")).replace("\"", "").trim()); 
      
            String availbalance = result.get(i).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim();
-availbalance = availbalance.trim().isEmpty()?"0.00":availbalance;
+           availbalance = availbalance.trim().isEmpty()?"0.00":availbalance;
         
          String ledgerbalance = result.get(i).get(headers.indexOf("LedgerBalance")).replace("\"", "").trim();
-ledgerbalance = ledgerbalance.trim().isEmpty()?"0.00":ledgerbalance;
+         ledgerbalance = ledgerbalance.trim().isEmpty()?"0.00":ledgerbalance;
         
         
           String status = result.get(i).get(headers.indexOf("Status")).replace("\"", "").trim();
 
-status = status.trim().isEmpty()?"ACTIVE":"CLOSED";
+          status = status.trim().isEmpty()?"ACTIVE":"CLOSED";
           details.setAccountStatus(status);
           details.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(availbalance))); 
           details.setLedgerBalance(BigDecimal.valueOf(Double.parseDouble(ledgerbalance))); 
             
            String officer = result.get(i).get(headers.indexOf("Account Officer")).replace("\"", "").trim();
 
-ArrayList<List<String>> data = t24.getOfsData("%USER", options.getOfsuser(), options.getOfspass(), "DEPARTMENT.CODE:EQ=" + officer.trim());
+          ArrayList<List<String>> data = t24.getOfsData("%USER", options.getOfsuser(), options.getOfspass(), "DEPARTMENT.CODE:EQ=" + officer.trim());
 
-List<String> dataheaders = data.get(0);
+          List<String> dataheaders = data.get(0);
            
            if(dataheaders.size()==data.get(1).size()){
                
@@ -222,7 +222,7 @@ List<String> dataheaders = data.get(0);
            
          //  Gson gson = new Gson(); 
            ArrayList<List<String>> result = t24.getOfsData("ACCOUNTS$PRIMERA",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + acctNo.trim());
-List<String> headers = result.get(0);
+           List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
                
@@ -231,10 +231,10 @@ List<String> headers = result.get(0);
 
        
            String availbalance = result.get(1).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim();
-availbalance = availbalance.trim().isEmpty() ? "0.00" : availbalance;
+           availbalance = availbalance.trim().isEmpty() ? "0.00" : availbalance;
 
            String ledgerbalance = result.get(1).get(headers.indexOf("LedgerBalance")).replace("\"", "").trim();
-ledgerbalance = ledgerbalance.trim().isEmpty() ? "0.00" : ledgerbalance;
+           ledgerbalance = ledgerbalance.trim().isEmpty() ? "0.00" : ledgerbalance;
            
            balance.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(availbalance))); 
            balance.setLedgerBalance(BigDecimal.valueOf(Double.parseDouble(ledgerbalance)));          

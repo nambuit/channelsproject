@@ -163,7 +163,8 @@ public WebServiceLogger getServiceLogger(String filename){
       
     message = message.toLowerCase();
    
-   if(message.contains("ACCOUNT RECORD MISSING".toLowerCase())||message.contains("found that matched the selection criteria"))
+   if(message.contains("ACCOUNT RECORD MISSING".toLowerCase())||message.contains("found that matched the selection criteria")
+           ||message.contains("MISSING ACCOUNT - RECORD".toLowerCase()) )
    {
       respcode =  NIBBsResponseCodes.Invalid_Account;
    }
