@@ -4,21 +4,24 @@
  * and open the template in the editor.
  */
 package nibbsnip.service;
+
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.Setter;
+
 /**
  *
- * @author chijiokennamani
+ * @author inlaks-root
  */
 @Getter @Setter 
-@XmlRootElement(name = "FinancialInstitutionListRequest")
-public class FinancialInstitutionListRequest {
+public class Record {
     
-    @XmlElement(name = "Header")
-    private Header Header;
+     @XmlElement(name = "InstitutionCode")
+    private String InstitutionCode;
     
-    @XmlElement(name = "Record")
-    private Record [] Record;
+    @XmlElement(name = "InstitutionName")
+    private String InstitutionName;
+    
+    @XmlElement(name = "Category")
+    private String Category;
 }

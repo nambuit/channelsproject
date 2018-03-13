@@ -1509,6 +1509,9 @@ public class NIBBSNIPInterface {
             
             FinancialInstitutionListRequest request = (FinancialInstitutionListRequest)options.XMLToObject(FinancialInstitutionListIn, new FinancialInstitutionListRequest());
             
+            
+            
+            
         }                   
         catch(UnmarshalException r){
                 
