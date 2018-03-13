@@ -1,9 +1,5 @@
 
 package org.t24;
-
-
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,14 +17,14 @@ public class T24TAFJLink implements T24Link {
           public String PostMsg(String sOFS) throws Exception {
 
         try {
-     String resp="";
+     String resp;
      
-
      OFSService service = new OFSService();
      OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
     ServiceResponse response = ofs.invoke(sOFS);
      resp = response.getResponses().get(0);
            return resp;
+ 
         } catch (Exception ex) {
 
           throw (ex);

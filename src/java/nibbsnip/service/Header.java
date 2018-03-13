@@ -4,30 +4,28 @@
  * and open the template in the editor.
  */
 package nibbsnip.service;
+
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
 import lombok.Setter;
+
 /**
  *
- * @author chijiokennamani
+ * @author inlaks-root
  */
-@Setter 
-@XmlRootElement(name = "FinancialInstitutionListResponse")
-public class FinancialInstitutionListResponse {
-    
+@Getter @Setter 
+public class Header {
     
     @XmlElement(name = "BatchNumber")
     private String BatchNumber;
     
-    @XmlElement(name = "DestinationInstitutionCode")
-    private String DestinationInstitutionCode;
+    @XmlElement(name = "NumberOfRecords")
+    private int NumberOfRecords;
     
     @XmlElement(name = "ChannelCode")
     private String ChannelCode;
     
-    @XmlElement(name = "NumberOfRecords")
-    private int NumberOfRecords;
+    @XmlElement(name = "TransactionLocation")
+    private String TransactionLocation;
     
-    @XmlElement(name = "ResponseCode")
-    private String ResponseCode; 
 }

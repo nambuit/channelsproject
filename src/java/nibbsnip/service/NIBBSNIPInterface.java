@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -1872,6 +1871,37 @@ public class NIBBSNIPInterface {
             FinancialInstitutionListIn = nipssm.decrypt(FinancialInstitutionListIn);
             
             FinancialInstitutionListRequest request = (FinancialInstitutionListRequest)options.XMLToObject(FinancialInstitutionListIn, new FinancialInstitutionListRequest());
+            
+            
+                       List<Object> values = new ArrayList<>();
+                      List<String> headers = new ArrayList<>();
+                      
+  
+                       headers.add("BatchNumber");                                 
+                       headers.add("InstitutionCode");
+                       headers.add("InstitutionName");                                 
+                       headers.add("Category");
+                       
+                       for(Record record:request.getRecord()){
+                      values.clear();
+                      
+                      values.add(request.getHeader().getBatchNumber());
+                      values.add(record.getInstitutionCode());
+                      values.add(record.getInstitutionName());
+                      values.add(record.getCategory());
+                      
+                      db.insertData(headers, values.toArray(),"NIP_Institutions"); 
+                      
+                      
+                       }
+                       
+                       response.setBatchNumber(request.getHeader().getBatchNumber());
+                       response.setChannelCode(request.getHeader().getChannelCode());
+                       response.setDestinationInstitutionCode("0087654");
+                       response.setNumberOfRecords(request.getHeader().getNumberOfRecords());
+                       respcodes = NIBBsResponseCodes.SUCCESS;
+                       response.setResponseCode(respcodes.getCode());
+                       
             
         }                   
         catch(UnmarshalException r){
