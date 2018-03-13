@@ -108,7 +108,7 @@ public class T24TAFJLink implements T24Link {
                param.setVersion("");
            }
            
-            output.append(param.getVersion());
+           // output.append(param.getVersion());
 
             output.append(param.getVersion().toUpperCase());
             

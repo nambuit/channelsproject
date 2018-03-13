@@ -386,10 +386,10 @@ public class NIBBSNIPInterface {
            items.add(item);
            
            item = new DataItem();
-           item.setItemHeader("REM.REF");
+           item.setItemHeader("CREDIT.THEIR.REF");
            
-           if(request.getNarration().length()>65){
-               request.setNarration(request.getNarration().substring(65));
+           if(request.getNarration().length()>15){
+               request.setNarration(request.getNarration().substring(15));
            }
            
            item.setItemValues(new String[] {request.getNarration()});
@@ -635,7 +635,7 @@ public class NIBBSNIPInterface {
            items.add(item);
            
            item = new DataItem();
-           item.setItemHeader("REM.REF");
+           item.setItemHeader("CREDIT.THEIR.REF");
            
            if(request.getNarration().length()>65){
                request.setNarration(request.getNarration().substring(65));
@@ -1585,7 +1585,7 @@ public class NIBBSNIPInterface {
         values.add("INWARD");
         headers.add("TranDirection");
         
-           values.add("amountblock");
+           values.add("amountunblock");
             headers.add("MethodName");
             
             
@@ -1696,7 +1696,7 @@ public class NIBBSNIPInterface {
                             finally{
     try{
         
-        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='amountblock'";
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='amountunblock'";
         db.Execute(query);
         
         }
