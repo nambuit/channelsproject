@@ -6,6 +6,7 @@
 package nibbsnip.service;
 
 import com.google.gson.Gson;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -1889,9 +1890,17 @@ public class NIBBSNIPInterface {
                       values.add(record.getInstitutionCode());
                       values.add(record.getInstitutionName());
                       values.add(record.getCategory());
-                      
+                      try{
                       db.insertData(headers, values.toArray(),"NIP_Institutions"); 
-                      
+                      }
+                      catch(SQLServerException d){
+                          if (d.getMessage().contains("Cannot insert duplicate key")){
+                         
+                          }
+                          else{
+                              throw(d);
+                          }
+                      }
                       
                        }
                        
@@ -1940,24 +1949,24 @@ public class NIBBSNIPInterface {
       return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
   }
        
-   
-    @WebMethod(operationName = "PGPEncryption")
-    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
-        
-        switch(mode.toLowerCase()){
-            case"dec":
-                String resp =  nipssm.decrypt(message);
-                return resp;
-                
-            default:
-                return nipssm.encrypt(message);
-        
-    }
-    
-    
-    
-    
-    }
+//   
+//    @WebMethod(operationName = "PGPEncryption")
+//    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
+//        
+//        switch(mode.toLowerCase()){
+//            case"dec":
+//                String resp =  nipssm.decrypt(message);
+//                return resp;
+//                
+//            default:
+//                return nipssm.encrypt(message);
+//        
+//    }
+//    
+//    
+//    
+//    
+//    }
    
 }
 

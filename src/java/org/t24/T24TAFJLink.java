@@ -1,5 +1,6 @@
 
 package org.t24;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,7 @@ public class T24TAFJLink implements T24Link {
      
      OFSService service = new OFSService();
      OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
-    ServiceResponse response = ofs.invoke(sOFS);
+     ServiceResponse response = ofs.invoke(sOFS);
      resp = response.getResponses().get(0);
            return resp;
  

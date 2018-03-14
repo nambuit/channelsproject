@@ -7,7 +7,5 @@
     <system systemId="http://192.168.10.40:8085/TAFJServices/services/OFSService?wsdl" uri="src/conf/xml-resources/web-service-references/OFSService/wsdl/192.168.10.40_8085/TAFJServices/services/OFSService.wsdl"/>
     <system systemId="http://196.6.103.10:86/NIPWS/NIPInterface?wsdl" uri="src/conf/xml-resources/web-service-references/NIPInterface/wsdl/196.6.103.10_86/NIPWS/NIPInterface.wsdl"/>
     <system systemId="http://196.6.103.10:86/NIPWS/NIPInterface?xsd=1" uri="src/conf/xml-resources/web-service-references/NIPInterface/wsdl/196.6.103.10_86/NIPWS/NIPInterface.xsd_1.xsd"/>
-
-    
     <system systemId="http://172.16.10.5:8085/TAFJServices/services/OFSService?wsdl" uri="src/conf/xml-resources/web-service-references/OFSService/wsdl/172.16.10.5_8085/TAFJServices/services/OFSService.wsdl"/>
 </catalog>
