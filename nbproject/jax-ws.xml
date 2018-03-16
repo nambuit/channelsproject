@@ -13,8 +13,40 @@
   </services>
   <clients>
     <client name="OFSService">
-      <wsdl-url>http://172.16.10.5:8085/TAFJServices/services/OFSService?wsdl</wsdl-url>
-      <local-wsdl-file>172.16.10.5_8085/TAFJServices/services/OFSService.wsdl</local-wsdl-file>
+      <wsdl-url>http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl</wsdl-url>
+      <local-wsdl-file>13.95.28.0_8085/TAFJServices/services/OFSService.wsdl</local-wsdl-file>
+      <package-name>com.temenos.tafj.services</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+      <wsimport-options>
+        <wsimport-option>
+          <wsimport-option-name>extension</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>verbose</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>fork</wsimport-option-name>
+          <wsimport-option-value>false</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>wsdlLocation</wsimport-option-name>
+          <wsimport-option-value>http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>xnocompile</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>xendorsed</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+      </wsimport-options>
+    </client>
+    <client name="OFSService_1">
+      <wsdl-url>http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl</wsdl-url>
+      <local-wsdl-file>13.95.28.0_8085/TAFJServices/services/OFSService.wsdl</local-wsdl-file>
       <package-name forceReplace="true">org.t24</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
@@ -32,7 +64,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>http://172.16.10.5:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
+          <wsimport-option-value>http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>

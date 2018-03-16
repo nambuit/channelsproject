@@ -61,8 +61,8 @@
     </target>
     <target name="wsimport-client-OFSService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/OFSService"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService" destdir="${build.generated.dir}/jax-wsCache/OFSService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/172.16.10.5_8085/TAFJServices/services/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://172.16.10.5:8085/TAFJServices/services/OFSService?wsdl" xnocompile="true" xendorsed="true" package="org.t24">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/172.16.10.5_8085/TAFJServices/services/OFSService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService" destdir="${build.generated.dir}/jax-wsCache/OFSService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/13.95.28.0_8085/TAFJServices/services/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl" xnocompile="true" xendorsed="true">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/13.95.28.0_8085/TAFJServices/services/OFSService.wsdl"/>
             <produces dir="${build.generated.dir}/jax-wsCache/OFSService"/>
         </wsimport>
         <copy todir="${build.generated.sources.dir}/jax-ws">
@@ -72,8 +72,24 @@
         </copy>
     </target>
     <target name="wsimport-client-clean-OFSService" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/org/t24"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/com/temenos/tafj/services"/>
         <delete dir="${build.generated.dir}/jax-wsCache/OFSService"/>
     </target>
-    <target name="wsimport-client-generate" depends="wsimport-client-OFSService"/>
+    <target name="wsimport-client-OFSService_1" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/OFSService_1"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService_1" destdir="${build.generated.dir}/jax-wsCache/OFSService_1" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService_1/wsdl/13.95.28.0_8085/TAFJServices/services/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl" xnocompile="true" xendorsed="true" package="org.t24">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService_1/wsdl/13.95.28.0_8085/TAFJServices/services/OFSService.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/OFSService_1"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/OFSService_1">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-OFSService_1" depends="-init-project">
+        <delete dir="${build.generated.sources.dir}/jax-ws/org/t24"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/OFSService_1"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-OFSService, wsimport-client-OFSService_1"/>
 </project>

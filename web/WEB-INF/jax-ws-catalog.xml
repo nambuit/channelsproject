@@ -6,4 +6,5 @@
     <system systemId="http://192.168.10.45:8086/TAFJServices/services/OFSService?wsdl" uri="wsdl/192.168.10.45_8086/TAFJServices/services/OFSService.wsdl"/>
     <system systemId="http://192.168.10.40:8085/TAFJServices/services/OFSService?wsdl" uri="wsdl/192.168.10.40_8085/TAFJServices/services/OFSService.wsdl"/>
     <system systemId="http://172.16.10.5:8085/TAFJServices/services/OFSService?wsdl" uri="wsdl/172.16.10.5_8085/TAFJServices/services/OFSService.wsdl"/>
+    <system systemId="http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl" uri="wsdl/13.95.28.0_8085/TAFJServices/services/OFSService.wsdl"/>
 </catalog>

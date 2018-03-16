@@ -123,13 +123,13 @@
     </wsdl:binding>
     <wsdl:service name="OFSService">
         <wsdl:port name="OFSServiceHttpSoap11Endpoint" binding="tns:OFSServiceSoap11Binding">
-            <soap:address location="http://172.16.10.5:8085/TAFJServices/services/OFSService.OFSServiceHttpSoap11Endpoint/"/>
+            <soap:address location="http://13.95.28.0:8085/TAFJServices/services/OFSService.OFSServiceHttpSoap11Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="OFSServiceHttpSoap12Endpoint" binding="tns:OFSServiceSoap12Binding">
-            <soap12:address location="http://172.16.10.5:8085/TAFJServices/services/OFSService.OFSServiceHttpSoap12Endpoint/"/>
+            <soap12:address location="http://13.95.28.0:8085/TAFJServices/services/OFSService.OFSServiceHttpSoap12Endpoint/"/>
         </wsdl:port>
         <wsdl:port name="OFSServiceHttpEndpoint" binding="tns:OFSServiceHttpBinding">
-            <http:address location="http://172.16.10.5:8085/TAFJServices/services/OFSService.OFSServiceHttpEndpoint/"/>
+            <http:address location="http://13.95.28.0:8085/TAFJServices/services/OFSService.OFSServiceHttpEndpoint/"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

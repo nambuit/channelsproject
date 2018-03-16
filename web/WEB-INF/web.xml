@@ -62,7 +62,7 @@
          <env-entry>
         <env-entry-name>OFSuser</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>INPUTT</env-entry-value>
+        <env-entry-value>AUTHOR</env-entry-value>
     </env-entry>
         <env-entry>
         <env-entry-name>OFSpass</env-entry-name>
