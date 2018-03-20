@@ -1906,7 +1906,7 @@ public class NIBBSNIPInterface {
                        
                        response.setBatchNumber(request.getHeader().getBatchNumber());
                        response.setChannelCode(request.getHeader().getChannelCode());
-                       response.setDestinationInstitutionCode("0087654");
+                       response.setDestinationInstitutionCode("999103");
                        response.setNumberOfRecords(request.getHeader().getNumberOfRecords());
                        respcodes = NIBBsResponseCodes.SUCCESS;
                        response.setResponseCode(respcodes.getCode());
@@ -1929,18 +1929,32 @@ public class NIBBSNIPInterface {
     
     
     @WebMethod(operationName = "mandateadvice")
-    public String mandateadvice(@WebParam(name = "MandateAdviceIn") String MandateAdviceIn) {
-        MandateAdviceResponse MandateAdviceOut = new MandateAdviceResponse();
-        Gson gson = new Gson();
+    public String mandateadvice(@WebParam(name = "MandateAdviceIn") String mandateIn) {
+        MandateAdviceResponse response = new MandateAdviceResponse();
+       
         try{
-           JSONObject object = XML.toJSONObject(MandateAdviceIn);       
-           object = (JSONObject)object.get("MandateAdviceRequest");
-           String json = object.toString();
-           MandateAdviceRequest request = (MandateAdviceRequest)gson.fromJson(json, MandateAdviceRequest.class); 
-        }catch(Exception d){
-            MandateAdviceOut.setResponseCode("32");
+
+           mandateIn = nipssm.decrypt(mandateIn);
+            
+           MandateAdviceRequest request = (MandateAdviceRequest) options.XMLToObject(mandateIn,new  MandateAdviceRequest()); 
+           
+           
+           
+           
+           
         }
-        return options.ObjectToXML(MandateAdviceOut);
+          catch(UnmarshalException r){
+                
+             respcodes = NIBBsResponseCodes.Format_error;
+            response.setResponseCode(respcodes.getCode());
+            
+        }catch(Exception d){
+            respcodes=NIBBsResponseCodes.System_malfunction;
+            response.setResponseCode(respcodes.getCode());
+        }
+        //return options.ObjectToXML(response);
+        
+          return nipssm.encrypt(options.ObjectToXML(response));
 
     }
     
@@ -1967,7 +1981,7 @@ public class NIBBSNIPInterface {
 //    
 //    
 //    }
-//   
+   
 }
 
 
