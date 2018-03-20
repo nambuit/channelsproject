@@ -1931,15 +1931,101 @@ public class NIBBSNIPInterface {
     @WebMethod(operationName = "mandateadvice")
     public String mandateadvice(@WebParam(name = "MandateAdviceIn") String mandateIn) {
         MandateAdviceResponse response = new MandateAdviceResponse();
-       
+       String monthlyTable=""; String sessionID ="";
         try{
 
            mandateIn = nipssm.decrypt(mandateIn);
             
            MandateAdviceRequest request = (MandateAdviceRequest) options.XMLToObject(mandateIn,new  MandateAdviceRequest()); 
            
+                       List<Object> values = new ArrayList<>();
+                      List<String> headers = new ArrayList<>();
            
+             response.setAmount(request.getAmount());
+        values.add(Double.parseDouble(request.getAmount()));
+        headers.add("Amount");
+        
+        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+        values.add(request.getBeneficiaryAccountName());
+        headers.add("BeneficiaryAccountName");
+        
+        response.setMandateReferenceNumber(request.getMandateReferenceNumber());
+        values.add(request.getMandateReferenceNumber());
+        headers.add("MandateReferenceNumber");
+        
+        response.setChannelCode(request.getChannelCode());
+        values.add(request.getChannelCode());
+        headers.add("ChannelCode");
+                
+        response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
+        values.add(request.getBeneficiaryBankVerificationNumber());
+        headers.add("BeneficiaryBankVerificationNumber");
+        
+        response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
+        values.add(request.getDestinationInstitutionCode());
+        headers.add("DestinationInstitutionCode");
+        
+        response.setDebitAccountNumber(request.getDebitAccountNumber());
+        values.add(request.getDebitAccountNumber());
+        headers.add("DebitAccountNumber");
+        
+       
+        response.setSessionID(request.getSessionID());
+        values.add(request.getSessionID());
+        headers.add("SessionID");
+        sessionID = request.getSessionID();
+         
+        response.setDebitKYCLevel(request.getDebitKYCLevel());
+        values.add(request.getDebitKYCLevel());
+        headers.add("DebitKYCLevel");
+        
+        response.setDebitAccountName(request.getDebitAccountName());
+        values.add(request.getDebitAccountName());
+        headers.add("DebitAccountName");
+        
+        response.setDebitBankVerificationName(request.getDebitBankVerificationName());
+        values.add(request.getDebitBankVerificationName());
+        headers.add("DebitBankVerificationName"); 
+        
+ 
+  
+        
+        values.add("INWARD");
+        headers.add("TranDirection");
+        
+           values.add("mandateadvice");
+            headers.add("MethodName");
+ 
+                
+             
+       String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
+        
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
+     
+       db.insertData(headers, values.toArray(),monthlyTable);         
+                  
            
+        respcodes = NIBBsResponseCodes.SUCCESS;
+        response.setResponseCode(respcodes.getCode()); 
            
            
         }
@@ -1952,7 +2038,21 @@ public class NIBBSNIPInterface {
             respcodes=NIBBsResponseCodes.System_malfunction;
             response.setResponseCode(respcodes.getCode());
         }
-        //return options.ObjectToXML(response);
+       
+        
+   finally{
+    try{
+        
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='mandateadvice'";
+        db.Execute(query);
+        
+        }
+        catch(Exception s)
+           {
+           
+            }
+
+        }
         
           return nipssm.encrypt(options.ObjectToXML(response));
 
