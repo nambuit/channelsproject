@@ -149,8 +149,13 @@ public class NIBBSNIPInterface {
          AcctName = escape(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());
          nameEnquiry.setAccountName(AcctName);
          BVN = escape(result.get(1).get(headers.indexOf("BankVerificationNumber")).replace("\"", "").trim());
+         String phoneno = escape(result.get(1).get(headers.indexOf("Phone")).replace("\"", "").trim());
+         
+         BVN = BVN.isEmpty()?phoneno:BVN;    
+         
          nameEnquiry.setBankVerificationNumber(BVN);
-         nameEnquiry.setKYCLevel(escape(result.get(1).get(headers.indexOf("KYCLevel")).replace("\"", "").trim()));
+      //   nameEnquiry.setKYCLevel(escape(result.get(1).get(headers.indexOf("KYCLevel")).replace("\"", "").trim()));
+         nameEnquiry.setKYCLevel("1");
          nameEnquiry.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
          nameEnquiry.setChannelCode(request.getChannelCode());
          nameEnquiry.setSessionID(request.getSessionID());
@@ -401,6 +406,10 @@ public class NIBBSNIPInterface {
            
            String ofstr = t24.generateOFSTransactString(param);
 
+           
+           Thread.sleep(30000);
+           
+           
            String result = t24.PostMsg(ofstr);
            
            if(t24.IsSuccessful(result)){
@@ -581,8 +590,21 @@ public class NIBBSNIPInterface {
         
        if(rs.next())
        {
-       
-            String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
+       String MandateStatus = rs.getString("MandateStatus");
+      
+       if(MandateStatus.equalsIgnoreCase("USED")){
+           
+             respcodes = NIBBsResponseCodes.Duplicate_record;
+            response.setResponseCode(respcodes.getCode());
+       }
+       else{
+           
+           String mandateAmt = rs.getString("Amount");
+           
+           if(request.getAmount().equals(mandateAmt)){
+                        
+            
+       String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
@@ -698,6 +720,8 @@ public class NIBBSNIPInterface {
                 response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
               //  response.setOriginatorAccountName(request.());
                  response.setNameEnquiryRef(request.getNameEnquiryRef());
+                 
+                 db.Execute("Update NIPMandates set MandateStatus ='USED' where MandateReferenceNumber ='"+request.getMandateReferenceNumber().trim()+"'");
                
            }
            else{
@@ -716,7 +740,12 @@ public class NIBBSNIPInterface {
                
               
            }
-     
+       }
+           else{
+               respcodes = NIBBsResponseCodes.Invalid_Amount;
+            response.setResponseCode(respcodes.getCode());
+           }
+       }
        
        
        }
@@ -981,7 +1010,7 @@ public class NIBBSNIPInterface {
            }
            else{
                
-           
+            db.Execute("Update NIPMandates set MandateStatus ='USED' where MandateReferenceNumber ='"+request.getAuthorizationCode().trim()+"'");
             AvailableBalance = escape(result.get(1).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim().replace(",", ""));
            response.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(AvailableBalance)));
             respcodes = NIBBsResponseCodes.SUCCESS;
