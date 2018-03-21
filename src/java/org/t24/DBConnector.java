@@ -49,6 +49,13 @@ public ResultSet getData(String sql, Connection conn)  throws Exception{
             return ds;      
          
      }catch (Exception e){
+         try{
+             conn.close();
+             
+         }
+         catch(Exception d){
+             
+         }
         throw(e);
              }
 

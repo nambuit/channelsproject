@@ -493,7 +493,7 @@ public class NIBBSNIPInterface {
       @WebMethod(operationName = "fundtransfersingleitem_dd")
     public String fundtransfersingleitem_dd(@WebParam(name = "ftsingledebitrequest") String ftsingledebitrequest) {
         FTSingleDebitResponse response = new FTSingleDebitResponse();     
-        
+        Connection conn = null;
         String monthlyTable = "";
         String sessionID = "";
         
@@ -576,7 +576,13 @@ public class NIBBSNIPInterface {
         }
      
        db.insertData(headers, values.toArray(),monthlyTable);
-       String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
+       
+        ResultSet rs = db.getData("Select * from NIPMandates where MandateReferenceNumber='"+request.getMandateReferenceNumber()+"'", conn);
+        
+       if(rs.next())
+       {
+       
+            String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
        String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
@@ -711,6 +717,19 @@ public class NIBBSNIPInterface {
               
            }
      
+       
+       
+       }
+       else{
+           respcodes = NIBBsResponseCodes.Do_not_honor;
+            response.setResponseCode(respcodes.getCode());
+       }
+       
+       
+       
+       
+       
+      
        
        
         }
@@ -866,7 +885,7 @@ public class NIBBSNIPInterface {
     @WebMethod(operationName = "balanceenquiry")
     public String balanceenquiry(@WebParam(name = "balancerequest") String balancerequest) {
         BalanceEnquiryResponse response = new BalanceEnquiryResponse();
-        
+        Connection conn = null;
         String sessionID = "",monthlyTable ="", AvailableBalance="";       
 
         try {
@@ -944,11 +963,13 @@ public class NIBBSNIPInterface {
      
        db.insertData(headers, values.toArray(),monthlyTable);
             
-            
-            
-        
      
-     ArrayList<List<String>> result = t24.getOfsData("BalanceEnquiryRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getTargetAccountNumber());
+      ResultSet rs = db.getData("Select * from NIPMandates where MandateReferenceNumber='"+request.getAuthorizationCode()+"'", conn);
+        
+       if(rs.next())
+       {
+           
+           ArrayList<List<String>> result = t24.getOfsData("BalanceEnquiryRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getTargetAccountNumber());
         headers = result.get(0);
      
            if(headers.size()!=result.get(1).size()){
@@ -967,6 +988,15 @@ public class NIBBSNIPInterface {
            response.setResponseCode(respcodes.getCode());
            }
          
+     
+       }
+       else{
+            respcodes = NIBBsResponseCodes.Do_not_honor;
+           response.setResponseCode(respcodes.getCode());
+           
+        }
+        
+     
            
     
          
@@ -1933,6 +1963,8 @@ public class NIBBSNIPInterface {
         MandateAdviceResponse response = new MandateAdviceResponse();
        String monthlyTable=""; String sessionID ="";
         try{
+            
+            
 
            mandateIn = nipssm.decrypt(mandateIn);
             
@@ -1983,11 +2015,11 @@ public class NIBBSNIPInterface {
         values.add(request.getDebitAccountName());
         headers.add("DebitAccountName");
         
-        response.setDebitBankVerificationName(request.getDebitBankVerificationName());
-        values.add(request.getDebitBankVerificationName());
-        headers.add("DebitBankVerificationName"); 
+        response.setDebitBankVerificationNumber(request.getDebitBankVerificationNumber());
+        values.add(request.getDebitBankVerificationNumber());
+        headers.add("DebitBankVerificationNumber"); 
         
- 
+       
   
         
         values.add("INWARD");
@@ -2022,7 +2054,20 @@ public class NIBBSNIPInterface {
         }
      
        db.insertData(headers, values.toArray(),monthlyTable);         
-                  
+       
+         values.remove("INWARD");
+        headers.remove("TranDirection");
+        
+           values.remove("mandateadvice");
+            headers.remove("MethodName");   
+            
+            
+          values.add("UNUSED");
+          headers.add("MandateStatus");
+            
+            
+            
+       db.insertData(headers, values.toArray(),"NIPMandates");
            
         respcodes = NIBBsResponseCodes.SUCCESS;
         response.setResponseCode(respcodes.getCode()); 
@@ -2081,7 +2126,7 @@ public class NIBBSNIPInterface {
 //    
 //    
 //    }
-   
+//   
 }
 
 

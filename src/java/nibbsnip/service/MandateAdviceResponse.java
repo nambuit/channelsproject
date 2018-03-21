@@ -30,7 +30,7 @@ public class MandateAdviceResponse {
     private String MandateReferenceNumber;
     
     @XmlElement(name = "Amount")
-    private BigDecimal Amount;
+    private String Amount;
     
     @XmlElement(name = "DebitAccountName")
     private String DebitAccountName;
@@ -38,8 +38,8 @@ public class MandateAdviceResponse {
     @XmlElement(name = "DebitAccountNumber")
     private String DebitAccountNumber;
     
-    @XmlElement(name = "DebitBankVerificationName")
-    private String DebitBankVerificationName;
+    @XmlElement(name = "DebitBankVerificationNumber")
+    private String DebitBankVerificationNumber;
     
     @XmlElement(name = "DebitKYCLevel")
     private String DebitKYCLevel;

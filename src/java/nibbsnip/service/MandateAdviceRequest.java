@@ -13,7 +13,7 @@ import lombok.Setter;
  *
  * @author chijiokennamani
  */
-@Getter @Setter
+@Getter
 @XmlRootElement(name = "MandateAdviceRequest")
 public class MandateAdviceRequest {
     
@@ -30,7 +30,7 @@ public class MandateAdviceRequest {
     private String MandateReferenceNumber;
     
     @XmlElement(name = "Amount")
-    private BigDecimal Amount;
+    private String Amount;
     
     @XmlElement(name = "DebitAccountName")
     private String DebitAccountName;
@@ -38,8 +38,8 @@ public class MandateAdviceRequest {
     @XmlElement(name = "DebitAccountNumber")
     private String DebitAccountNumber;
     
-    @XmlElement(name = "DebitBankVerificationName")
-    private String DebitBankVerificationName;
+    @XmlElement(name = "DebitBankVerificationNumber")
+    private String DebitBankVerificationNumber;
     
     @XmlElement(name = "DebitKYCLevel")
     private String DebitKYCLevel;
