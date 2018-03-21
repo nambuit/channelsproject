@@ -16,6 +16,10 @@ import javax.xml.bind.Unmarshaller;
 import logger.WebServiceLogger;
 import lombok.Getter;
 import lombok.Setter;
+import nibbsnip.client.NIPInterface;
+import nibbsnip.client.NIPInterface_Service;
+import nibbsnip.service.TSQuerySingleRequest;
+import nibbsnip.service.TSQuerySingleResponse_client;
 import org.apache.log4j.Level;
 
 
@@ -286,5 +290,40 @@ public WebServiceLogger getServiceLogger(String filename){
 //    }
 //    
     
+    public  NIBBsResponseCodes CheckTransactionStatus(String sessionid, String InstCode, PGPEncrytionTool nipssm){
+        
+        NIBBsResponseCodes respcode = NIBBsResponseCodes.Status_unknown;
+        
+        try{
+            TSQuerySingleRequest request = new TSQuerySingleRequest();
+            
+            request.setChannelCode("1");
+            request.setSessionID(sessionid);
+            request.setSourceInstitutionCode(InstCode);
+            
+            String requeststr = this.ObjectToXML(request);
+            
+            requeststr = nipssm.encrypt(requeststr);
+            
+             NIPInterface_Service nipclient =   new NIPInterface_Service();
+            NIPInterface nip = nipclient.getNIPInterfacePort();
+            
+          String nipresponse =  nip.txnstatusquerysingleitem(requeststr);
+           
+          nipresponse = nipssm.decrypt(nipresponse);
+          
+          TSQuerySingleResponse_client response = (TSQuerySingleResponse_client) this.XMLToObject(nipresponse, new TSQuerySingleResponse_client());
+          
+         respcode = respcode.getResponseObject(response.getResponseCode());
+            
+          return respcode;  
+            
+            
+          }
+        catch(Exception t){
+            return NIBBsResponseCodes.System_malfunction;
+        }
+        
+    }
      
 }

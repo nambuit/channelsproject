@@ -220,18 +220,6 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="mandateadvice">
-<xs:sequence>
-<xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="mandateadviceResponse">
-<xs:sequence>
-<xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="fundtransferAdvice_dd">
 <xs:sequence>
 <xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
@@ -239,6 +227,18 @@
 </xs:complexType>
 
 <xs:complexType name="fundtransferAdvice_ddResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="mandateadvice">
+<xs:sequence>
+<xs:element name="request" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="mandateadviceResponse">
 <xs:sequence>
 <xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
 </xs:sequence>

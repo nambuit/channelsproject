@@ -20,11 +20,11 @@ public class T24TAFJLink implements T24Link {
         try {
      String resp;
      
-//     OFSService service = new OFSService();
-//     OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
-//     ServiceResponse response = ofs.invoke(sOFS);
-   //  resp = response.getResponses().get(0);
-           return "";
+     OFSService service = new OFSService();
+     OFSServicePortType ofs = service.getOFSServiceHttpSoap11Endpoint();
+     ServiceResponse response = ofs.invoke(sOFS);
+     resp = response.getResponses().get(0);
+           return resp;
  
         } catch (Exception ex) {
 
@@ -60,11 +60,11 @@ public class T24TAFJLink implements T24Link {
            
            
           @Override
-           public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters) throws Exception{
+           public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters, String compcode) throws Exception{
           ArrayList<List<String>> records  = new ArrayList<>();
            
      try{      
-   String message = "ENQUIRY.SELECT,,"+Username+"/"+Password+","+EnquiryName+","+Filters;
+   String message = "ENQUIRY.SELECT,,"+Username+"/"+Password+"/"+compcode+","+EnquiryName+","+Filters;
 
    String result = this.PostMsg(message);
    

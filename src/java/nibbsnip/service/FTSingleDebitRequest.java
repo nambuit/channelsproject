@@ -5,7 +5,7 @@
  */
 package nibbsnip.service;
 
-import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
@@ -71,6 +71,6 @@ public class FTSingleDebitRequest {
    private String TransactionFee;
    
    @XmlElement(name = "Amount") 
-   private BigDecimal Amount;
+   private String Amount;
     
 }

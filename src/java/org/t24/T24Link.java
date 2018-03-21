@@ -16,7 +16,7 @@ public interface T24Link  {
     
     public String generateOFSTransactString(ofsParam param) throws Exception;
     
-    public ArrayList<List<String>> getOfsData (String EnquiryName,String Username,String Password,String Filters) throws Exception;
+    public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters, String compcode) throws Exception;
     
     public Boolean IsSuccessful(String ofsresposne);
     

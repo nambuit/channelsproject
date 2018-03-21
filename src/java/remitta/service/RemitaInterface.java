@@ -349,7 +349,7 @@ import org.t24.ofsParam;
         //   Gson gson = new Gson(); 
            Date statementdate = sdf.parse(accountstatement.getStatementDate());
            accountstatement.setStatementDate(ndf.format(statementdate));
-           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + accountstatement.getAccountNumber().trim()+",VALUE.DATE:EQ="+accountstatement.getStatementDate());
+           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + accountstatement.getAccountNumber().trim()+",VALUE.DATE:EQ="+accountstatement.getStatementDate(),"");
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -414,7 +414,7 @@ import org.t24.ofsParam;
         //   Gson gson = new Gson(); 
            Date today = new Date();
            
-           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + accountbalance.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + accountbalance.getAccountNumber(),"");
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -472,7 +472,7 @@ import org.t24.ofsParam;
              //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + nameenquiry.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + nameenquiry.getAccountNumber(),"");
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -516,7 +516,7 @@ import org.t24.ofsParam;
             //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + otprequest.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + otprequest.getAccountNumber(),"");
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -557,7 +557,7 @@ import org.t24.ofsParam;
             //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("AUTHENTICATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("AUTHENTICATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber(),"");
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){

@@ -4,11 +4,11 @@
 <xsd:import namespace="http://core.nip.nibss/" schemaLocation="http://196.6.103.10:86/NIPWS/NIPInterface?xsd=1"></xsd:import>
 </xsd:schema>
 </types>
-<message name="mandateadvice">
-<part name="parameters" element="tns:mandateadvice"></part>
+<message name="amountunblock">
+<part name="parameters" element="tns:amountunblock"></part>
 </message>
-<message name="mandateadviceResponse">
-<part name="parameters" element="tns:mandateadviceResponse"></part>
+<message name="amountunblockResponse">
+<part name="parameters" element="tns:amountunblockResponse"></part>
 </message>
 <message name="balanceenquiry">
 <part name="parameters" element="tns:balanceenquiry"></part>
@@ -21,24 +21,6 @@
 </message>
 <message name="amountblockResponse">
 <part name="parameters" element="tns:amountblockResponse"></part>
-</message>
-<message name="amountunblock">
-<part name="parameters" element="tns:amountunblock"></part>
-</message>
-<message name="amountunblockResponse">
-<part name="parameters" element="tns:amountunblockResponse"></part>
-</message>
-<message name="accountblock">
-<part name="parameters" element="tns:accountblock"></part>
-</message>
-<message name="accountblockResponse">
-<part name="parameters" element="tns:accountblockResponse"></part>
-</message>
-<message name="accountunblock">
-<part name="parameters" element="tns:accountunblock"></part>
-</message>
-<message name="accountunblockResponse">
-<part name="parameters" element="tns:accountunblockResponse"></part>
 </message>
 <message name="nameenquirysingleitem">
 <part name="parameters" element="tns:nameenquirysingleitem"></part>
@@ -100,10 +82,28 @@
 <message name="ftackcreditrequestResponse">
 <part name="parameters" element="tns:ftackcreditrequestResponse"></part>
 </message>
+<message name="accountblock">
+<part name="parameters" element="tns:accountblock"></part>
+</message>
+<message name="accountblockResponse">
+<part name="parameters" element="tns:accountblockResponse"></part>
+</message>
+<message name="accountunblock">
+<part name="parameters" element="tns:accountunblock"></part>
+</message>
+<message name="accountunblockResponse">
+<part name="parameters" element="tns:accountunblockResponse"></part>
+</message>
+<message name="mandateadvice">
+<part name="parameters" element="tns:mandateadvice"></part>
+</message>
+<message name="mandateadviceResponse">
+<part name="parameters" element="tns:mandateadviceResponse"></part>
+</message>
 <portType name="NIPInterface">
-<operation name="mandateadvice">
-<input wsam:Action="http://core.nip.nibss/NIPInterface/mandateadviceRequest" message="tns:mandateadvice"></input>
-<output wsam:Action="http://core.nip.nibss/NIPInterface/mandateadviceResponse" message="tns:mandateadviceResponse"></output>
+<operation name="amountunblock">
+<input wsam:Action="http://core.nip.nibss/NIPInterface/amountunblockRequest" message="tns:amountunblock"></input>
+<output wsam:Action="http://core.nip.nibss/NIPInterface/amountunblockResponse" message="tns:amountunblockResponse"></output>
 </operation>
 <operation name="balanceenquiry">
 <input wsam:Action="http://core.nip.nibss/NIPInterface/balanceenquiryRequest" message="tns:balanceenquiry"></input>
@@ -112,18 +112,6 @@
 <operation name="amountblock">
 <input wsam:Action="http://core.nip.nibss/NIPInterface/amountblockRequest" message="tns:amountblock"></input>
 <output wsam:Action="http://core.nip.nibss/NIPInterface/amountblockResponse" message="tns:amountblockResponse"></output>
-</operation>
-<operation name="amountunblock">
-<input wsam:Action="http://core.nip.nibss/NIPInterface/amountunblockRequest" message="tns:amountunblock"></input>
-<output wsam:Action="http://core.nip.nibss/NIPInterface/amountunblockResponse" message="tns:amountunblockResponse"></output>
-</operation>
-<operation name="accountblock">
-<input wsam:Action="http://core.nip.nibss/NIPInterface/accountblockRequest" message="tns:accountblock"></input>
-<output wsam:Action="http://core.nip.nibss/NIPInterface/accountblockResponse" message="tns:accountblockResponse"></output>
-</operation>
-<operation name="accountunblock">
-<input wsam:Action="http://core.nip.nibss/NIPInterface/accountunblockRequest" message="tns:accountunblock"></input>
-<output wsam:Action="http://core.nip.nibss/NIPInterface/accountunblockResponse" message="tns:accountunblockResponse"></output>
 </operation>
 <operation name="nameenquirysingleitem">
 <input wsam:Action="http://core.nip.nibss/NIPInterface/nameenquirysingleitemRequest" message="tns:nameenquirysingleitem"></input>
@@ -165,10 +153,22 @@
 <input wsam:Action="http://core.nip.nibss/NIPInterface/ftackcreditrequestRequest" message="tns:ftackcreditrequest"></input>
 <output wsam:Action="http://core.nip.nibss/NIPInterface/ftackcreditrequestResponse" message="tns:ftackcreditrequestResponse"></output>
 </operation>
+<operation name="accountblock">
+<input wsam:Action="http://core.nip.nibss/NIPInterface/accountblockRequest" message="tns:accountblock"></input>
+<output wsam:Action="http://core.nip.nibss/NIPInterface/accountblockResponse" message="tns:accountblockResponse"></output>
+</operation>
+<operation name="accountunblock">
+<input wsam:Action="http://core.nip.nibss/NIPInterface/accountunblockRequest" message="tns:accountunblock"></input>
+<output wsam:Action="http://core.nip.nibss/NIPInterface/accountunblockResponse" message="tns:accountunblockResponse"></output>
+</operation>
+<operation name="mandateadvice">
+<input wsam:Action="http://core.nip.nibss/NIPInterface/mandateadviceRequest" message="tns:mandateadvice"></input>
+<output wsam:Action="http://core.nip.nibss/NIPInterface/mandateadviceResponse" message="tns:mandateadviceResponse"></output>
+</operation>
 </portType>
 <binding name="NIPInterfacePortBinding" type="tns:NIPInterface">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"></soap:binding>
-<operation name="mandateadvice">
+<operation name="amountunblock">
 <soap:operation soapAction=""></soap:operation>
 <input>
 <soap:body use="literal"></soap:body>
@@ -187,33 +187,6 @@
 </output>
 </operation>
 <operation name="amountblock">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-</operation>
-<operation name="amountunblock">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-</operation>
-<operation name="accountblock">
-<soap:operation soapAction=""></soap:operation>
-<input>
-<soap:body use="literal"></soap:body>
-</input>
-<output>
-<soap:body use="literal"></soap:body>
-</output>
-</operation>
-<operation name="accountunblock">
 <soap:operation soapAction=""></soap:operation>
 <input>
 <soap:body use="literal"></soap:body>
@@ -304,6 +277,33 @@
 </output>
 </operation>
 <operation name="ftackcreditrequest">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+</operation>
+<operation name="accountblock">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+</operation>
+<operation name="accountunblock">
+<soap:operation soapAction=""></soap:operation>
+<input>
+<soap:body use="literal"></soap:body>
+</input>
+<output>
+<soap:body use="literal"></soap:body>
+</output>
+</operation>
+<operation name="mandateadvice">
 <soap:operation soapAction=""></soap:operation>
 <input>
 <soap:body use="literal"></soap:body>

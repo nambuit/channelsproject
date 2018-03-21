@@ -89,12 +89,12 @@ public class T24TAFCLink implements T24Link {
        
  
        
-       @Override
-       public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters) throws Exception{
+          @Override
+           public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters, String compcode) throws Exception{
           ArrayList<List<String>> records  = new ArrayList<>();
            
      try{      
-   String message = "ENQUIRY.SELECT,,"+Username+"/"+Password+","+EnquiryName+","+Filters;
+   String message = "ENQUIRY.SELECT,,"+Username+"/"+Password+"/"+compcode+","+EnquiryName+","+Filters;
 
    String result = this.PostMsg(message);
    

@@ -5,7 +5,6 @@
  */
 package nibbsnip.service;
 
-import com.google.gson.Gson;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -20,11 +19,10 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.xml.bind.UnmarshalException;
 import org.apache.log4j.Level;
-import org.json.JSONObject;
-import org.json.XML;
 import org.t24.AppParams;
 import org.t24.DBConnector;
 import org.t24.DataItem;
+import org.t24.InstitutionDetails;
 import org.t24.NIBBsResponseCodes;
 import org.t24.PGPEncrytionTool;
 import org.t24.T24Link;
@@ -73,13 +71,19 @@ public class NIBBSNIPInterface {
         public String nameenquirysingleitem(@WebParam(name = "nesinglerequest") String input) {     
         NESingleResponse nameEnquiry = new NESingleResponse();
           String monthlyTable = "";
-        String sessionID="",AcctName ="",BVN = "";
-         
+        String sessionID="",AcctName ="",BVN = "",kyc="";
+       
+        
         try{
                    
            input = nipssm.decrypt(input);
     
             NESingleRequest request = (NESingleRequest) options.XMLToObject(input, new NESingleRequest());
+            
+           
+            
+         
+            
             
         List<Object> values = new ArrayList<>();
         List<String> headers = new ArrayList<>();
@@ -93,6 +97,8 @@ public class NIBBSNIPInterface {
             nameEnquiry.setAccountNumber(request.getAccountNumber());
             values.add(request.getAccountNumber());
             headers.add("AccountNumber");
+            
+           
 
             nameEnquiry.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
             values.add(request.getDestinationInstitutionCode());
@@ -128,11 +134,19 @@ public class NIBBSNIPInterface {
         }
      
        db.insertData(headers, values.toArray(),monthlyTable);
-        
+       
+        InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                nameEnquiry.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(nameEnquiry));
+            }
         
         
     
-            ArrayList<List<String>> result = t24.getOfsData("NESingleRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber());
+            ArrayList<List<String>> result = t24.getOfsData("NESingleRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber(),details.getCompanyCode());
             headers = result.get(0);
      
            if(headers.size()!=result.get(1).size()){
@@ -149,13 +163,14 @@ public class NIBBSNIPInterface {
          AcctName = escape(result.get(1).get(headers.indexOf("AccountName")).replace("\"", "").trim());
          nameEnquiry.setAccountName(AcctName);
          BVN = escape(result.get(1).get(headers.indexOf("BankVerificationNumber")).replace("\"", "").trim());
-         String phoneno = escape(result.get(1).get(headers.indexOf("Phone")).replace("\"", "").trim());
+         String phoneno = escape(result.get(1).get(headers.indexOf("PHONE.NUMBER")).replace("\"", "").trim());
          
          BVN = BVN.isEmpty()?phoneno:BVN;    
          
          nameEnquiry.setBankVerificationNumber(BVN);
       //   nameEnquiry.setKYCLevel(escape(result.get(1).get(headers.indexOf("KYCLevel")).replace("\"", "").trim()));
          nameEnquiry.setKYCLevel("1");
+         kyc="1";
          nameEnquiry.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
          nameEnquiry.setChannelCode(request.getChannelCode());
          nameEnquiry.setSessionID(request.getSessionID());
@@ -177,7 +192,7 @@ public class NIBBSNIPInterface {
     finally{
     try{
         
-        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"', AccountName='"+AcctName+"', BankVerificationNumber='"+BVN+"'  where SessionID='"+sessionID+"' and MethodName='nameenquirysingleitem'";
+        String query = "Update "+monthlyTable+" set KYCLevel='"+kyc+"', ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"', AccountName='"+AcctName+"', BankVerificationNumber='"+BVN+"'  where SessionID='"+sessionID+"' and MethodName='nameenquirysingleitem'";
         db.Execute(query);
         
         }
@@ -194,12 +209,12 @@ public class NIBBSNIPInterface {
         
       
     
-      @WebMethod(operationName = "fundtransfersingleitem_dc")
+    @WebMethod(operationName = "fundtransfersingleitem_dc")
     public String fundtransfersingleitem_dc(@WebParam(name = "ftsinglecreditrequest") String ftsinglecreditrequest) {
         FTSingleCreditResponse response = new FTSingleCreditResponse();
         String monthlyTable = "";
         String sessionID = "";
-        String CompanyCode = "NG0010001";     
+       
 
         
         try{
@@ -307,10 +322,22 @@ public class NIBBSNIPInterface {
      
        db.insertData(headers, values.toArray(),monthlyTable);
         
+       
+            InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+            }
+        
+       
+       
      
      
        String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
-       String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+       String[] credentials = new String[] {options.getOfsuser(), options.getOfspass(),details.getCompanyCode() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
      
@@ -333,27 +360,6 @@ public class NIBBSNIPInterface {
           
            DataItem item = new DataItem();
            
-           
-          ofsParam paramv = new ofsParam(); 
-           
-         paramv.setTransaction_id(CompanyCode);
-         ofsoptions[2] ="VALIDATE";     
-         
-         paramv.setOptions(ofsoptions);
-         paramv.setDataItems(items);
-         
-         paramv.setOperation("NIP.PARAM.TABLE");
-         
-         paramv.setCredentials(credentials);
-         
-         String ofstrv = t24.generateOFSTransactString(paramv);
-         String resultv =  t24.PostMsg(ofstrv);
-         
-         resultv = resultv.substring(resultv.indexOf("RECEIVABLE.ACCOUNT:1:1="));
-         
-         String recievableacct = resultv.split(",")[0].split("=")[1];
-         
-         ofsoptions[2] ="PROCESS"; 
 //           item = new DataItem();
 //           item.setItemHeader("CREDIT.VALUE.DATE");
 //           item.setItemValues(new String[] {trandate});
@@ -373,16 +379,11 @@ public class NIBBSNIPInterface {
            item.setItemHeader("CREDIT.AMOUNT");
            item.setItemValues(new String[] {request.getAmount().toString()});
            items.add(item);
-           
-           
-           
-           
-           
-           
+              
            
            item = new DataItem();
            item.setItemHeader("DEBIT.ACCT.NO");
-           item.setItemValues(new String[] {recievableacct});
+           item.setItemValues(new String[] {details.getReceivableAccount()});
            items.add(item);
                       
            item = new DataItem();
@@ -392,6 +393,9 @@ public class NIBBSNIPInterface {
            
            item = new DataItem();
            item.setItemHeader("CREDIT.THEIR.REF");
+           
+           request.setNarration(escape(request.getNarration()));
+           
            
            if(request.getNarration().length()>15){
                request.setNarration(request.getNarration().substring(15));
@@ -409,7 +413,11 @@ public class NIBBSNIPInterface {
            
            Thread.sleep(30000);
            
+          
+           respcodes = options.CheckTransactionStatus(request.getSessionID(), request.getDestinationInstitutionCode(), nipssm);
            
+           if(respcodes == NIBBsResponseCodes.SUCCESS){
+                                
            String result = t24.PostMsg(ofstr);
            
            if(t24.IsSuccessful(result)){
@@ -422,7 +430,7 @@ public class NIBBSNIPInterface {
                param.setOptions(ofsoptions);
                
                
-               param.setTransaction_id(request.getPaymentReference());
+               param.setTransaction_id(request.getSessionID());
                
                item = new DataItem();
                item.setItemHeader("T24.ID");
@@ -464,7 +472,11 @@ public class NIBBSNIPInterface {
               
            }
      
-        
+           }
+           else{
+               response.setResponseCode(respcodes.getCode());
+               
+           }
         
         
             
@@ -504,7 +516,7 @@ public class NIBBSNIPInterface {
         FTSingleDebitResponse response = new FTSingleDebitResponse();     
         Connection conn = null;
         String monthlyTable = "";
-        String sessionID = "";
+        String sessionID = ""; 
         
         try{
             
@@ -515,7 +527,7 @@ public class NIBBSNIPInterface {
         List<String> headers = new ArrayList<>();
          //repopulating response object and logging request
         response.setAmount(request.getAmount());
-        values.add(Double.parseDouble(request.getAmount().toString()));
+        values.add(Double.parseDouble(request.getAmount()));
         headers.add("Amount");
         
         response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
@@ -586,6 +598,20 @@ public class NIBBSNIPInterface {
      
        db.insertData(headers, values.toArray(),monthlyTable);
        
+            InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+            }
+        
+       
+       
+       
+       
+       
         ResultSet rs = db.getData("Select * from NIPMandates where MandateReferenceNumber='"+request.getMandateReferenceNumber()+"'", conn);
         
        if(rs.next())
@@ -599,13 +625,16 @@ public class NIBBSNIPInterface {
        }
        else{
            
-           String mandateAmt = rs.getString("Amount");
+            String mandateAmt = rs.getString("Amount");
            
-           if(request.getAmount().equals(mandateAmt)){
+           Double mdamt = Double.parseDouble(mandateAmt);
+           Double amt = Double.parseDouble(request.getAmount());
+           
+           if(mdamt <amt){
                         
             
        String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
-       String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
+       String[] credentials = new String[] {options.getOfsuser(), options.getOfspass(),details.getCompanyCode() };
        List<DataItem> items = new LinkedList<>();
        SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd"); 
    
@@ -649,12 +678,14 @@ public class NIBBSNIPInterface {
            
            item = new DataItem();
            item.setItemHeader("DEBIT.AMOUNT");
-           item.setItemValues(new String[] {request.getAmount().toString()});
+           item.setItemValues(new String[] {request.getAmount()});
            items.add(item);
+           
+           
            
            item = new DataItem();
            item.setItemHeader("CREDIT.ACCT.NO");
-           item.setItemValues(new String[] {request.getBeneficiaryAccountNumber()});
+           item.setItemValues(new String[] {details.getPayableAccount()});
            items.add(item);
                       
            item = new DataItem();
@@ -666,7 +697,7 @@ public class NIBBSNIPInterface {
            item.setItemHeader("CREDIT.THEIR.REF");
            
            if(request.getNarration().length()>65){
-               request.setNarration(request.getNarration().substring(65));
+               request.setNarration(request.getNarration().substring(14));
            }
            
            item.setItemValues(new String[] {request.getNarration()});
@@ -690,7 +721,7 @@ public class NIBBSNIPInterface {
                param.setOptions(ofsoptions);
                
                
-               param.setTransaction_id(request.getPaymentReference());
+               param.setTransaction_id(request.getSessionID());
                
                item = new DataItem();
                item.setItemHeader("T24.ID");
@@ -750,17 +781,11 @@ public class NIBBSNIPInterface {
        
        }
        else{
-           respcodes = NIBBsResponseCodes.Do_not_honor;
+           respcodes = NIBBsResponseCodes.Unable_to_locate_record;
             response.setResponseCode(respcodes.getCode());
        }
        
-       
-       
-       
-       
-      
-       
-       
+         
         }
         catch(UnmarshalException r){
                 
@@ -793,9 +818,9 @@ public class NIBBSNIPInterface {
     
      @WebMethod(operationName = "txnstatusquerysingleitem")
     public String txnstatusquerysingleitem(@WebParam(name = "tsquerysinglerequest") String tsquerysinglerequest) {
-        TSQuerySingleResponse response = new TSQuerySingleResponse();
+     TSQuerySingleResponse response = new TSQuerySingleResponse();
      String sessionID ="", monthlyTable="";
-     
+    
     Connection conn = null;
      
         try{
@@ -916,7 +941,7 @@ public class NIBBSNIPInterface {
         BalanceEnquiryResponse response = new BalanceEnquiryResponse();
         Connection conn = null;
         String sessionID = "",monthlyTable ="", AvailableBalance="";       
-
+   
         try {
        
            balancerequest = nipssm.decrypt(balancerequest);
@@ -991,14 +1016,26 @@ public class NIBBSNIPInterface {
         }
      
        db.insertData(headers, values.toArray(),monthlyTable);
-            
+       
+       
+        InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+            }
+        
+       
+       
      
       ResultSet rs = db.getData("Select * from NIPMandates where MandateReferenceNumber='"+request.getAuthorizationCode()+"'", conn);
         
        if(rs.next())
        {
            
-           ArrayList<List<String>> result = t24.getOfsData("BalanceEnquiryRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getTargetAccountNumber());
+           ArrayList<List<String>> result = t24.getOfsData("BalanceEnquiryRequest.NIP",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getTargetAccountNumber(),details.getCompanyCode());
         headers = result.get(0);
      
            if(headers.size()!=result.get(1).size()){
@@ -1068,7 +1105,8 @@ public class NIBBSNIPInterface {
         
         FTAdviceCreditResponse response = new FTAdviceCreditResponse();
      String sessionID ="", monthlyTable = "";
-        
+ 
+     
         try {
        creditrequest = nipssm.decrypt(creditrequest);
        FTAdviceCreditRequest request = (FTAdviceCreditRequest) options.XMLToObject(creditrequest, new FTAdviceCreditRequest());
@@ -1173,10 +1211,88 @@ public class NIBBSNIPInterface {
             
         }
      
+       
+        
        db.insertData(headers, values.toArray(),monthlyTable);
        
-       respcodes = NIBBsResponseCodes.SUCCESS;
-            response.setResponseCode(respcodes.getCode());
+              InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+            }
+        
+          
+                    ofsParam param = new ofsParam();
+                String[] credentials = new String[] { options.getOfsuser(), options.getOfspass(),details.getCompanyCode() };
+                param.setCredentials(credentials);
+                param.setOperation("FUNDS.TRANSFER");
+ 
+                param.setVersion("REV.WD");
+                String[] ofsoptions = new String[] { "", "R", "PROCESS", "2", "0" };
+                param.setOptions(ofsoptions);
+                
+                 
+                String[] vofsoptions = new String[] { "", "I", "VALIDATE", "2", "0" };
+
+                List<DataItem> items = new LinkedList<>();
+
+               ofsParam vparam = new ofsParam();
+               vparam.setCredentials(credentials);
+               vparam.setOperation("NIBBS.FT.REF.TABLE");
+               param.setOptions(vofsoptions);
+               
+               
+               param.setTransaction_id(request.getSessionID());
+               
+               param.setDataItems(items);
+               
+                String ofs = t24.generateOFSTransactString(param);
+
+                String output = t24.PostMsg(ofs);
+                 
+                if(output.indexOf("T24.ID")>0){
+                    
+               String resultv = output.substring(output.indexOf("T24.ID:1:1="));
+         
+                String t24ref = resultv.split(",")[0].split("=")[1];
+                
+                
+                param.setTransaction_id(t24ref);
+                param.setDataItems(new LinkedList<>());
+
+                String ofstr = t24.generateOFSTransactString(param);
+
+                String result = t24.PostMsg(ofstr);
+           
+           if(t24.IsSuccessful(result)){
+               respcodes =  NIBBsResponseCodes.SUCCESS;
+               response.setResponseCode(respcodes.getCode());
+  
+       }
+           else{
+                 respcodes = options.getNIBBsCode(result.split("/")[3]);
+               response.setResponseCode(respcodes.getCode());
+
+           }
+                
+                
+                
+                }
+                else{
+                    
+                respcodes = NIBBsResponseCodes.Invalid_transaction;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+                    
+                }
+                
+                
+
+           
+      
        
 
         } 
@@ -1218,6 +1334,9 @@ public class NIBBSNIPInterface {
     public String fundtransferAdvice_dd(@WebParam(name = "debitrequest") String debitrequest) {
          FTAdviceDebitResponse response = new FTAdviceDebitResponse();
         String sessionID ="", monthlyTable ="";
+     
+             
+        
         try {
                        
            debitrequest = nipssm.decrypt(debitrequest);
@@ -1301,8 +1420,81 @@ public class NIBBSNIPInterface {
      
        db.insertData(headers, values.toArray(),monthlyTable);
        
-        respcodes = NIBBsResponseCodes.SUCCESS;
-            response.setResponseCode(respcodes.getCode());
+        InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+            }
+        
+          
+                    ofsParam param = new ofsParam();
+                String[] credentials = new String[] { options.getOfsuser(), options.getOfspass(),details.getCompanyCode() };
+                param.setCredentials(credentials);
+                param.setOperation("FUNDS.TRANSFER");
+ 
+                param.setVersion("REV.WD");
+                String[] ofsoptions = new String[] { "", "R", "PROCESS", "2", "0" };
+                param.setOptions(ofsoptions);
+                
+                 
+                String[] vofsoptions = new String[] { "", "I", "VALIDATE", "2", "0" };
+
+                List<DataItem> items = new LinkedList<>();
+
+               ofsParam vparam = new ofsParam();
+               vparam.setCredentials(credentials);
+               vparam.setOperation("NIBBS.FT.REF.TABLE");
+               param.setOptions(vofsoptions);
+               
+               
+               param.setTransaction_id(request.getSessionID());
+               
+               param.setDataItems(items);
+               
+                String ofs = t24.generateOFSTransactString(param);
+
+                String output = t24.PostMsg(ofs);
+                 
+                if(output.indexOf("T24.ID")>0){
+                    
+               String resultv = output.substring(output.indexOf("T24.ID:1:1="));
+         
+                String t24ref = resultv.split(",")[0].split("=")[1];
+                
+                
+                param.setTransaction_id(t24ref);
+                param.setDataItems(new LinkedList<>());
+
+                String ofstr = t24.generateOFSTransactString(param);
+
+                String result = t24.PostMsg(ofstr);
+           
+           if(t24.IsSuccessful(result)){
+               respcodes =  NIBBsResponseCodes.SUCCESS;
+               response.setResponseCode(respcodes.getCode());
+  
+       }
+           else{
+                 respcodes = options.getNIBBsCode(result.split("/")[3]);
+               response.setResponseCode(respcodes.getCode());
+
+           }
+                
+                
+                
+                }
+                else{
+                    
+                respcodes = NIBBsResponseCodes.Invalid_transaction;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+                    
+                }
+                
+             
        
        
         }
@@ -1343,7 +1535,7 @@ public class NIBBSNIPInterface {
     public String amountblock(@WebParam(name = "amountblockrequest") String amountblockrequest) {
         AmountBlockResponse response = new AmountBlockResponse();
        String sessionID ="", monthlyTable ="";
-
+       String CompanyCode = "NG0010001";
         try 
         {
                            
@@ -1580,6 +1772,7 @@ public class NIBBSNIPInterface {
            public String amountunblock(@WebParam(name = "amountunblockrequest") String amountunblockrequest) {
                AmountUnblockResponse response = new AmountUnblockResponse();
           String sessionID ="", monthlyTable ="";
+          String CompanyCode = "NG0010001";
 
                try {
 
@@ -1774,8 +1967,8 @@ public class NIBBSNIPInterface {
            
            @WebMethod(operationName = "accountblock")
            public String accountblock(@WebParam(name = "AccountBlockIn") String AccountBlockIn) {
-               AccountBlockResponse response = new AccountBlockResponse();
-              
+           AccountBlockResponse response = new AccountBlockResponse();
+           String CompanyCode = "NG0010001";   
                try{
 
              AccountBlockIn = nipssm.decrypt(AccountBlockIn);
@@ -1856,7 +2049,7 @@ public class NIBBSNIPInterface {
     @WebMethod(operationName = "accountunblock")
     public String accountunblock(@WebParam(name = "AccountUnblockIn") String AccountUnblockIn) {
         AccountUnblockResponse response = new AccountUnblockResponse();
-      
+       String CompanyCode = "NG0010001";
         try{
             
            AccountUnblockIn = nipssm.decrypt(AccountUnblockIn);
@@ -1991,6 +2184,7 @@ public class NIBBSNIPInterface {
     public String mandateadvice(@WebParam(name = "MandateAdviceIn") String mandateIn) {
         MandateAdviceResponse response = new MandateAdviceResponse();
        String monthlyTable=""; String sessionID ="";
+      
         try{
             
             
@@ -2156,6 +2350,42 @@ public class NIBBSNIPInterface {
 //    
 //    }
 //   
+   
+   
+   private InstitutionDetails getInstitutionDetails(String InstCode){
+       
+       try{
+           
+           ArrayList<List<String>> result = t24.getOfsData("GET.BANK.NIP.PARAM",options.getOfsuser(), options.getOfspass(), "INSTITUTION.CODE:EQ=" +InstCode,"");
+          
+           List<String> headers = result.get(0);
+     
+           if(headers.size()!=result.get(1).size()){
+             return null;          
+           }
+           
+       String companycode = result.get(1).get(headers.indexOf("@ID")).replace("\"", "").trim();
+        String payableacct = result.get(1).get(headers.indexOf("PAYABLE.ACCOUNT")).replace("\"", "").trim();    
+         String receivableacct = result.get(1).get(headers.indexOf("RECEIVABLE.ACCOUNT")).replace("\"", "").trim();  
+         
+         InstitutionDetails details = new InstitutionDetails();
+         details.setCompanyCode(companycode);
+         details.setInstitutionCode(InstCode);
+         details.setPayableAccount(payableacct);
+         details.setReceivableAccount(receivableacct);
+         
+         return details;
+         
+       }
+       catch(Exception d){
+           
+           return null;
+       }
+   }
+   
+   
+      
+   
 }
 
 

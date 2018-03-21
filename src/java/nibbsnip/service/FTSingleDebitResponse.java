@@ -70,7 +70,7 @@ public class FTSingleDebitResponse {
    @XmlElement(name = "TransactionFee") 
    private BigDecimal TransactionFee;
    @XmlElement(name = "Amount") 
-   private BigDecimal Amount;
+   private String Amount;
    
    @XmlElement(name = "ResponseCode") 
    private String ResponseCode;

@@ -7,15 +7,16 @@ package nibbsnip.service;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Setter;
+import lombok.Getter;
+
 
 /**
  *
  * @author wumoru
  */
-@Setter
+@Getter
 @XmlRootElement(name = "TSQuerySingleResponse")
-public class TSQuerySingleResponse {
+public class TSQuerySingleResponse_client {
     
     @XmlElement(name = "SourceInstitutionCode")
     private String SourceInstitutionCode;
