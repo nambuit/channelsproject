@@ -1535,7 +1535,7 @@ public class NIBBSNIPInterface {
     public String amountblock(@WebParam(name = "amountblockrequest") String amountblockrequest) {
         AmountBlockResponse response = new AmountBlockResponse();
        String sessionID ="", monthlyTable ="";
-       String CompanyCode = "NG0010001";
+  
         try 
         {
                            
@@ -1543,10 +1543,7 @@ public class NIBBSNIPInterface {
               
                   AmountBlockRequest request = (AmountBlockRequest)options.XMLToObject(amountblockrequest, new AmountBlockRequest());
 
-                  ofsParam param = new ofsParam();
-                  String[] credentials = new String[] {options.getOfsuser(), options.getOfspass() };
-                  param.setCredentials(credentials);
-                  
+                 
                    List<Object> values = new ArrayList<>();
                       List<String> headers = new ArrayList<>();
      
@@ -1598,7 +1595,49 @@ public class NIBBSNIPInterface {
            values.add("amountblock");
             headers.add("MethodName");
  
-                  param.setOperation("AC.LOCKED.EVENTS");
+           
+             
+             String datestr = request.getSessionID().substring(6,18);
+       
+       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+ 
+        Date date = sdf.parse(datestr);
+       
+        
+          values.add(date);
+          headers.add("TransactionDate");
+        
+         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+        
+         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+        
+        String createquery = options.getCreateNIPTableScript(monthlyTable);
+        
+        try{
+            db.Execute(createquery);
+        }
+        catch(Exception r){
+            
+        }
+     
+       db.insertData(headers, values.toArray(),monthlyTable);         
+                
+          InstitutionDetails details = this.getInstitutionDetails(request.getDestinationInstitutionCode());
+       
+       
+          if(details==null){
+                respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
+                response.setResponseCode(respcodes.getCode());
+                return nipssm.encrypt(options.ObjectToXML(response));
+            }
+          
+          
+           ofsParam param = new ofsParam();
+                  String[] credentials = new String[] {options.getOfsuser(), options.getOfspass(),details.getCompanyCode() };
+                  param.setCredentials(credentials);
+                  
+          
+                         param.setOperation("AC.LOCKED.EVENTS");
                   param.setTransaction_id("");
                   String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
                   param.setOptions(ofsoptions);
@@ -1634,33 +1673,9 @@ public class NIBBSNIPInterface {
                   items.add(item);
 
                   param.setDataItems(items);
-             
-             String datestr = request.getSessionID().substring(6,18);
-       
-       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
- 
-        Date date = sdf.parse(datestr);
-       
+          
         
-          values.add(date);
-          headers.add("TransactionDate");
-        
-         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
-        
-         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
-        
-        String createquery = options.getCreateNIPTableScript(monthlyTable);
-        
-        try{
-            db.Execute(createquery);
-        }
-        catch(Exception r){
-            
-        }
-     
-       db.insertData(headers, values.toArray(),monthlyTable);         
-                  
-                     //ACLK1308680628
+                
                   String ofstr = t24.generateOFSTransactString(param);
 
                    String result = t24.PostMsg(ofstr);
@@ -2332,24 +2347,24 @@ public class NIBBSNIPInterface {
   }
        
    
-//    @WebMethod(operationName = "PGPEncryption")
-//    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
-//        
-//        switch(mode.toLowerCase()){
-//            case"dec":
-//                String resp =  nipssm.decrypt(message);
-//                return resp;
-//                
-//            default:
-//                return nipssm.encrypt(message);
-//        
-//    }
-//    
-//    
-//    
-//    
-//    }
-//   
+    @WebMethod(operationName = "PGPEncryption")
+    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
+        
+        switch(mode.toLowerCase()){
+            case"dec":
+                String resp =  nipssm.decrypt(message);
+                return resp;
+                
+            default:
+                return nipssm.encrypt(message);
+        
+    }
+    
+    
+    
+    
+    }
+   
    
    
    private InstitutionDetails getInstitutionDetails(String InstCode){
