@@ -6,7 +6,6 @@
 package nibbsnip.service;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
@@ -14,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -42,7 +43,7 @@ public class NIBBSNIPInterface {
      NIBBsResponseCodes respcodes;  
      PGPEncrytionTool nipssm;
      DBConnector db;
-    
+      Timer timer = new Timer();
     
     public NIBBSNIPInterface(){
    try
@@ -57,6 +58,17 @@ public class NIBBSNIPInterface {
               new T24TAFCLink(options.getHost(), options.getPort(), options.getOFSsource()); 
         
         db = new DBConnector(options.getDBserver(),options.getDBuser(),options.getDBpass(),"NIPLogs");
+        
+      
+        
+      
+        
+        timer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+         options.ExecuteCredits(db, nipssm, t24);
+        }
+    }, 2*60*1000, 2*60*1000);
         
     }
     catch (Exception e)
@@ -283,7 +295,7 @@ public class NIBBSNIPInterface {
         values.add(request.getNarration());
         headers.add("Narration");
         
-        response.setTransactionLocation(request.getPaymentReference());
+        response.setPaymentReference(request.getPaymentReference());
         values.add(request.getPaymentReference());
         headers.add("PaymentReference");
         
@@ -410,73 +422,34 @@ public class NIBBSNIPInterface {
            
            String ofstr = t24.generateOFSTransactString(param);
 
+           headers.add("OFSMessage");
+           values.add(ofstr);
            
-           Thread.sleep(30000);
-           
-          
-           respcodes = options.CheckTransactionStatus(request.getSessionID(), request.getDestinationInstitutionCode(), nipssm);
-           
-           if(respcodes == NIBBsResponseCodes.SUCCESS){
-                                
-           String result = t24.PostMsg(ofstr);
-           
-           if(t24.IsSuccessful(result)){
-              response.setPaymentReference(request.getPaymentReference());
-               
-               items.clear();
-               param = new ofsParam();
-               param.setCredentials(credentials);
-               param.setOperation("NIBBS.FT.REF.TABLE");
-               param.setOptions(ofsoptions);
-               
-               
-               param.setTransaction_id(request.getSessionID());
-               
-               item = new DataItem();
-               item.setItemHeader("T24.ID");
-               item.setItemValues(new String[] {result.split("/")[0]});
-               items.add(item);
-               
-               item = new DataItem();
-               item.setItemHeader("TXN.DATE");
-               item.setItemValues(new String[] {trandate});
-               
-               
-               items.add(item);
-
-               param.setDataItems(items);
-               
-                ofstr = t24.generateOFSTransactString(param);
-
-                t24.PostMsg(ofstr);
-                
-                respcodes = NIBBsResponseCodes.SUCCESS;         
-                response.setResponseCode(respcodes.getCode());
-                
-               
-           }
-           else{
-                        if(result.contains("/")){
-                respcodes = options.getNIBBsCode(result.split("/")[3]);
-                
-                if(respcodes==NIBBsResponseCodes.System_malfunction){
-                    throw new Exception (result);
-                }
-                  response.setResponseCode(respcodes.getCode());
+           headers.add("CompanyCode");
+           values.add(details.getCompanyCode());
              
-               }
-               else{
-                   throw new Exception (result);
-               }
-               
-              
+           try{
+            db.insertData(headers, values.toArray(),"NIPPendingCredits"); 
            }
-     
-           }
-           else{
-               response.setResponseCode(respcodes.getCode());
-               
-           }
+            catch(SQLServerException d){
+                          if (d.getMessage().contains("Cannot insert duplicate key")){
+                              
+                                     respcodes = NIBBsResponseCodes.Duplicate_transaction;         
+                                    response.setResponseCode(respcodes.getCode());
+                         
+                          }
+                          else{
+                              throw(d);
+                          }
+                      }
+         
+                                    respcodes = NIBBsResponseCodes.SUCCESS;         
+                                    response.setResponseCode(respcodes.getCode());
+          // respcodes = options.CheckTransactionStatus(request.getSessionID(), request.getDestinationInstitutionCode(), nipssm);
+           
+       
+         
+   
         
         
             
@@ -494,6 +467,9 @@ public class NIBBSNIPInterface {
     try{
         
         String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"' where SessionID='"+sessionID+"' and MethodName='fundtransfersingleitem_dc'";
+        db.Execute(query);
+        
+         query = "Update NIPPendingCredits set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"' where SessionID='"+sessionID+"' and MethodName='fundtransfersingleitem_dc'";
         db.Execute(query);
         
         }
@@ -1049,7 +1025,7 @@ public class NIBBSNIPInterface {
                
             db.Execute("Update NIPMandates set MandateStatus ='USED' where MandateReferenceNumber ='"+request.getAuthorizationCode().trim()+"'");
             AvailableBalance = escape(result.get(1).get(headers.indexOf("AvailableBalance")).replace("\"", "").trim().replace(",", ""));
-           response.setAvailableBalance(BigDecimal.valueOf(Double.parseDouble(AvailableBalance)));
+           response.setAvailableBalance(options.formatAmt(AvailableBalance));
             respcodes = NIBBsResponseCodes.SUCCESS;
            response.setResponseCode(respcodes.getCode());
            }
@@ -2305,7 +2281,23 @@ public class NIBBSNIPInterface {
             
             
             
-       db.insertData(headers, values.toArray(),"NIPMandates");
+   
+         try{
+                     db.insertData(headers, values.toArray(),"NIPMandates");
+                     
+             }
+             catch(SQLServerException d){
+              if (d.getMessage().contains("Cannot insert duplicate key")){
+                             
+                     respcodes = NIBBsResponseCodes.Duplicate_transaction;
+                     response.setResponseCode(respcodes.getCode());   
+                      return nipssm.encrypt(options.ObjectToXML(response));
+                  
+                          }
+              else{
+                  throw(d);
+              }
+                      }
            
         respcodes = NIBBsResponseCodes.SUCCESS;
         response.setResponseCode(respcodes.getCode()); 
@@ -2399,7 +2391,10 @@ public class NIBBSNIPInterface {
    }
    
    
-      
+   
+  
+   
+ 
    
 }
 

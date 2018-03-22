@@ -9,6 +9,13 @@ package org.t24;
 import com.sun.xml.bind.StringInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import javax.naming.InitialContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -290,6 +297,23 @@ public WebServiceLogger getServiceLogger(String filename){
 //    }
 //    
     
+    
+    public String formatAmt(String amt) throws Exception{
+        
+        try{
+            DecimalFormat df = new DecimalFormat("0.00");
+            
+            Double Amount = Double.parseDouble(amt);
+            
+           amt = df.format(Amount);
+           
+           return amt;
+        }
+        catch(Exception g){
+            throw(g);
+        }
+    }
+    
     public  NIBBsResponseCodes CheckTransactionStatus(String sessionid, String InstCode, PGPEncrytionTool nipssm){
         
         NIBBsResponseCodes respcode = NIBBsResponseCodes.Status_unknown;
@@ -325,5 +349,121 @@ public WebServiceLogger getServiceLogger(String filename){
         }
         
     }
+    
+    
+     public void ExecuteCredits(DBConnector db, PGPEncrytionTool nipssm, T24Link t24){
+       
+        Connection conn = null;
+       
+       try{
+      SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
+           
+           ResultSet rs = db.getData("Select * from NIPPendingCredits",conn);
+           
+           while (rs.next()){
+             
+               String sessionid = rs.getString("SessionID");
+               String ofstr = rs.getString("OFSMessage");
+               String sourceinstcode = rs.getString("SourceInstitutionCode");
+               String compcode = rs.getString("CompanyCode");
+               Date date = rs.getTimestamp("TransactionDate");
+   
+    
+               String trandate = ndf.format(date);
+               
+               
+              NIBBsResponseCodes respcode =  CheckTransactionStatus(sessionid, sourceinstcode, nipssm);
+              
+           String code =   respcode.getCode();
+               
+             if(code.equals("00"))
+             { 
+              
+              String result = t24.PostMsg(ofstr);
+              
+              
+                if(t24.IsSuccessful(result)){
+             
+                  
+               
+                ofsParam param = new ofsParam();
+                String[] credentials = new String[] { getOfsuser(), getOfspass(),compcode };
+                param.setCredentials(credentials);
+                 
+                List<DataItem> items = new LinkedList<>();
+               DataItem item = new DataItem();
+               
+                String[] ofsoptions = new String[] { "", "I", "PROCESS", "2", "0" };
+               
+          
+               param.setCredentials(credentials);
+               param.setOperation("NIBBS.FT.REF.TABLE");
+               param.setOptions(ofsoptions);
+               
+               
+               param.setTransaction_id(sessionid);
+               
+          
+               item.setItemHeader("T24.ID");
+               item.setItemValues(new String[] {result.split("/")[0]});
+               items.add(item);
+               
+               item = new DataItem();
+               item.setItemHeader("TXN.DATE");
+               item.setItemValues(new String[] {trandate});
+               
+               
+               items.add(item);
+
+               param.setDataItems(items);
+               
+                ofstr = t24.generateOFSTransactString(param);
+
+                t24.PostMsg(ofstr);
+                
+               db.Execute("delete from NIPPendingCredits where SessionID ='"+sessionid+"'");
+                
+               
+           }
+           else{
+                    
+                    String errormessage;
+                    
+                        if(result.contains("/")){
+                         errormessage =    result.split("/")[3];
+               
+                        }
+                        else{
+                              errormessage =    result;
+                        }
+               
+             
+               
+                     
+                db.Execute("Update  NIPPendingCredits set StatusMessage='"+errormessage+"' where  SessionID ='"+sessionid+"'");
+               
+              
+           }
+             }
+             else{
+                  db.Execute("Update  NIPPendingCredits set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"' where  SessionID ='"+sessionid+"'"); 
+             }
+             
+             
+           }
+       
+         
+           
+         
+   }
+       catch(Exception d){
+           
+       }
+       
+   }
+    
+    
+    
+    
      
 }

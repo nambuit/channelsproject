@@ -40,7 +40,7 @@ public class BalanceEnquiryResponse {
    private String TargetAccountNumber;
    
    @XmlElement(name = "AvailableBalance")
-   private BigDecimal AvailableBalance;
+   private String AvailableBalance;
    
    @XmlElement(name = "ResponseCode")
    private String ResponseCode;
