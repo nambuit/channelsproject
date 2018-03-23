@@ -6,6 +6,7 @@
 package nibbsnip.service;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
+import java.lang.Thread.State;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
@@ -43,13 +44,15 @@ public class NIBBSNIPInterface {
      NIBBsResponseCodes respcodes;  
      PGPEncrytionTool nipssm;
      DBConnector db;
-      Timer timer = new Timer();
-    
+
+    Thread watcherthread = new Thread();
     public NIBBSNIPInterface(){
    try
     {
  
         options = new AppParams();
+        
+     
         
         nipssm = new PGPEncrytionTool(options);
         
@@ -60,15 +63,35 @@ public class NIBBSNIPInterface {
         db = new DBConnector(options.getDBserver(),options.getDBuser(),options.getDBpass(),"NIPLogs");
         
       
-        
+          if(watcherthread.getState() == State.NEW){
+             
+             watcherthread  = new Thread(  new Runnable() {
+          @Override
+          public void run() {
+            
+              try{
+                        Timer timer = new Timer();
+                            timer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                             options.ExecuteCredits(db, nipssm, t24);
+                            }
+                        }, 60*1000, 60*1000);
+              } catch(Exception v)
+              {
+                
+
+              }
+          }
+          
+      });
+             
+             watcherthread.setName("ATM_LogFileListener");
+                         watcherthread.start(); 
+         } 
       
         
-        timer.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-         options.ExecuteCredits(db, nipssm, t24);
-        }
-    }, 2*60*1000, 2*60*1000);
+  
         
     }
     catch (Exception e)
@@ -295,6 +318,8 @@ public class NIBBSNIPInterface {
         values.add(request.getNarration());
         headers.add("Narration");
         
+      
+        
         response.setPaymentReference(request.getPaymentReference());
         values.add(request.getPaymentReference());
         headers.add("PaymentReference");
@@ -363,7 +388,7 @@ public class NIBBSNIPInterface {
            param.setOperation("FUNDS.TRANSFER");
            
            
-           param.setVersion("FT.REQ.DIRECT.DEBIT.NIP.");
+           param.setVersion("FUNDS.TRANSFER,FT.REQ.DIRECT.CREDIT.NIP");
            
            param.setTransaction_id("");
           
@@ -540,7 +565,9 @@ public class NIBBSNIPInterface {
         values.add(request.getTransactionLocation());
         headers.add("TransactionLocation");
         
-
+       response.setTransactionFee(request.getTransactionFee());
+        values.add(request.getTransactionFee());
+        headers.add("TransactionFee");
         
         values.add("INWARD");
         headers.add("TranDirection");
@@ -624,7 +651,7 @@ public class NIBBSNIPInterface {
            param.setOperation("FUNDS.TRANSFER");
            
            
-           param.setVersion("FT.REQ.DIRECT.DEBIT.NIP.");
+           param.setVersion("FUNDS.TRANSFER,FT.REQ.DIRECT.DEBIT.NIP");
            
            param.setTransaction_id("");
           
@@ -652,9 +679,11 @@ public class NIBBSNIPInterface {
            item.setItemValues(new String[] {"NGN"});
            items.add(item);
            
+           String Amount = String.valueOf(Double.parseDouble(request.getAmount())+Double.parseDouble(request.getTransactionFee()));
+           
            item = new DataItem();
            item.setItemHeader("DEBIT.AMOUNT");
-           item.setItemValues(new String[] {request.getAmount()});
+           item.setItemValues(new String[] {Amount});
            items.add(item);
            
            
@@ -792,122 +821,122 @@ public class NIBBSNIPInterface {
 }
     
     
-     @WebMethod(operationName = "txnstatusquerysingleitem")
-    public String txnstatusquerysingleitem(@WebParam(name = "tsquerysinglerequest") String tsquerysinglerequest) {
-     TSQuerySingleResponse response = new TSQuerySingleResponse();
-     String sessionID ="", monthlyTable="";
-    
-    Connection conn = null;
-     
-        try{
-            
-            
-             tsquerysinglerequest = nipssm.decrypt(tsquerysinglerequest);
-     
-             TSQuerySingleRequest request = (TSQuerySingleRequest) options.XMLToObject(tsquerysinglerequest, new TSQuerySingleRequest());
-             
-             
-                     
-        List<Object> values = new ArrayList<>();
-        List<String> headers = new ArrayList<>();
-         //repopulating response object and logging request
-         
-             response.setSessionID(request.getSessionID());
-             values.add(request.getSessionID());
-             headers.add("SessionID");
-             sessionID = request.getSessionID();
-
-            response.setSourceInstitutionCode(request.getSourceInstitutionCode());
-            values.add(request.getSourceInstitutionCode());
-            headers.add("DestinationInstitutionCode");
-
-            response.setChannelCode(request.getChannelCode());
-            values.add(request.getChannelCode());
-            headers.add("ChannelCode");       
-
-            values.add("INWARD");
-            headers.add("TranDirection");
-
-            values.add("txnstatusquerysingleitem");
-            headers.add("MethodName");
-        
-        
-       
-       String datestr = request.getSessionID().substring(6,18);
-       
-       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
- 
-        Date date = sdf.parse(datestr);
-       
-        
-          values.add(date);
-          headers.add("TransactionDate");
-        
-
-         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
-        
-         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
-        
-        String createquery = options.getCreateNIPTableScript(monthlyTable);
-        
-        try{
-            db.Execute(createquery);
-        }
-        catch(Exception r){
-            
-        }
-     
-       db.insertData(headers, values.toArray(),monthlyTable);
-            
-      
-       
-           
-     ResultSet rs = db.getData("Select * from "+monthlyTable+" where SessionID='"+request.getSessionID()+"' and MethodName  like'%fundtransfersingleitem%'",conn);
-     
-     if(!rs.next()){
-         respcodes = NIBBsResponseCodes.Invalid_transaction;
-         response.setResponseCode(respcodes.getCode());
-         return nipssm.encrypt(options.ObjectToXML(response));        
-     }
-     else{
-          respcodes = NIBBsResponseCodes.SUCCESS;
-          response.setResponseCode(rs.getString("ResponseCode"));
-     }
-      
-      
-    
-     
-      
-    }
-     catch(UnmarshalException r){
-                
-             respcodes = NIBBsResponseCodes.Format_error;
-            response.setResponseCode(respcodes.getCode());
-        }
-        catch(Exception e){
-        respcodes = NIBBsResponseCodes.System_malfunction;
-        response.setResponseCode(respcodes.getCode());
-    }
-        
-       finally{
-    try{
-        
-        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"' where SessionID='"+sessionID+"' and MethodName='txnstatusquerysingleitem'";
-        db.Execute(query);
-        conn.close();
-        
-        }
-        catch(Exception s)
-           {
-           
-            }
-
-}  
-        
-      //  return options.ObjectToXML(response);
-        
-         return nipssm.encrypt(options.ObjectToXML(response));
-}
+//     @WebMethod(operationName = "txnstatusquerysingleitem")
+//    public String txnstatusquerysingleitem(@WebParam(name = "tsquerysinglerequest") String tsquerysinglerequest) {
+//     TSQuerySingleResponse response = new TSQuerySingleResponse();
+//     String sessionID ="", monthlyTable="";
+//    
+//    Connection conn = null;
+//     
+//        try{
+//            
+//            
+//             tsquerysinglerequest = nipssm.decrypt(tsquerysinglerequest);
+//     
+//             TSQuerySingleRequest request = (TSQuerySingleRequest) options.XMLToObject(tsquerysinglerequest, new TSQuerySingleRequest());
+//             
+//             
+//                     
+//        List<Object> values = new ArrayList<>();
+//        List<String> headers = new ArrayList<>();
+//         //repopulating response object and logging request
+//         
+//             response.setSessionID(request.getSessionID());
+//             values.add(request.getSessionID());
+//             headers.add("SessionID");
+//             sessionID = request.getSessionID();
+//
+//            response.setSourceInstitutionCode(request.getSourceInstitutionCode());
+//            values.add(request.getSourceInstitutionCode());
+//            headers.add("DestinationInstitutionCode");
+//
+//            response.setChannelCode(request.getChannelCode());
+//            values.add(request.getChannelCode());
+//            headers.add("ChannelCode");       
+//
+//            values.add("INWARD");
+//            headers.add("TranDirection");
+//
+//            values.add("txnstatusquerysingleitem");
+//            headers.add("MethodName");
+//        
+//        
+//       
+//       String datestr = request.getSessionID().substring(6,18);
+//       
+//       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+// 
+//        Date date = sdf.parse(datestr);
+//       
+//        
+//          values.add(date);
+//          headers.add("TransactionDate");
+//        
+//
+//         SimpleDateFormat df = new SimpleDateFormat("MMMyyyy"); 
+//        
+//         monthlyTable = df.format(date)+"NIP_TRANSACTIONS";
+//        
+//        String createquery = options.getCreateNIPTableScript(monthlyTable);
+//        
+//        try{
+//            db.Execute(createquery);
+//        }
+//        catch(Exception r){
+//            
+//        }
+//     
+//       db.insertData(headers, values.toArray(),monthlyTable);
+//            
+//      
+//       
+//           
+//     ResultSet rs = db.getData("Select * from "+monthlyTable+" where SessionID='"+request.getSessionID()+"' and MethodName  like'%fundtransfersingleitem%'",conn);
+//     
+//     if(!rs.next()){
+//         respcodes = NIBBsResponseCodes.Invalid_transaction;
+//         response.setResponseCode(respcodes.getCode());
+//         return nipssm.encrypt(options.ObjectToXML(response));        
+//     }
+//     else{
+//          respcodes = NIBBsResponseCodes.SUCCESS;
+//          response.setResponseCode(rs.getString("ResponseCode"));
+//     }
+//      
+//      
+//    
+//     
+//      
+//    }
+//     catch(UnmarshalException r){
+//                
+//             respcodes = NIBBsResponseCodes.Format_error;
+//            response.setResponseCode(respcodes.getCode());
+//        }
+//        catch(Exception e){
+//        respcodes = NIBBsResponseCodes.System_malfunction;
+//        response.setResponseCode(respcodes.getCode());
+//    }
+//        
+//       finally{
+//    try{
+//        
+//        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"' where SessionID='"+sessionID+"' and MethodName='txnstatusquerysingleitem'";
+//        db.Execute(query);
+//        conn.close();
+//        
+//        }
+//        catch(Exception s)
+//           {
+//           
+//            }
+//
+//}  
+//        
+//      //  return options.ObjectToXML(response);
+//        
+//         return nipssm.encrypt(options.ObjectToXML(response));
+//}
     
     
     
@@ -2339,23 +2368,23 @@ public class NIBBSNIPInterface {
   }
        
    
-    @WebMethod(operationName = "PGPEncryption")
-    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
-        
-        switch(mode.toLowerCase()){
-            case"dec":
-                String resp =  nipssm.decrypt(message);
-                return resp;
-                
-            default:
-                return nipssm.encrypt(message);
-        
-    }
-    
-    
-    
-    
-    }
+//    @WebMethod(operationName = "PGPEncryption")
+//    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
+//        
+//        switch(mode.toLowerCase()){
+//            case"dec":
+//                String resp =  nipssm.decrypt(message);
+//                return resp;
+//                
+//            default:
+//                return nipssm.encrypt(message);
+//        
+//    }
+//    
+//    
+//    
+//    
+//    }
    
    
    
@@ -2391,8 +2420,10 @@ public class NIBBSNIPInterface {
    }
    
    
-   
-  
+// public static void main(String [] args){
+//     new NIBBSNIPInterface().accountblock("");
+// }  
+//  
    
  
    

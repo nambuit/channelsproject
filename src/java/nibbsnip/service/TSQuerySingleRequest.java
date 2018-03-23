@@ -7,14 +7,14 @@ package nibbsnip.service;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
+
 import lombok.Setter;
 
 /**
  *
  * @author wumoru
  */
-@Getter @Setter
+@Setter
 @XmlRootElement(name = "TSQuerySingleRequest")
 public class TSQuerySingleRequest {
     

@@ -68,7 +68,8 @@ public class FTSingleDebitResponse {
    private String MandateReferenceNumber;
    
    @XmlElement(name = "TransactionFee") 
-   private BigDecimal TransactionFee;
+   private String TransactionFee;
+   
    @XmlElement(name = "Amount") 
    private String Amount;
    

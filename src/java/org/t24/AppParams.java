@@ -26,7 +26,7 @@ import lombok.Setter;
 import nibbsnip.client.NIPInterface;
 import nibbsnip.client.NIPInterface_Service;
 import nibbsnip.service.TSQuerySingleRequest;
-import nibbsnip.service.TSQuerySingleResponse_client;
+import nibbsnip.service.TSQuerySingleResponse;
 import org.apache.log4j.Level;
 
 
@@ -336,7 +336,7 @@ public WebServiceLogger getServiceLogger(String filename){
            
           nipresponse = nipssm.decrypt(nipresponse);
           
-          TSQuerySingleResponse_client response = (TSQuerySingleResponse_client) this.XMLToObject(nipresponse, new TSQuerySingleResponse_client());
+          TSQuerySingleResponse response = (TSQuerySingleResponse) this.XMLToObject(nipresponse, new TSQuerySingleResponse());
           
          respcode = respcode.getResponseObject(response.getResponseCode());
             
@@ -364,7 +364,7 @@ public WebServiceLogger getServiceLogger(String filename){
              
                String sessionid = rs.getString("SessionID");
                String ofstr = rs.getString("OFSMessage");
-               String sourceinstcode = rs.getString("SourceInstitutionCode");
+               String sourceinstcode = rs.getString("DestinationInstitutionCode");
                String compcode = rs.getString("CompanyCode");
                Date date = rs.getTimestamp("TransactionDate");
    
@@ -457,7 +457,7 @@ public WebServiceLogger getServiceLogger(String filename){
          
    }
        catch(Exception d){
-           
+          System.out.println(d.getMessage());
        }
        
    }
