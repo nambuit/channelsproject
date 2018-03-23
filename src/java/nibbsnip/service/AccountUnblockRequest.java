@@ -25,7 +25,7 @@ public class AccountUnblockRequest {
   private String DestinationInstitutionCode;
   
   @XmlElement(name = "ChannelCode") 
-  private Integer ChannelCode;
+  private String ChannelCode;
   
    @XmlElement(name = "ReferenceCode")  
    private String ReferenceCode;
