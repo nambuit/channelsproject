@@ -192,6 +192,10 @@ public WebServiceLogger getServiceLogger(String filename){
         if(message.contains("Insolvent".toLowerCase())){
       respcode =  NIBBsResponseCodes.Do_not_honor;
    }
+        
+               if(message.contains("HISTORY RECORD MISSING".toLowerCase())){
+      respcode =  NIBBsResponseCodes.No_action_taken;
+   }
    
         
           if(message.contains("Unauthorised overdraft".toLowerCase())){

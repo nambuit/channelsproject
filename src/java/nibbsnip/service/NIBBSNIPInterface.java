@@ -314,11 +314,16 @@ public class NIBBSNIPInterface {
         values.add(request.getNameEnquiryRef());
         headers.add("NameEnquiryRef");
         
-        response.setTransactionLocation(request.getNarration());
+        response.setNarration(request.getNarration());
         values.add(request.getNarration());
         headers.add("Narration");
         
       
+         response.setBeneficiaryKYCLevel(request.getBeneficiaryKYCLevel());
+        values.add(request.getBeneficiaryKYCLevel());
+        headers.add("BeneficiaryKYCLevel");
+        
+       
         
         response.setPaymentReference(request.getPaymentReference());
         values.add(request.getPaymentReference());
@@ -569,6 +574,42 @@ public class NIBBSNIPInterface {
         values.add(request.getTransactionFee());
         headers.add("TransactionFee");
         
+         response.setDebitBankVerificationNumber(request.getDebitBankVerificationNumber());
+        values.add(request.getDebitBankVerificationNumber());
+        headers.add("DebitBankVerificationNumber");
+        
+          response.setDebitAccountName(request.getDebitAccountName());
+        values.add(request.getDebitAccountName());
+        headers.add("DebitAccountName");
+        
+        response.setDebitKYCLevel(request.getDebitKYCLevel());
+        values.add(request.getDebitKYCLevel());
+        headers.add("DebitKYCLevel");
+        
+          response.setDebitAccountNumber(request.getDebitAccountNumber());
+        values.add(request.getDebitAccountNumber());
+        headers.add("DebitAccountNumber");
+        
+        response.setBeneficiaryKYCLevel(request.getBeneficiaryKYCLevel());
+        values.add(request.getBeneficiaryKYCLevel());
+        headers.add("BeneficiaryKYCLevel");
+        
+        
+        response.setMandateReferenceNumber(request.getMandateReferenceNumber());
+        values.add(request.getMandateReferenceNumber());
+        headers.add("MandateReferenceNumber");
+        
+        response.setNarration(request.getNarration());
+        values.add(request.getNarration());
+        headers.add("Narration");
+        
+        response.setPaymentReference(request.getPaymentReference());
+        values.add(request.getPaymentReference());
+        headers.add("PaymentReference");
+        
+      
+        
+        
         values.add("INWARD");
         headers.add("TranDirection");
         
@@ -619,21 +660,21 @@ public class NIBBSNIPInterface {
         
        if(rs.next())
        {
-       String MandateStatus = rs.getString("MandateStatus");
+      // String MandateStatus = rs.getString("MandateStatus");
       
-       if(MandateStatus.equalsIgnoreCase("USED")){
-           
-             respcodes = NIBBsResponseCodes.Duplicate_record;
-            response.setResponseCode(respcodes.getCode());
-       }
-       else{
+//       if(MandateStatus.equalsIgnoreCase("USED")){
+//           
+//             respcodes = NIBBsResponseCodes.Duplicate_record;
+//            response.setResponseCode(respcodes.getCode());
+//       }
+//       else{
            
             String mandateAmt = rs.getString("Amount");
            
            Double mdamt = Double.parseDouble(mandateAmt);
            Double amt = Double.parseDouble(request.getAmount());
            
-           if(mdamt <amt){
+           if(amt <=mdamt){
              
           String acctno = rs.getString("DebitAccountNumber").trim();
           
@@ -697,7 +738,7 @@ public class NIBBSNIPInterface {
            
             item = new DataItem();
            item.setItemHeader("CHARGE.AMT");
-           item.setItemValues(new String[] {request.getTransactionFee()});
+           item.setItemValues(new String[] {"NGN"+request.getTransactionFee()});
            items.add(item);
            
            
@@ -797,7 +838,7 @@ public class NIBBSNIPInterface {
        }
        
        
-       }
+       
        else{
            respcodes = NIBBsResponseCodes.Unable_to_locate_record;
             response.setResponseCode(respcodes.getCode());
@@ -1308,7 +1349,7 @@ public class NIBBSNIPInterface {
                 }
                 else{
                     
-                respcodes = NIBBsResponseCodes.Invalid_transaction;
+                respcodes = NIBBsResponseCodes.Invalid_Session_or_Record_ID;
                 response.setResponseCode(respcodes.getCode());
                 return nipssm.encrypt(options.ObjectToXML(response));
                     
@@ -1513,7 +1554,7 @@ public class NIBBSNIPInterface {
                 }
                 else{
                     
-                respcodes = NIBBsResponseCodes.Invalid_transaction;
+                respcodes = NIBBsResponseCodes.Invalid_Session_or_Record_ID;
                 response.setResponseCode(respcodes.getCode());
                 return nipssm.encrypt(options.ObjectToXML(response));
                     
@@ -2681,6 +2722,9 @@ public class NIBBSNIPInterface {
          details.setCompanyCode(companycode);
          details.setInstitutionCode(InstCode);
          details.setPayableAccount(payableacct);
+
+
+
          details.setReceivableAccount(receivableacct);
          
          return details;

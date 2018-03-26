@@ -36,9 +36,6 @@ public class FTSingleCreditRequest {
    @XmlElement(name = "BeneficiaryAccountNumber")
    private String BeneficiaryAccountNumber;
    
-   @XmlElement(name = "BeneficiaryVerificationNumber")
-   private String BeneficiaryVerificationNumber;
-   
    @XmlElement(name = "BeneficiaryBankVerificationNumber")
    private String BeneficiaryBankVerificationNumber;
    
