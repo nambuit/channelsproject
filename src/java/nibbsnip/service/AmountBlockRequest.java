@@ -48,5 +48,5 @@ public class AmountBlockRequest {
    private String Narration;
    
    @XmlElement(name = "Amount") 
-   private BigDecimal Amount;
+   private String Amount;
 }

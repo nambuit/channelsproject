@@ -5,10 +5,9 @@
  */
 package nibbsnip.service;
 
-import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -47,7 +46,7 @@ public class AmountBlockResponse {
    private String Narration;
    
    @XmlElement(name = "Amount") 
-   private BigDecimal Amount;
+   private String Amount;
    
    @XmlElement(name = "ResponseCode") 
    private String ResponseCode;

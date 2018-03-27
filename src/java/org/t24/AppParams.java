@@ -198,7 +198,7 @@ public WebServiceLogger getServiceLogger(String filename){
    }
    
         
-          if(message.contains("Unauthorised overdraft".toLowerCase())){
+          if(message.contains("Unauthorised overdraft".toLowerCase())||message.contains("will fall below Locked".toLowerCase())){
       respcode =  NIBBsResponseCodes.No_sufficient_funds;
    }
     

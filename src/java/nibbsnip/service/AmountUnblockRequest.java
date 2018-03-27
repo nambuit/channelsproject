@@ -47,5 +47,5 @@ public class AmountUnblockRequest {
    private String Narration;
    
    @XmlElement(name = "Amount") 
-   private BigDecimal Amount;
+   private String Amount;
 }
