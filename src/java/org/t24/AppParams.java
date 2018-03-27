@@ -413,7 +413,7 @@ public WebServiceLogger getServiceLogger(String filename){
                items.add(item);
                
                item = new DataItem();
-               item.setItemHeader("TXN.DATE");
+               item.setItemHeader("DATE");
                item.setItemValues(new String[] {trandate});
                
                

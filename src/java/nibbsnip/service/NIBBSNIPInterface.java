@@ -788,7 +788,7 @@ public class NIBBSNIPInterface {
                items.add(item);
                
                item = new DataItem();
-               item.setItemHeader("TXN.DATE");
+               item.setItemHeader("DATE");
                item.setItemValues(new String[] {trandate});
                
                
@@ -1233,11 +1233,15 @@ public class NIBBSNIPInterface {
         values.add(request.getTransactionLocation());
         headers.add("TransactionLocation");
         
-        response.setTransactionLocation(request.getNarration());
+        response.setNarration(request.getNarration());
         values.add(request.getNarration());
         headers.add("Narration");
         
-        response.setTransactionLocation(request.getPaymentReference());
+        response.setBeneficiaryKYCLevel(request.getBeneficiaryKYCLevel());
+        values.add(request.getBeneficiaryKYCLevel());
+        headers.add("BeneficiaryKYCLevel");
+        
+        response.setPaymentReference(request.getPaymentReference());
         values.add(request.getPaymentReference());
         headers.add("PaymentReference");
         
@@ -1308,14 +1312,14 @@ public class NIBBSNIPInterface {
                ofsParam vparam = new ofsParam();
                vparam.setCredentials(credentials);
                vparam.setOperation("NIBBS.FT.REF.TABLE");
-               param.setOptions(vofsoptions);
+               vparam.setOptions(vofsoptions);
                
                
-               param.setTransaction_id(request.getSessionID());
+               vparam.setTransaction_id(request.getSessionID());
                
-               param.setDataItems(items);
+               vparam.setDataItems(items);
                
-                String ofs = t24.generateOFSTransactString(param);
+                String ofs = t24.generateOFSTransactString(vparam);
 
                 String output = t24.PostMsg(ofs);
                  
@@ -1415,16 +1419,16 @@ public class NIBBSNIPInterface {
        //repopulating response object
     
         response.setAmount(request.getAmount());
-        values.add(Double.parseDouble(request.getAmount().toString()));
+        values.add(Double.parseDouble(request.getAmount()));
         headers.add("Amount");
         
-        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
-        values.add(request.getBeneficiaryAccountName());
-        headers.add("BeneficiaryAccountName");
-        
-        response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
-        values.add(request.getBeneficiaryAccountNumber());
-        headers.add("BeneficiaryAccountNumber");
+//        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+//        values.add(request.getBeneficiaryAccountName());
+//        headers.add("BeneficiaryAccountName");
+//        
+//        response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
+//        values.add(request.getBeneficiaryAccountNumber());
+//        headers.add("BeneficiaryAccountNumber");
         
         response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
         values.add(request.getBeneficiaryBankVerificationNumber());
@@ -1437,6 +1441,51 @@ public class NIBBSNIPInterface {
         response.setNameEnquiryRef(request.getNameEnquiryRef());
         values.add(request.getNameEnquiryRef());
         headers.add("NameEnquiryRef");
+          
+        response.setDebitAccountName(request.getDebitAccountName());
+        values.add(request.getDebitAccountName());
+        headers.add("DebitAccountName");
+        
+        response.setDebitAccountNumber(request.getDebitAccountNumber());
+        values.add(request.getDebitAccountNumber());
+        headers.add("DebitAccountNumber");
+        
+//        response.setBeneficiaryBankVerificationNumber(request.getBeneficiaryBankVerificationNumber());
+//        values.add(request.getBeneficiaryBankVerificationNumber());
+//        headers.add("BeneficiaryBankVerificationNumber");
+        
+        response.setDebitKYCLevel(request.getDebitKYCLevel());
+        values.add(request.getDebitKYCLevel());
+        headers.add("DebitKYCLevel");
+        
+        response.setBeneficiaryAccountName(request.getBeneficiaryAccountName());
+        values.add(request.getBeneficiaryAccountName());
+        headers.add("BeneficiaryAccountName");
+        
+        response.setBeneficiaryAccountNumber(request.getBeneficiaryAccountNumber());
+        values.add(request.getBeneficiaryAccountNumber());
+        headers.add("BeneficiaryAccountNumber");
+        
+        response.setBeneficiaryKYCLevel(request.getBeneficiaryKYCLevel());
+        values.add(request.getBeneficiaryKYCLevel());
+        headers.add("BeneficiaryKYCLevel");
+        
+        
+        response.setNarration(request.getNarration());
+        values.add(request.getNarration());
+        headers.add("Narration");
+        
+         response.setPaymentReference(request.getPaymentReference());
+        values.add(request.getPaymentReference());
+        headers.add("PaymentReference");
+        
+        response.setMandateReferenceNumber(request.getMandateReferenceNumber());
+        values.add(request.getMandateReferenceNumber());
+        headers.add("MandateReferenceNumber");
+        
+        response.setTransactionLocation(request.getTransactionLocation());
+        values.add(request.getTransactionLocation());
+        headers.add("TransactionLocation");
         
         response.setDestinationInstitutionCode(request.getDestinationInstitutionCode());
         values.add(request.getDestinationInstitutionCode());
@@ -1448,16 +1497,16 @@ public class NIBBSNIPInterface {
         headers.add("SessionID");
         sessionID = request.getSessionID();
          
-        response.setTransactionLocation(request.getTransactionLocation());
-        values.add(request.getTransactionLocation());
-        headers.add("TransactionLocation");
+        response.setTransactionFee(request.getTransactionFee());
+        values.add(request.getTransactionFee());
+        headers.add("TransactionFee");
         
   
         
         values.add("INWARD");
         headers.add("TranDirection");
         
-           values.add("fundtransfersingleitem_dd");
+           values.add("fundtransferAdvice_dd");
             headers.add("MethodName");
         
         
@@ -1495,7 +1544,7 @@ public class NIBBSNIPInterface {
                 return nipssm.encrypt(options.ObjectToXML(response));
             }
         
-          
+            
                     ofsParam param = new ofsParam();
                 String[] credentials = new String[] { options.getOfsuser(), options.getOfspass(),details.getCompanyCode() };
                 param.setCredentials(credentials);
@@ -1513,14 +1562,14 @@ public class NIBBSNIPInterface {
                ofsParam vparam = new ofsParam();
                vparam.setCredentials(credentials);
                vparam.setOperation("NIBBS.FT.REF.TABLE");
-               param.setOptions(vofsoptions);
+               vparam.setOptions(vofsoptions);
                
                
-               param.setTransaction_id(request.getSessionID());
+               vparam.setTransaction_id(request.getSessionID());
                
-               param.setDataItems(items);
+               vparam.setDataItems(items);
                
-                String ofs = t24.generateOFSTransactString(param);
+                String ofs = t24.generateOFSTransactString(vparam);
 
                 String output = t24.PostMsg(ofs);
                  
@@ -1537,6 +1586,8 @@ public class NIBBSNIPInterface {
                 String ofstr = t24.generateOFSTransactString(param);
 
                 String result = t24.PostMsg(ofstr);
+           
+          
            
            if(t24.IsSuccessful(result)){
                respcodes =  NIBBsResponseCodes.SUCCESS;
@@ -1579,7 +1630,7 @@ public class NIBBSNIPInterface {
               finally{
     try{
         
-        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='fundtransferAdvice_dc'";
+        String query = "Update "+monthlyTable+" set ResponseCode='"+respcodes.getCode()+"', StatusMessage='"+respcodes.getMessage()+"'  where SessionID='"+sessionID+"' and MethodName='fundtransferAdvice_dd'";
         db.Execute(query);
         
         }
@@ -1653,8 +1704,15 @@ public class NIBBSNIPInterface {
         response.setTargetAccountNumber(request.getTargetAccountNumber());
         values.add(request.getTargetAccountNumber());
         headers.add("TransactionLocation");
+       
         
-  
+        response.setTargetBankVerificationNumber(request.getTargetBankVerificationNumber());
+        values.add(request.getTargetBankVerificationNumber());
+        headers.add("TargetBankVerificationNumber");
+        
+        
+       
+      
         
         values.add("INWARD");
         headers.add("TranDirection");
@@ -1756,7 +1814,7 @@ public class NIBBSNIPInterface {
                      String t24ref = result.split("/")[0];
                      
                   param.setOperation("NIBBS.FT.REF.TABLE");
-                  param.setTransaction_id(request.getReferenceCode()); 
+                  param.setTransaction_id(request.getReferenceCode().replace("/", "//").replace("_", ".")); 
                   
                   items.clear();
                   
@@ -1908,7 +1966,9 @@ public class NIBBSNIPInterface {
         values.add(request.getTargetAccountNumber());
         headers.add("TransactionLocation");
         
-  
+        response.setTargetBankVerificationNumber(request.getTargetBankVerificationNumber());
+        values.add(request.getTargetBankVerificationNumber());
+        headers.add("TargetBankVerificationNumber");
         
         values.add("INWARD");
         headers.add("TranDirection");
@@ -1970,7 +2030,7 @@ public class NIBBSNIPInterface {
             
           ofsParam paramv = new ofsParam(); 
            
-         paramv.setTransaction_id(request.getReferenceCode());
+         paramv.setTransaction_id(request.getReferenceCode().replace("/", "//").replace("_", "."));
          ofsoptions[2] ="VALIDATE";     
          
          paramv.setOptions(ofsoptions);

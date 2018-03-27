@@ -73,7 +73,7 @@ public class FTAdviceDebitResponse {
    private String TransactionFee;
    
    @XmlElement(name = "Amount") 
-   private BigDecimal Amount;
+   private String Amount;
    
    @XmlElement(name = "ResponseCode") 
    private String ResponseCode;
