@@ -197,6 +197,9 @@ public WebServiceLogger getServiceLogger(String filename){
       respcode =  NIBBsResponseCodes.No_action_taken;
    }
    
+                             if(message.contains("NIP ACCOUNT BLOCK".toLowerCase())){
+      respcode =  NIBBsResponseCodes.Transaction_not_permitted_to_sender;
+   }
         
           if(message.contains("Unauthorised overdraft".toLowerCase())||message.contains("will fall below Locked".toLowerCase())){
       respcode =  NIBBsResponseCodes.No_sufficient_funds;
@@ -465,8 +468,52 @@ public WebServiceLogger getServiceLogger(String filename){
        }
        
    }
-    
-    
+
+     
+     public String getNIPReasons(String code){
+         
+         
+         switch(code.trim()){
+             
+             
+             case "001":
+                 return "Suspected fraud";
+                 
+             case "0002":
+                return "Security violation";
+                
+             case "003":
+                 return "Multiple cases of insufficient fund";
+                 
+              case "004":
+                 return "Multiple cases of “Transfer limit Exceeded”";
+                 
+              case "005":
+                 return "Non-compliance with operating regulations";
+              
+              case "006":
+                 return "Identity theft";
+                 
+                  case "007":
+                 return "Duplicate transaction processing";
+                
+                   case "008":
+                 return "Fraudulent multiple transactions";
+                 
+                   case "009":
+                 return "Payment made by other means";
+                 
+                      case "0010":
+                 return "Purpose of payment not redeemed";
+                 
+                      case "0011":
+                 return "Recurring transactions";
+             
+             default:
+                 return "Others";
+             
+         }
+     }
     
     
      

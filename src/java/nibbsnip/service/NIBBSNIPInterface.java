@@ -1597,29 +1597,6 @@ public class NIBBSNIPInterface {
                 item.setItemHeader("T24.ID");
                 item.setItemValues(new String[]{t24ref});
                 items.add(item);
-
-//                  item = new DataItem();
-//                  item.setItemHeader("LOCKED.AMOUNT");
-//                  item.setItemValues(new String[] {request.getAmount().toString()});
-//                  items.add(item);
-//
-//                  item = new DataItem();
-//                  item.setItemHeader("TRANSACTION.REF");
-//                  item.setItemValues(new String[] {t24ref});
-//                  items.add(item);
-//
-//                  item = new DataItem();
-//                  item.setItemHeader("REASON.CODE");
-//                  item.setItemValues(new String[] {request.getReasonCode()});
-//                  items.add(item);
-//                   if(request.getNarration().length()>16){
-//                   request.setNarration(request.getNarration().substring(16));
-//                  }
-//
-//                  item = new DataItem();
-//                  item.setItemHeader("DESCRIPTION");
-//                  item.setItemValues(new String[] {request.getNarration()});
-//                  items.add(item);
                 ofstr = t24.generateOFSTransactString(param);
 
                 result = t24.PostMsg(ofstr);
@@ -2035,24 +2012,47 @@ public class NIBBSNIPInterface {
                 response.setResponseCode(respcodes.getCode());
                 return nipssm.encrypt(options.ObjectToXML(response));
             }
+            
+            
+              
+            String[] credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()}; 
+           ofsParam paramv = new ofsParam();
+           paramv.setTransaction_id(request.getReferenceCode().replace("/", "^").replace("_", "."));
+            String[] ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
+            ofsoptions[2] = "VALIDATE";
+
+            paramv.setOptions(ofsoptions);
+            paramv.setDataItems(new ArrayList<>());
+
+            paramv.setOperation("NIBBS.FT.REF.TABLE");
+
+            paramv.setCredentials(credentials);
+
+            String ofstrv = t24.generateOFSTransactString(paramv);
+            String resultv = t24.PostMsg(ofstrv);
+
+            if (!(resultv.indexOf("T24.ID") > 0)) {
+            
+            
 
             ofsParam param = new ofsParam();
-            String[] credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()};
+            credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()};
             param.setCredentials(credentials);
-            param.setOperation("POSTING.RESTRICT");
-            param.setTransaction_id("");
-            String[] ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
+            param.setOperation("ACCOUNT");
+            param.setVersion("NIP.PO");
+            param.setTransaction_id(request.getTargetAccountNumber());
+            ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
             param.setOptions(ofsoptions);
 
             List<DataItem> items = new LinkedList<>();
             DataItem item = new DataItem();
-            item.setItemHeader("ACCOUNT.NUMBER");
-            item.setItemValues(new String[]{request.getTargetAccountNumber()});
+            item.setItemHeader("POSTING.RESTRICT");
+            item.setItemValues(new String[]{"20"});
             items.add(item);
 
             item = new DataItem();
-            item.setItemHeader("REASON.CODE");
-            item.setItemValues(new String[]{request.getReasonCode()});
+            item.setItemHeader("NIP.PO.REASON");
+            item.setItemValues(new String[]{options.getNIPReasons(request.getReasonCode())});
 
             items.add(item);
 
@@ -2066,6 +2066,21 @@ public class NIBBSNIPInterface {
 
                 respcodes = NIBBsResponseCodes.SUCCESS;
                 response.setResponseCode(respcodes.getCode());
+
+                String t24ref = result.split("/")[0];
+
+                param.setOperation("NIBBS.FT.REF.TABLE");
+                param.setTransaction_id(request.getReferenceCode().replace("/", "^").replace("_", "."));
+
+                items.clear();
+
+                item = new DataItem();
+                item.setItemHeader("T24.ID");
+                item.setItemValues(new String[]{t24ref});
+                items.add(item);
+                ofstr = t24.generateOFSTransactString(param);
+
+                result = t24.PostMsg(ofstr);
 
             } else {
 
@@ -2081,6 +2096,12 @@ public class NIBBSNIPInterface {
                     throw new Exception(result);
                 }
 
+            }
+            
+            }
+            else{
+                  respcodes = NIBBsResponseCodes.Unsuccessful_Account_Amount_block;
+            response.setResponseCode(respcodes.getCode());
             }
 
         } catch (UnmarshalException r) {
@@ -2195,18 +2216,49 @@ public class NIBBSNIPInterface {
                 return nipssm.encrypt(options.ObjectToXML(response));
             }
 
+             
+            String[] credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()}; 
+           ofsParam paramv = new ofsParam();
+           paramv.setTransaction_id(request.getReferenceCode().replace("/", "^").replace("_", "."));
+            String[] ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
+            ofsoptions[2] = "VALIDATE";
+
+            paramv.setOptions(ofsoptions);
+            paramv.setDataItems(new ArrayList<>());
+
+            paramv.setOperation("NIBBS.FT.REF.TABLE");
+
+            paramv.setCredentials(credentials);
+
+            String ofstrv = t24.generateOFSTransactString(paramv);
+            String resultv = t24.PostMsg(ofstrv);
+
+            if (resultv.indexOf("T24.ID") > 0) {
+            
+            
+                resultv = resultv.substring(resultv.indexOf("T24.ID:1:1="));
+
+                String t24ref = resultv.split(",")[0].split("=")[1];
+
             ofsParam param = new ofsParam();
-            String[] credentials = new String[]{options.getOfsuser(), options.getOfspass()};
+            credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()};
             param.setCredentials(credentials);
-            param.setOperation("POSTING.RESTRICT");
-            param.setTransaction_id(request.getReferenceCode());
-            String[] ofsoptions = new String[]{"", "R", "PROCESS", "2", "0"};
+            param.setOperation("ACCOUNT");
+            param.setVersion("NIP.PO");
+            param.setTransaction_id(t24ref);
+            ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
             param.setOptions(ofsoptions);
 
             List<DataItem> items = new LinkedList<>();
             DataItem item = new DataItem();
-            item.setItemHeader("ACCOUNT.NUMBER");
-            item.setItemValues(new String[]{request.getTargetAccountNumber()});
+            item.setItemHeader("POSTING.RESTRICT");
+            item.setItemValues(new String[]{"NULL"});
+            items.add(item);
+
+            item = new DataItem();
+            item.setItemHeader("NIP.PO.REASON");
+            item.setItemValues(new String[]{"NULL"});
+
             items.add(item);
 
             param.setDataItems(items);
@@ -2220,6 +2272,7 @@ public class NIBBSNIPInterface {
                 respcodes = NIBBsResponseCodes.SUCCESS;
                 response.setResponseCode(respcodes.getCode());
 
+               
             } else {
 
                 if (result.contains("/")) {
@@ -2235,6 +2288,13 @@ public class NIBBSNIPInterface {
                 }
 
             }
+            
+            }
+            else{
+                  respcodes = NIBBsResponseCodes.Unsuccessful_Account_Amount_block;
+            response.setResponseCode(respcodes.getCode());
+            }
+
 
         } catch (UnmarshalException r) {
 
@@ -2461,24 +2521,24 @@ public class NIBBSNIPInterface {
 
         return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
     }
-
-    @WebMethod(operationName = "PGPEncryption")
-    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
-        
-        switch(mode.toLowerCase()){
-            case"dec":
-                String resp =  nipssm.decrypt(message);
-                return resp;
-                
-            default:
-                return nipssm.encrypt(message);
-        
-    }
-    
-    
-    
-    
-    }
+//
+//    @WebMethod(operationName = "PGPEncryption")
+//    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
+//        
+//        switch(mode.toLowerCase()){
+//            case"dec":
+//                String resp =  nipssm.decrypt(message);
+//                return resp;
+//                
+//            default:
+//                return nipssm.encrypt(message);
+//        
+//    }
+//    
+//    
+//    
+//    
+//    }
     private InstitutionDetails getInstitutionDetails(String InstCode) {
 
         try {
