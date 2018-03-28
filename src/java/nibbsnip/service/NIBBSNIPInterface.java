@@ -325,11 +325,47 @@ public class NIBBSNIPInterface {
             if (details == null) {
                 respcodes = NIBBsResponseCodes.Unknown_Bank_Code;
                 response.setResponseCode(respcodes.getCode());
+               //  return options.ObjectToXML(response);
                 return nipssm.encrypt(options.ObjectToXML(response));
             }
-
+            
+            
+                 String[] credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()}; 
+           ofsParam paramv = new ofsParam();
+           paramv.setTransaction_id(request.getBeneficiaryAccountNumber());
             String[] ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
-            String[] credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()};
+            ofsoptions[2] = "VALIDATE";
+
+            paramv.setOptions(ofsoptions);
+            paramv.setDataItems(new ArrayList<>());
+
+            paramv.setOperation("ACCOUNT");
+            
+            paramv.setVersion("NIP.PO");
+            paramv.setCredentials(credentials);
+
+            String ofstrv = t24.generateOFSTransactString(paramv);
+            String resultv = t24.PostMsg(ofstrv);
+
+            if (resultv.indexOf("POSTING.RESTRICT") > 0) {
+             
+                
+                resultv = resultv.substring(resultv.indexOf("POSTING.RESTRICT:1:1="));
+
+                String restrno = resultv.split(",")[0].split("=")[1];
+                
+                if(restrno.equalsIgnoreCase("20")){
+                
+            respcodes = NIBBsResponseCodes.Transaction_not_permitted_to_sender;
+            response.setResponseCode(respcodes.getCode());
+             return nipssm.encrypt(options.ObjectToXML(response));
+                }
+                
+            }
+       
+
+            ofsoptions = new String[]{"", "I", "PROCESS", "2", "0"};
+            credentials = new String[]{options.getOfsuser(), options.getOfspass(), details.getCompanyCode()};
             List<DataItem> items = new LinkedList<>();
             SimpleDateFormat ndf = new SimpleDateFormat("yyyyMMdd");
 
@@ -439,8 +475,8 @@ public class NIBBSNIPInterface {
 
         }
 
-        //  return options.ObjectToXML(response);
-        return nipssm.encrypt(options.ObjectToXML(response));
+      // return options.ObjectToXML(response);
+       return nipssm.encrypt(options.ObjectToXML(response));
 
     }
 
@@ -1907,8 +1943,9 @@ public class NIBBSNIPInterface {
             response.setResponseCode(respcodes.getCode());
 
         } catch (Exception d) {
+            respcodes = NIBBsResponseCodes.System_malfunction;
             options.getServiceLogger("service_monitor").LogError(d.getMessage(), d, Level.ERROR);
-            response.setResponseCode("12");
+            response.setResponseCode(respcodes.getCode());
         } finally {
             try {
 
@@ -1960,7 +1997,7 @@ public class NIBBSNIPInterface {
             headers.add("DestinationInstitutionCode");
 
             response.setReasonCode(request.getReasonCode());
-            values.add(request.getDestinationInstitutionCode());
+            values.add(request.getReasonCode());
             headers.add("ReasonCode");
 
             response.setSessionID(request.getSessionID());
@@ -1970,11 +2007,13 @@ public class NIBBSNIPInterface {
 
             response.setTargetAccountNumber(request.getTargetAccountNumber());
             values.add(request.getTargetAccountNumber());
-            headers.add("TransactionLocation");
+            headers.add("TargetAccountNumber");
 
             response.setTargetBankVerificationNumber(request.getTargetBankVerificationNumber());
             values.add(request.getTargetBankVerificationNumber());
-            headers.add("TransactionLocation");
+            headers.add("TargetBankVerificationNumber");
+            
+            
 
             values.add("INWARD");
             headers.add("TranDirection");
@@ -2071,7 +2110,7 @@ public class NIBBSNIPInterface {
 
                 param.setOperation("NIBBS.FT.REF.TABLE");
                 param.setTransaction_id(request.getReferenceCode().replace("/", "^").replace("_", "."));
-
+                param.setVersion("");
                 items.clear();
 
                 item = new DataItem();
@@ -2123,9 +2162,9 @@ public class NIBBSNIPInterface {
             }
 
         }
-        // return options.ObjectToXML(response);
+      // return options.ObjectToXML(response);
 
-        return nipssm.encrypt(options.ObjectToXML(response));
+       return nipssm.encrypt(options.ObjectToXML(response));
     }
 
     @WebMethod(operationName = "accountunblock")
@@ -2163,7 +2202,7 @@ public class NIBBSNIPInterface {
             headers.add("DestinationInstitutionCode");
 
             response.setReasonCode(request.getReasonCode());
-            values.add(request.getDestinationInstitutionCode());
+            values.add(request.getReasonCode());
             headers.add("ReasonCode");
 
             response.setSessionID(request.getSessionID());
@@ -2173,11 +2212,12 @@ public class NIBBSNIPInterface {
 
             response.setTargetAccountNumber(request.getTargetAccountNumber());
             values.add(request.getTargetAccountNumber());
-            headers.add("TransactionLocation");
+            headers.add("TargetAccountNumber");
 
             response.setTargetBankVerificationNumber(request.getTargetBankVerificationNumber());
             values.add(request.getTargetBankVerificationNumber());
-            headers.add("TransactionLocation");
+            headers.add("TargetBankVerificationNumber");
+            
 
             values.add("INWARD");
             headers.add("TranDirection");
@@ -2291,7 +2331,7 @@ public class NIBBSNIPInterface {
             
             }
             else{
-                  respcodes = NIBBsResponseCodes.Unsuccessful_Account_Amount_block;
+                  respcodes = NIBBsResponseCodes.Unsuccessful_Account_Amount_unblock;
             response.setResponseCode(respcodes.getCode());
             }
 
@@ -2316,7 +2356,7 @@ public class NIBBSNIPInterface {
 
         }
 
-        //return options.ObjectToXML(response);
+      // return options.ObjectToXML(response);
         return nipssm.encrypt(options.ObjectToXML(response));
     }
 

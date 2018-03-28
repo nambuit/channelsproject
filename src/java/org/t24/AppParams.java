@@ -188,6 +188,15 @@ public WebServiceLogger getServiceLogger(String filename){
           if(message.contains("IS FLAGGED FOR ONLINE CLOSURE".toLowerCase())){
       respcode =  NIBBsResponseCodes.Invalid_Account;
    }
+       
+                        
+                         if(message.contains("LIVE RECORD NOT CHANGED".toLowerCase())){
+      respcode =  NIBBsResponseCodes.Duplicate_transaction;
+   }    
+          
+          
+                  
+
           
         if(message.contains("Insolvent".toLowerCase())){
       respcode =  NIBBsResponseCodes.Do_not_honor;
