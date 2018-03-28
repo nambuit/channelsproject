@@ -82,7 +82,7 @@ public class NIBBSNIPInterface {
 
                 });
 
-                watcherthread.setName("ATM_LogFileListener");
+                watcherthread.setName("ExecutePendingCredits");
                 watcherthread.start();
             }
 
