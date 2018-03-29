@@ -1822,6 +1822,12 @@ public class NIBBSNIPInterface {
                 String ofstr = t24.generateOFSTransactString(param);
 
                 String output = t24.PostMsg(ofstr);
+                
+                if(output.contains("NO NEW RECORD (ALREADY STORED IN HISTORY FILE)")){
+                     respcodes = NIBBsResponseCodes.Unsuccessful_Account_Amount_unblock;
+                    response.setResponseCode(respcodes.getCode());
+                     return nipssm.encrypt(options.ObjectToXML(response));
+                }
 
                 String result = output.substring(output.indexOf("LOCKED.AMOUNT:1:1="));
 
@@ -2100,6 +2106,8 @@ public class NIBBSNIPInterface {
             String ofstr = t24.generateOFSTransactString(param);
 
             String result = t24.PostMsg(ofstr);
+            
+            
 
             if (t24.IsSuccessful(result)) {
 
@@ -2306,6 +2314,12 @@ public class NIBBSNIPInterface {
             String ofstr = t24.generateOFSTransactString(param);
 
             String result = t24.PostMsg(ofstr);
+            
+                if(result.contains("LIVE RECORD NOT CHANGED")){
+                     respcodes = NIBBsResponseCodes.Unsuccessful_Account_Amount_unblock;
+                    response.setResponseCode(respcodes.getCode());
+                     return nipssm.encrypt(options.ObjectToXML(response));
+                }
 
             if (t24.IsSuccessful(result)) {
 
