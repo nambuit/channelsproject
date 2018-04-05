@@ -299,7 +299,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -576,7 +576,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -835,7 +835,7 @@ public class NIBBSNIPInterface {
 //       
 //       String datestr = request.getSessionID().substring(6,18);
 //       
-//       SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+//       SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 // 
 //        Date date = sdf.parse(datestr);
 //       
@@ -961,7 +961,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -1136,7 +1136,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -1348,7 +1348,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -1522,7 +1522,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -1748,7 +1748,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -2029,7 +2029,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -2235,7 +2235,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
@@ -2499,7 +2499,7 @@ public class NIBBSNIPInterface {
 
             String datestr = request.getSessionID().substring(6, 18);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yymmddHHmmss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 
             Date date = sdf.parse(datestr);
 
