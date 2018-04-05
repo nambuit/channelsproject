@@ -23,11 +23,11 @@ import javax.xml.bind.Unmarshaller;
 import logger.WebServiceLogger;
 import lombok.Getter;
 import lombok.Setter;
-import nibbsnip.client.NIPInterface;
-import nibbsnip.client.NIPInterface_Service;
 import nibbsnip.service.TSQuerySingleRequest;
 import nibbsnip.service.TSQuerySingleResponse;
 import org.apache.log4j.Level;
+import tsq.service.NIPTSQInterface;
+import tsq.service.NIPTSQInterface_Service;
 
 
 
@@ -345,8 +345,8 @@ public WebServiceLogger getServiceLogger(String filename){
             
             requeststr = nipssm.encrypt(requeststr);
             
-             NIPInterface_Service nipclient =   new NIPInterface_Service();
-            NIPInterface nip = nipclient.getNIPInterfacePort();
+             NIPTSQInterface_Service nipclient =   new NIPTSQInterface_Service();
+            NIPTSQInterface nip = nipclient.getNIPTQSInterfacePort();
             
           String nipresponse =  nip.txnstatusquerysingleitem(requeststr);
            

@@ -45,12 +45,11 @@
         </wsimport-option>
       </wsimport-options>
     </client>
-    <client name="NIPInterface">
-      <wsdl-url>http://196.6.103.10:86/NIPWS/NIPInterface?wsdl</wsdl-url>
-      <local-wsdl-file>196.6.103.10_86/NIPWS/NIPInterface.wsdl</local-wsdl-file>
-      <package-name forceReplace="true">nibbsnip.client</package-name>
+    <client name="NIPTSQInterface">
+      <wsdl-url>http://41.58.130.134:88/NIPWS/NIPTSQInterface?wsdl</wsdl-url>
+      <local-wsdl-file>41.58.130.134_88/NIPWS/NIPTSQInterface.wsdl</local-wsdl-file>
+      <package-name forceReplace="true">tsq.service</package-name>
       <catalog-file>catalog.xml</catalog-file>
-      <use-dispatch>true</use-dispatch>
       <wsimport-options>
         <wsimport-option>
           <wsimport-option-name>extension</wsimport-option-name>
@@ -66,7 +65,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>http://196.6.103.10:86/NIPWS/NIPInterface?wsdl</wsimport-option-value>
+          <wsimport-option-value>http://41.58.130.134:88/NIPWS/NIPTSQInterface?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>
@@ -78,7 +77,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>package</wsimport-option-name>
-          <wsimport-option-value>nibbsnip.client</wsimport-option-value>
+          <wsimport-option-value>tsq.service</wsimport-option-value>
         </wsimport-option>
       </wsimport-options>
     </client>

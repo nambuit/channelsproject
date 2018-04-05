@@ -9,4 +9,6 @@
     <system systemId="http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl" uri="wsdl/13.95.28.0_8085/TAFJServices/services/OFSService.wsdl"/>
     <system systemId="http://196.6.103.10:86/NIPWS/NIPInterface?wsdl" uri="wsdl/196.6.103.10_86/NIPWS/NIPInterface.wsdl"/>
     <system systemId="http://196.6.103.10:86/NIPWS/NIPInterface?xsd=1" uri="wsdl/196.6.103.10_86/NIPWS/NIPInterface.xsd_1.xsd"/>
+    <system systemId="http://41.58.130.134:88/NIPWS/NIPTSQInterface?wsdl" uri="wsdl/41.58.130.134_88/NIPWS/NIPTSQInterface.wsdl"/>
+    <system systemId="http://41.58.130.134:88/NIPWS/NIPTSQInterface?xsd=1" uri="wsdl/41.58.130.134_88/NIPWS/NIPTSQInterface.xsd_1.xsd"/>
 </catalog>

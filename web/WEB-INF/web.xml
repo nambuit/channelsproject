@@ -52,7 +52,7 @@
          <env-entry>
         <env-entry-name>DBserver</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>172.16.10.5</env-entry-value>
+        <env-entry-value>154.113.4.20</env-entry-value>
     </env-entry> 
     <env-entry>
         <env-entry-name>ISO_OFSsource</env-entry-name>
@@ -77,12 +77,12 @@
     <env-entry>
         <env-entry-name>LogDir</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>C:\Users\Temitope\Documents\Youcam\logs</env-entry-value>
+        <env-entry-value>E:\NambuitChannelsLogs</env-entry-value>
     </env-entry>
     <env-entry>
         <env-entry-name>ISOLogListenerDir</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
-        <env-entry-value>C:\Users\Temitope\Documents\Youcam</env-entry-value>
+        <env-entry-value>E:\NambuitChannelsLogs</env-entry-value>
     </env-entry>
         <env-entry>
         <env-entry-name>T24Framework</env-entry-name>
