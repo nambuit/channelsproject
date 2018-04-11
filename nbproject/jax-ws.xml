@@ -29,7 +29,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>http://13.95.28.0:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
+          <wsimport-option-value>http://localhost:8085/TAFJServices/services/OFSService?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>
