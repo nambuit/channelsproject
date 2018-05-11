@@ -69,8 +69,8 @@
     </target>
     <target name="wsimport-client-NIPTSQInterface" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/NIPTSQInterface"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/NIPTSQInterface" destdir="${build.generated.dir}/jax-wsCache/NIPTSQInterface" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/NIPTSQInterface/wsdl/41.58.130.134_88/NIPWS/NIPTSQInterface.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://41.58.130.134:88/NIPWS/NIPTSQInterface?wsdl" xnocompile="true" xendorsed="true" package="tsq.service">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/NIPTSQInterface/wsdl/41.58.130.134_88/NIPWS/NIPTSQInterface.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/NIPTSQInterface" destdir="${build.generated.dir}/jax-wsCache/NIPTSQInterface" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/NIPTSQInterface/wsdl/196.6.103.233_88/NIPWS/NIPTSQInterface.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://196.6.103.233:88/NIPWS/NIPTSQInterface?wsdl" xnocompile="true" xendorsed="true" package="tsq.service">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/NIPTSQInterface/wsdl/196.6.103.233_88/NIPWS/NIPTSQInterface.wsdl"/>
             <produces dir="${build.generated.dir}/jax-wsCache/NIPTSQInterface"/>
         </wsimport>
         <copy todir="${build.generated.sources.dir}/jax-ws">

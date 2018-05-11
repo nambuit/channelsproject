@@ -2575,7 +2575,7 @@ public class NIBBSNIPInterface {
 
         return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
     }
-//
+
 //    @WebMethod(operationName = "PGPEncryption")
 //    public String PGPEncryption(@WebParam(name = "message") String message, String mode) {
 //        
@@ -2583,16 +2583,20 @@ public class NIBBSNIPInterface {
 //            case"dec":
 //                String resp =  nipssm.decrypt(message);
 //                return resp;
-//                
+//            case"gen":
+//                String [] tokens = message.split("#");
+//                   String username = tokens[0];
+//                   String password = tokens[1];
+//                   return     nipssm.generatePublicKey(username,password);
+//                    
 //            default:
 //                return nipssm.encrypt(message);
-//        
-//    }
-//    
-//    
-//    
-//    
-//    }
+//           }
+    
+    
+    
+    
+    
     private InstitutionDetails getInstitutionDetails(String InstCode) {
 
         try {

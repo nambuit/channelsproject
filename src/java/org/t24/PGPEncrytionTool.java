@@ -69,5 +69,10 @@ public class PGPEncrytionTool {
     return cipher.replace("ENC", "").trim(); 
        
    }
+      
+      
+      public String generatePublicKey(String username ,String password){
+         return  executeSSMComand("GEN"+username+"#"+password, options.getEncryptionserver(), options.getEncryptionport());  
+      }
    
 }

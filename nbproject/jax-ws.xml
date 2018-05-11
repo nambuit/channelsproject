@@ -46,8 +46,8 @@
       </wsimport-options>
     </client>
     <client name="NIPTSQInterface">
-      <wsdl-url>http://41.58.130.134:88/NIPWS/NIPTSQInterface?wsdl</wsdl-url>
-      <local-wsdl-file>41.58.130.134_88/NIPWS/NIPTSQInterface.wsdl</local-wsdl-file>
+      <wsdl-url>http://196.6.103.233:88/NIPWS/NIPTSQInterface?wsdl</wsdl-url>
+      <local-wsdl-file>196.6.103.233_88/NIPWS/NIPTSQInterface.wsdl</local-wsdl-file>
       <package-name forceReplace="true">tsq.service</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
@@ -65,7 +65,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>http://41.58.130.134:88/NIPWS/NIPTSQInterface?wsdl</wsimport-option-value>
+          <wsimport-option-value>http://196.6.103.233:88/NIPWS/NIPTSQInterface?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>
