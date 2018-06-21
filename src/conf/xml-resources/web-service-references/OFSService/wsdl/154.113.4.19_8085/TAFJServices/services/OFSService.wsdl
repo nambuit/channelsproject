@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://services.tafj.temenos.com/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://services.tafj.temenos.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://services.tafj.temenos.com/">
+    <wsdl:documentation>OFSService</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.tafj.temenos.com/xsd">
+            <xs:element name="getName">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getNameResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Invoke">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Request" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="InvokeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ns:ServiceResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="ServiceResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="responses" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="returnCode" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getNameRequest">
+        <wsdl:part name="parameters" element="ns:getName"/>
+    </wsdl:message>
+    <wsdl:message name="getNameResponse">
+        <wsdl:part name="parameters" element="ns:getNameResponse"/>
+    </wsdl:message>
+    <wsdl:message name="InvokeRequest">
+        <wsdl:part name="parameters" element="ns:Invoke"/>
+    </wsdl:message>
+    <wsdl:message name="InvokeResponse">
+        <wsdl:part name="parameters" element="ns:InvokeResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="OFSServicePortType">
+        <wsdl:operation name="getName">
+            <wsdl:input message="tns:getNameRequest" wsaw:Action="urn:getName"/>
+            <wsdl:output message="tns:getNameResponse" wsaw:Action="urn:getNameResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="Invoke">
+            <wsdl:input message="tns:InvokeRequest" wsaw:Action="urn:Invoke"/>
+            <wsdl:output message="tns:InvokeResponse" wsaw:Action="urn:InvokeResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="OFSServiceSoap11Binding" type="tns:OFSServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getName">
+            <soap:operation soapAction="urn:getName" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Invoke">
+            <soap:operation soapAction="urn:Invoke" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="OFSServiceSoap12Binding" type="tns:OFSServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getName">
+            <soap12:operation soapAction="urn:getName" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Invoke">
+            <soap12:operation soapAction="urn:Invoke" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="OFSServiceHttpBinding" type="tns:OFSServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="getName">
+            <http:operation location="getName"/>
+            <wsdl:input>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="Invoke">
+            <http:operation location="Invoke"/>
+            <wsdl:input>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="application/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="OFSService">
+        <wsdl:port name="OFSServiceHttpSoap11Endpoint" binding="tns:OFSServiceSoap11Binding">
+            <soap:address location="http://154.113.4.19:8085/TAFJServices/services/OFSService.OFSServiceHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="OFSServiceHttpSoap12Endpoint" binding="tns:OFSServiceSoap12Binding">
+            <soap12:address location="http://154.113.4.19:8085/TAFJServices/services/OFSService.OFSServiceHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="OFSServiceHttpEndpoint" binding="tns:OFSServiceHttpBinding">
+            <http:address location="http://154.113.4.19:8085/TAFJServices/services/OFSService.OFSServiceHttpEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

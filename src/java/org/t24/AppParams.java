@@ -383,7 +383,10 @@ public WebServiceLogger getServiceLogger(String filename){
                String sourceinstcode = rs.getString("DestinationInstitutionCode");
                String compcode = rs.getString("CompanyCode");
                Date date = rs.getTimestamp("TransactionDate");
+               
+              int noftrials = rs.getInt("N_of_Attemps");
    
+              
     
                String trandate = ndf.format(date);
                
@@ -461,8 +464,38 @@ public WebServiceLogger getServiceLogger(String filename){
               
            }
              }
-             else{
-                  db.Execute("Update  NIPPendingCredits set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"' where  SessionID ='"+sessionid+"'"); 
+             else{     
+                 
+                 if(noftrials>=5){
+                      
+                      db.Execute("insert into pendingcreditsbacklog select * from NIPPendingCredits where SessionID = '"+sessionid+"'");
+                              
+                       db.Execute("delete from NIPPendingCredits where SessionID ='"+sessionid+"'");
+                  }
+                  else{
+                      
+                      
+                      noftrials = noftrials + 1;
+                      
+                  db.Execute("Update  NIPPendingCredits set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"', N_of_Attemps='"+noftrials+"' where  SessionID ='"+sessionid+"'"); 
+                  
+                  
+                  String datestr = sessionid.substring(6, 18);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+
+             date = sdf.parse(datestr);
+
+    
+
+            SimpleDateFormat df = new SimpleDateFormat("MMMyyyy");
+
+            String  monthlyTable = df.format(date) + "NIP_TRANSACTIONS";
+                  
+                  
+                  
+                  db.Execute("Update  "+monthlyTable+" set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"' where  SessionID ='"+sessionid+"' and MethodName='fundtransfersingleitem_dc'");
+                  }
              }
              
              

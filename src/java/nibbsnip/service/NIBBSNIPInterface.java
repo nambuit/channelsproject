@@ -400,7 +400,7 @@ public class NIBBSNIPInterface {
             items.add(item);
 
             item = new DataItem();
-            item.setItemHeader("CREDIT.AMOUNT");
+            item.setItemHeader("DEBIT.AMOUNT");
             item.setItemValues(new String[]{request.getAmount().toString()});
             items.add(item);
 
@@ -413,18 +413,27 @@ public class NIBBSNIPInterface {
             item.setItemHeader("CREDIT.ACCT.NO");
             item.setItemValues(new String[]{request.getBeneficiaryAccountNumber()});
             items.add(item);
+            
+             item = new DataItem();
+             item.setItemHeader("SessionID");
+             item.setItemValues(new String[]{request.getSessionID()});
+             items.add(item);
 
             item = new DataItem();
             item.setItemHeader("REM.REF");
 
             request.setNarration(escape(request.getNarration()));
 
-            if (request.getNarration().length() > 15) {
-                request.setNarration(request.getNarration().substring(15));
+            if (request.getNarration().length() > 18) {
+                request.setNarration(request.getNarration().substring(18));
             }
 
             item.setItemValues(new String[]{request.getNarration()});
             items.add(item);
+            
+            item = new DataItem();
+            item.setItemHeader("PAYMENT.DETAILS");
+             item.setItemValues(new String[]{request.getNarration()});
 
             param.setDataItems(items);
 
@@ -435,6 +444,9 @@ public class NIBBSNIPInterface {
 
             headers.add("CompanyCode");
             values.add(details.getCompanyCode());
+            
+            headers.add("N_of_Attemps");
+            values.add(0);
 
             try {
                 db.insertData(headers, values.toArray(), "NIPPendingCredits");
@@ -678,6 +690,13 @@ public class NIBBSNIPInterface {
                     item.setItemHeader("CHARGE.AMT");
                     item.setItemValues(new String[]{"NGN" + request.getTransactionFee()});
                     items.add(item);
+                    
+                    item = new DataItem();
+                    item.setItemHeader("SessionID");
+                    item.setItemValues(new String[]{request.getSessionID()});
+                    items.add(item);
+                    
+                    
 
                     item = new DataItem();
                     item.setItemHeader("CREDIT.ACCT.NO");
@@ -692,10 +711,15 @@ public class NIBBSNIPInterface {
                     item = new DataItem();
                     item.setItemHeader("REM.REF");
 
-                    if (request.getNarration().length() > 65) {
-                        request.setNarration(request.getNarration().substring(14));
+                    if (request.getNarration().length() > 18) {
+                        request.setNarration(request.getNarration().substring(18));
                     }
 
+                    item.setItemValues(new String[]{escape(request.getNarration())});
+                    items.add(item);
+                    
+                    item = new DataItem();
+                    item.setItemHeader("PAYMENT.DETAILS");
                     item.setItemValues(new String[]{escape(request.getNarration())});
                     items.add(item);
 
@@ -2412,7 +2436,7 @@ public class NIBBSNIPInterface {
 
             response.setBatchNumber(request.getHeader().getBatchNumber());
             response.setChannelCode(request.getHeader().getChannelCode());
-            response.setDestinationInstitutionCode("999103");
+            response.setDestinationInstitutionCode("070001");
             response.setNumberOfRecords(request.getHeader().getNumberOfRecords());
             respcodes = NIBBsResponseCodes.SUCCESS;
             response.setResponseCode(respcodes.getCode());
