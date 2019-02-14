@@ -418,23 +418,32 @@ public class NIBBSNIPInterface {
              item.setItemHeader("SessionID");
              item.setItemValues(new String[]{request.getSessionID()});
              items.add(item);
+             
+            request.setNarration(escape(request.getNarration()));
 
             item = new DataItem();
             item.setItemHeader("REM.REF");
-
-            request.setNarration(escape(request.getNarration()));
-
-            if (request.getNarration().length() > 18) {
-                request.setNarration(request.getNarration().substring(18));
+            
+            
+            if (request.getNarration().length() > 30) {
+                request.setNarration(request.getNarration().substring(0,30));
             }
 
-            item.setItemValues(new String[]{request.getNarration()});
+
+            
+            item.setItemValues(new String[]{escape(request.getNarration())});
             items.add(item);
+
+           
             
             item = new DataItem();
             item.setItemHeader("PAYMENT.DETAILS");
-             item.setItemValues(new String[]{request.getNarration()});
-
+             item.setItemValues(new String[]{escape(request.getNarration())});
+             items.add(item);
+             
+             
+             
+             
             param.setDataItems(items);
 
             String ofstr = t24.generateOFSTransactString(param);
@@ -711,8 +720,8 @@ public class NIBBSNIPInterface {
                     item = new DataItem();
                     item.setItemHeader("REM.REF");
 
-                    if (request.getNarration().length() > 18) {
-                        request.setNarration(request.getNarration().substring(18));
+                    if (request.getNarration().length() > 30) {
+                        request.setNarration(request.getNarration().substring(0,30));
                     }
 
                     item.setItemValues(new String[]{escape(request.getNarration())});
@@ -1627,7 +1636,7 @@ public class NIBBSNIPInterface {
 //                  item.setItemValues(new String[] {request.getReasonCode()});
 //                  items.add(item);
             if (request.getNarration().length() > 16) {
-                request.setNarration(request.getNarration().substring(16));
+                request.setNarration(request.getNarration().substring(0,16));
             }
 
             item = new DataItem();
@@ -1903,7 +1912,7 @@ public class NIBBSNIPInterface {
 //                  item.setItemValues(new String[] {request.getReasonCode()});
 //                  items.add(item);
                         if (request.getNarration().length() > 16) {
-                            request.setNarration(request.getNarration().substring(16));
+                            request.setNarration(request.getNarration().substring(0,16));
                         }
 
                         item = new DataItem();
@@ -2597,7 +2606,7 @@ public class NIBBSNIPInterface {
 
     public static String escape(String text) {
 
-        return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
+        return text.replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;").replace(":", " ");
     }
 
 //    @WebMethod(operationName = "PGPEncryption")

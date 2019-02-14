@@ -7,6 +7,9 @@
     <service name="NIBBSNIPInterface">
       <implementation-class>nibbsnip.service.NIBBSNIPInterface</implementation-class>
     </service>
+    <service name="T24EnquiryService">
+      <implementation-class>org.t24.T24EnquiryService</implementation-class>
+    </service>
   </services>
   <clients>
     <client name="NIPTSQInterface">

@@ -62,11 +62,13 @@ public class T24TAFJLink implements T24Link {
           @Override
            public ArrayList<List<String>> getOfsData(String EnquiryName,String Username,String Password,String Filters, String compcode) throws Exception{
           ArrayList<List<String>> records  = new ArrayList<>();
+         String result = "";
+          
            
      try{      
    String message = "ENQUIRY.SELECT,,"+Username+"/"+Password+"/"+compcode+","+EnquiryName+","+Filters;
 
-   String result = this.PostMsg(message);
+    result = this.PostMsg(message);
    
    String [] lines = result.split(",\"");
    
@@ -90,7 +92,11 @@ public class T24TAFJLink implements T24Link {
    return records;
      }
      catch(Exception d){
-         throw(d);
+    List<String> headers = new ArrayList<>();
+    headers.add(result);
+         records.add(headers);
+         
+         return records;
      }
        }
     

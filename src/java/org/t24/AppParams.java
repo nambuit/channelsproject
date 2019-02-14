@@ -390,12 +390,24 @@ public WebServiceLogger getServiceLogger(String filename){
     
                String trandate = ndf.format(date);
                
+                      String datestr = sessionid.substring(6, 18);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+
+             date = sdf.parse(datestr);
+
+    
+
+            SimpleDateFormat df = new SimpleDateFormat("MMMyyyy");
+
+            String  monthlyTable = df.format(date) + "NIP_TRANSACTIONS";
+               
                
               NIBBsResponseCodes respcode =  CheckTransactionStatus(sessionid, sourceinstcode, nipssm);
               
            String code =   respcode.getCode();
                
-             if(code.equals("00"))
+             if(respcode == NIBBsResponseCodes.SUCCESS)
              { 
               
               String result = t24.PostMsg(ofstr);
@@ -441,6 +453,8 @@ public WebServiceLogger getServiceLogger(String filename){
                 t24.PostMsg(ofstr);
                 
                db.Execute("delete from NIPPendingCredits where SessionID ='"+sessionid+"'");
+               
+               db.Execute("Update  "+monthlyTable+" set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"' where  SessionID ='"+sessionid+"' and MethodName='fundtransfersingleitem_dc'");
                 
                
            }
@@ -449,6 +463,8 @@ public WebServiceLogger getServiceLogger(String filename){
                     String errormessage;
                     
                         if(result.contains("/")){
+                            
+                            
                          errormessage =    result.split("/")[3];
                
                         }
@@ -480,19 +496,7 @@ public WebServiceLogger getServiceLogger(String filename){
                   db.Execute("Update  NIPPendingCredits set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"', N_of_Attemps='"+noftrials+"' where  SessionID ='"+sessionid+"'"); 
                   
                   
-                  String datestr = sessionid.substring(6, 18);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
-
-             date = sdf.parse(datestr);
-
-    
-
-            SimpleDateFormat df = new SimpleDateFormat("MMMyyyy");
-
-            String  monthlyTable = df.format(date) + "NIP_TRANSACTIONS";
-                  
-                  
+                     
                   
                   db.Execute("Update  "+monthlyTable+" set StatusMessage='"+respcode.getMessage()+"', ResponseCode='"+respcode.getCode()+"' where  SessionID ='"+sessionid+"' and MethodName='fundtransfersingleitem_dc'");
                   }
