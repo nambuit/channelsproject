@@ -276,6 +276,22 @@ public WebServiceLogger getServiceLogger(String filename){
 ") ON [PRIMARY]";
     }
     
+        public String getCreateMcashNotificationTableScript(String tableName) {
+
+        return "CREATE TABLE [dbo].[" + tableName + "](\n"
+                + "	[SessionID] [varchar](100) NULL,\n"
+                + "	[RequestorID] [varchar](100) NULL,\n"
+                + "	[PayerPhoneNumber] [varchar](100) NULL,\n"
+                + "	[PayerName] [varchar](100) NULL,\n"
+                + "	[MerchantCode] [varchar](100) NULL,\n"
+                + "	[MerchantName] [varchar](100) NULL,\n"
+                + "	[MerchantPhoneNumber] [varchar](100) NULL,\n"
+                + "	[ReferenceCode] [varchar](100) NULL,\n"
+                + "	[Amount] [money] NULL,\n"
+                + "	[TransactionDate] [datetime] NULL,\n"
+                + "	[ResponseCode] [varchar](100) NULL,\n"
+                + ") ON [PRIMARY]";
+    }
 //    public static void main(String [] args){
 //        
 //   //   ISOResponse sd = new ISOResponse();
