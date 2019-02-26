@@ -26,8 +26,8 @@ import lombok.Setter;
 import nibbsnip.service.TSQuerySingleRequest;
 import nibbsnip.service.TSQuerySingleResponse;
 import org.apache.log4j.Level;
-import tsq.service.NIPTSQInterface;
-import tsq.service.NIPTSQInterface_Service;
+//import tsq.service.NIPTSQInterface;
+//import tsq.service.NIPTSQInterface_Service;
 
 
 
@@ -361,10 +361,10 @@ public WebServiceLogger getServiceLogger(String filename){
             
             requeststr = nipssm.encrypt(requeststr);
             
-             NIPTSQInterface_Service nipclient =   new NIPTSQInterface_Service();
-            NIPTSQInterface nip = nipclient.getNIPTQSInterfacePort();
+//             NIPTSQInterface_Service nipclient =   new NIPTSQInterface_Service();
+//            NIPTSQInterface nip = nipclient.getNIPTQSInterfacePort();
             
-          String nipresponse =  nip.txnstatusquerysingleitem(requeststr);
+          String nipresponse = ""; // nip.txnstatusquerysingleitem(requeststr);
            
           nipresponse = nipssm.decrypt(nipresponse);
           
