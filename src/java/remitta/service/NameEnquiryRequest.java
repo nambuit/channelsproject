@@ -18,4 +18,6 @@ import lombok.Setter;
 public class NameEnquiryRequest {
 
     private String AccountNumber;
+    
+    private String CompanyCode;
 }

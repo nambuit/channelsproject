@@ -260,6 +260,11 @@ public class T24TAFCLink implements T24Link {
 
  return ( data.getData() );
 }
+
+    @Override
+    public ArrayList<List<String>> getOfsData(String fundstransfer, String ofsuser, String ofspass, String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
     

@@ -21,4 +21,6 @@ public class AuthenticateOTPRequest {
     
 
     private String OTP;
+    
+    private String CompanyCode;
 }

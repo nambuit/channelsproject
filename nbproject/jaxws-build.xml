@@ -77,8 +77,8 @@
     </target>
     <target name="wsimport-client-OFSService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/OFSService"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService" destdir="${build.generated.dir}/jax-wsCache/OFSService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/154.113.4.19_8085/TAFJServices/services/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://154.113.4.19:8085/TAFJServices/services/OFSService?wsdl" xnocompile="true" xendorsed="true" package="org.t24">
-            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/154.113.4.19_8085/TAFJServices/services/OFSService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/OFSService" destdir="${build.generated.dir}/jax-wsCache/OFSService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/192.168.10.41_8085/TAFJServices/services/OFSService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://192.168.10.41:8085/TAFJServices/services/OFSService?wsdl" xnocompile="true" xendorsed="true" package="ofs.service">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/OFSService/wsdl/192.168.10.41_8085/TAFJServices/services/OFSService.wsdl"/>
             <produces dir="${build.generated.dir}/jax-wsCache/OFSService"/>
         </wsimport>
         <copy todir="${build.generated.sources.dir}/jax-ws">
@@ -88,7 +88,7 @@
         </copy>
     </target>
     <target name="wsimport-client-clean-OFSService" depends="-init-project">
-        <delete dir="${build.generated.sources.dir}/jax-ws/org/t24"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/ofs/service"/>
         <delete dir="${build.generated.dir}/jax-wsCache/OFSService"/>
     </target>
     <target name="wsimport-client-generate" depends="wsimport-client-NIPTSQInterface, wsimport-client-OFSService"/>

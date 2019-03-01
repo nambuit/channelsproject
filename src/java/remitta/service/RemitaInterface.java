@@ -82,12 +82,15 @@ import org.t24.ofsParam;
        
       fundstransfer.setTransactionDate(ndf.format(trandate));
      
-    //  ArrayList<List<String>> data = t24.getOfsData("%FUNDS.TRANSFER",options.getOfsuser(), options.getOfspass(), "REM.REF:EQ=" + fundstransfer.getTransRef().trim());
+    //ArrayList<List<String>> data = t24.getOfsData("%FUNDS.TRANSFER",options.getOfsuser(), options.getOfspass(), "REM.REF:EQ=" + fundstransfer.getTransRef().trim());
      
       String[] vofsoptions = new String[] { "", "I", "VALIDATE", "", "0" };
 
                ofsParam param = new ofsParam();
                param.setCredentials(credentials);
+               
+               param.setCompanyCode(fundstransfer.getCompanyCode());
+               
                param.setOperation("REMITA.FT.REF.TABLE");
                param.setOptions(vofsoptions);
                
@@ -120,6 +123,8 @@ import org.t24.ofsParam;
            
            
            param.setVersion("AC.REMITA.FT01");
+           
+           param.setCompanyCode(fundstransfer.getCompanyCode());
            
            param.setTransaction_id("");
           
@@ -349,7 +354,7 @@ import org.t24.ofsParam;
         //   Gson gson = new Gson(); 
            Date statementdate = sdf.parse(accountstatement.getStatementDate());
            accountstatement.setStatementDate(ndf.format(statementdate));
-           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + accountstatement.getAccountNumber().trim()+",VALUE.DATE:EQ="+accountstatement.getStatementDate(),"");
+           ArrayList<List<String>> result = t24.getOfsData("STMT.STATEMENT.REQUEST.REMITA.AS01",options.getOfsuser(), options.getOfspass(), "ACCOUNT.NUMBER:EQ=" + accountstatement.getAccountNumber().trim()+",VALUE.DATE:EQ="+accountstatement.getStatementDate(),accountstatement.getCompanyCode());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -414,7 +419,7 @@ import org.t24.ofsParam;
         //   Gson gson = new Gson(); 
            Date today = new Date();
            
-           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + accountbalance.getAccountNumber(),"");
+           ArrayList<List<String>> result = t24.getOfsData("ACCT.BALANCE.REMITA.AB01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + accountbalance.getAccountNumber(),accountbalance.getCompanyCode());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -472,7 +477,7 @@ import org.t24.ofsParam;
              //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + nameenquiry.getAccountNumber(),"");
+           ArrayList<List<String>> result = t24.getOfsData("NAME.ENQ.REQ.REMITA.NES01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + nameenquiry.getAccountNumber(),nameenquiry.getCompanyCode());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -516,7 +521,7 @@ import org.t24.ofsParam;
             //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + otprequest.getAccountNumber(),"");
+           ArrayList<List<String>> result = t24.getOfsData("GENERATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + otprequest.getAccountNumber(),otprequest.getCompanyCode());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){
@@ -557,7 +562,7 @@ import org.t24.ofsParam;
             //   Gson gson = new Gson(); 
            
            
-           ArrayList<List<String>> result = t24.getOfsData("AUTHENTICATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber(),"");
+           ArrayList<List<String>> result = t24.getOfsData("AUTHENTICATE.OTP.REQ.REMITA.GOR01",options.getOfsuser(), options.getOfspass(), "@ID:EQ=" + request.getAccountNumber(),request.getCompanyCode());
            List<String> headers = result.get(0);
            
               if(headers.size()!=result.get(1).size()){

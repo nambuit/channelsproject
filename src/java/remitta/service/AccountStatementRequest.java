@@ -22,6 +22,8 @@ public class AccountStatementRequest {
      
 
       private String StatementDate;
+      
+      private String CompanyCode;
     
     
     

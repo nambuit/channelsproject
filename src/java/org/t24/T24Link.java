@@ -23,5 +23,7 @@ public interface T24Link  {
     public String PostMsg(String sOFS)throws Exception;
     
    public String PostMsg(String sOFS, String ofssource) throws Exception;
+
+    public ArrayList<List<String>> getOfsData(String fundstransfer, String ofsuser, String ofspass, String string);
     
 }

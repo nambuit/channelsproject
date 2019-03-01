@@ -19,4 +19,6 @@ public class GenerateOTPRequest {
     
 
     private String AccountNumber;
+    
+    private String CompanyCode;
 }

@@ -27,6 +27,8 @@ public class ofsParam {
         
        private String[] credentials;
 
-        private List<DataItem> DataItems;  
+        private List<DataItem> DataItems; 
+        
+        private String CompanyCode;
     
 }

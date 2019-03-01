@@ -4,6 +4,9 @@ package org.t24;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import ofs.service.OFSService;
+import ofs.service.OFSServicePortType;
+import ofs.service.ServiceResponse;
 
 
 /**
@@ -121,7 +124,9 @@ public class T24TAFJLink implements T24Link {
 
             String credentials = String.join("/", param.getCredentials());
             
-            output.append(credentials).append(",");
+            String CompanyCode = '/'+param.getCompanyCode();
+            
+            output.append(credentials).append(CompanyCode).append(",");
             
                              if(param.getTransaction_id()==null){
                param.setTransaction_id("");
@@ -149,5 +154,10 @@ public class T24TAFJLink implements T24Link {
 
             return result;
         }
+
+    @Override
+    public ArrayList<List<String>> getOfsData(String fundstransfer, String ofsuser, String ofspass, String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
           
 }

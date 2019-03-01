@@ -18,5 +18,6 @@ import lombok.Setter;
 public class AccountBalanceRequest {
 
       private String AccountNumber;
+      private String CompanyCode;
     
 }

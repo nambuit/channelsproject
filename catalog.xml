@@ -14,4 +14,5 @@
     <system systemId="http://196.6.103.233:88/NIPWS/NIPTSQInterface?wsdl" uri="src/conf/xml-resources/web-service-references/NIPTSQInterface/wsdl/196.6.103.233_88/NIPWS/NIPTSQInterface.wsdl"/>
     <system systemId="http://196.6.103.233:88/NIPWS/NIPTSQInterface?xsd=1" uri="src/conf/xml-resources/web-service-references/NIPTSQInterface/wsdl/196.6.103.233_88/NIPWS/NIPTSQInterface.xsd_1.xsd"/>
     <system systemId="http://154.113.4.19:8085/TAFJServices/services/OFSService?wsdl" uri="src/conf/xml-resources/web-service-references/OFSService/wsdl/154.113.4.19_8085/TAFJServices/services/OFSService.wsdl"/>
+    <system systemId="http://192.168.10.41:8085/TAFJServices/services/OFSService?wsdl" uri="src/conf/xml-resources/web-service-references/OFSService/wsdl/192.168.10.41_8085/TAFJServices/services/OFSService.wsdl"/>
 </catalog>

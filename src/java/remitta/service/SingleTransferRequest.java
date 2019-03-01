@@ -36,5 +36,6 @@ public class SingleTransferRequest {
   
     private String Narration;
     
+    private String CompanyCode;
     
 }
